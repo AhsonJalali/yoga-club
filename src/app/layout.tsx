@@ -19,12 +19,15 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Yoga Club",
   description: "Three sessions a week. Building a habit together.",
-  themeColor: "#07070a",
   openGraph: {
     title: "Yoga Club",
     description: "Three sessions a week. Building a habit together.",
     type: "website",
   },
+};
+
+export const viewport = {
+  themeColor: "#07070a",
 };
 
 export default async function RootLayout({

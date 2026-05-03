@@ -15,11 +15,15 @@ export async function signInAction(formData: FormData) {
   if (!isSupabaseConfigured()) redirect("/login?error=server");
 
   const sb = supabase();
-  const { data: member } = await sb
+  const { data: member, error: signinErr } = await sb
     .from("members")
     .select("id, password_hash")
     .ilike("email", email)
     .maybeSingle();
+  if (signinErr) {
+    console.error("[signin] lookup failed:", signinErr);
+    redirect("/login?error=server");
+  }
 
   if (!member?.password_hash) redirect("/login?error=credentials");
   const ok = await verifyPassword(password, member.password_hash);
@@ -42,11 +46,15 @@ export async function registerAction(formData: FormData) {
 
   const sb = supabase();
 
-  const { data: existing } = await sb
+  const { data: existing, error: lookupErr } = await sb
     .from("members")
     .select("id")
     .ilike("email", email)
     .maybeSingle();
+  if (lookupErr) {
+    console.error("[register] lookup failed:", lookupErr);
+    redirect("/login?mode=register&error=server");
+  }
   if (existing) redirect("/login?mode=register&error=exists");
 
   const password_hash = await hashPassword(password);
@@ -55,7 +63,10 @@ export async function registerAction(formData: FormData) {
     .insert({ email, name, password_hash })
     .select("id")
     .single();
-  if (error || !created) redirect("/login?mode=register&error=server");
+  if (error || !created) {
+    console.error("[register] insert failed:", error);
+    redirect("/login?mode=register&error=server");
+  }
 
   await setMemberCookie(created.id);
   redirect("/");
