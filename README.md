@@ -15,7 +15,7 @@ A small accountability app for me and ~5–15 friends. Three required sessions a
 1. Create a free project at [supabase.com](https://supabase.com).
 2. **SQL Editor** → run `supabase/schema.sql` (creates `members`, `classes`, `check_ins`).
 3. **SQL Editor** → run `supabase/seed.sql` (12 curated Yoga With Adriene classes).
-4. **Table Editor** → `members` → insert a row per friend (`name` is required, `venmo_handle` optional).
+4. (Optional) **Table Editor** → `members` → pre-seed anyone you want. Otherwise members self-register on first login (email + name + club code).
 5. **Project Settings → API** → copy the Project URL, the `anon` public key, and the `service_role` key.
 
 ### 2. Vercel
