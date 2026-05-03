@@ -20,6 +20,7 @@ export function CheckInRoster({ members, meId, sessionDate, initialStatusByMembe
   const [, startTransition] = useTransition();
   const [showVenmoModal, setShowVenmoModal] = useState(false);
   const [statuses, setStatuses] = useState<Record<string, CheckInStatus | undefined>>(initialStatusByMember);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const onMark = (status: "done" | "skipped" | "clear") => {
     const previous = statuses;
@@ -27,6 +28,7 @@ export function CheckInRoster({ members, meId, sessionDate, initialStatusByMembe
     if (status === "clear") delete next[meId];
     else next[meId] = status;
     setStatuses(next);
+    setErrorMsg(null);
 
     if (status === "skipped" && isRequiredDay) {
       setShowVenmoModal(true);
@@ -37,16 +39,26 @@ export function CheckInRoster({ members, meId, sessionDate, initialStatusByMembe
         const fd = new FormData();
         fd.set("sessionDate", sessionDate);
         fd.set("status", status);
-        const res = await fetch("/api/check-in", { method: "POST", body: fd });
+        const res = await fetch("/api/check-in", {
+          method: "POST",
+          body: fd,
+          credentials: "same-origin",
+        });
         if (!res.ok) {
           console.error("[check-in] failed:", res.status);
           setStatuses(previous);
+          if (res.status === 401) {
+            setErrorMsg("Your session expired. Reload and sign in again.");
+          } else {
+            setErrorMsg("Couldn't save that check-in. Try again.");
+          }
           return;
         }
         router.refresh();
       } catch (e) {
         console.error("[check-in] error:", e);
         setStatuses(previous);
+        setErrorMsg("Network error saving check-in. Try again.");
       }
     });
   };
@@ -78,6 +90,12 @@ export function CheckInRoster({ members, meId, sessionDate, initialStatusByMembe
         isRequiredDay={isRequiredDay}
         showVenmoOnSkip={isRequiredDay}
       />
+
+      {errorMsg ? (
+        <p className="mt-3 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-2 text-sm text-rose-200">
+          {errorMsg}
+        </p>
+      ) : null}
 
       {showVenmoModal ? (
         <VenmoModal onClose={() => setShowVenmoModal(false)} />

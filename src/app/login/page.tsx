@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { isSupabaseConfigured } from "../../lib/supabase";
 import { currentMember } from "../../lib/session";
+import { AuthForm } from "../../components/AuthForm";
 
 export const dynamic = "force-dynamic";
 
@@ -74,79 +75,8 @@ export default async function LoginPage({
           </Link>
         </div>
 
-        {isRegister ? (
-          <form
-            action="/api/auth/register"
-            method="POST"
-            className="mt-6 space-y-4 rounded-3xl border border-white/10 bg-zinc-950/60 p-6 backdrop-blur"
-          >
-            <Field label="Your name" name="name" autoComplete="name" placeholder="Sara" />
-            <Field label="Email" name="email" type="email" autoComplete="email" placeholder="you@example.com" />
-            <Field label="Password" name="password" type="password" autoComplete="new-password" placeholder="At least 6 characters" />
-
-            {errMsg ? <p className="text-sm text-rose-400">{errMsg}</p> : null}
-
-            <button
-              type="submit"
-              className="w-full rounded-xl bg-gradient-to-r from-amber-400 to-rose-500 px-4 py-3 text-sm font-semibold text-black shadow-lg shadow-rose-500/20 transition hover:shadow-rose-500/40 hover:brightness-110"
-            >
-              Create account
-            </button>
-            <p className="text-center text-[11px] text-zinc-500">
-              No email verification — just a name, an email, and a password you&apos;ll remember.
-            </p>
-          </form>
-        ) : (
-          <form
-            action="/api/auth/signin"
-            method="POST"
-            className="mt-6 space-y-4 rounded-3xl border border-white/10 bg-zinc-950/60 p-6 backdrop-blur"
-          >
-            <Field label="Email" name="email" type="email" autoComplete="email" placeholder="you@example.com" />
-            <Field label="Password" name="password" type="password" autoComplete="current-password" placeholder="Your password" />
-
-            {errMsg ? <p className="text-sm text-rose-400">{errMsg}</p> : null}
-
-            <button
-              type="submit"
-              className="w-full rounded-xl bg-gradient-to-r from-amber-400 to-rose-500 px-4 py-3 text-sm font-semibold text-black shadow-lg shadow-rose-500/20 transition hover:shadow-rose-500/40 hover:brightness-110"
-            >
-              Sign in
-            </button>
-            <p className="text-center text-[11px] text-zinc-500">
-              Forgot your password? Ask whoever runs the club to reset it for you.
-            </p>
-          </form>
-        )}
+        <AuthForm mode={isRegister ? "register" : "signin"} initialError={errMsg} />
       </div>
     </main>
-  );
-}
-
-function Field({
-  label,
-  name,
-  type = "text",
-  autoComplete,
-  placeholder,
-}: {
-  label: string;
-  name: string;
-  type?: string;
-  autoComplete?: string;
-  placeholder?: string;
-}) {
-  return (
-    <label className="block">
-      <span className="text-xs font-medium uppercase tracking-wider text-zinc-400">{label}</span>
-      <input
-        name={name}
-        type={type}
-        required
-        autoComplete={autoComplete}
-        placeholder={placeholder}
-        className="mt-2 block w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-white placeholder:text-zinc-500 focus:border-amber-400/50 focus:outline-none focus:ring-2 focus:ring-amber-400/30"
-      />
-    </label>
   );
 }
