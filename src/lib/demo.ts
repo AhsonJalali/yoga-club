@@ -14,15 +14,15 @@ export const DEMO_MEMBERS: Member[] = [
 
 export const DEMO_CLASSES: ClassItem[] = [
   { id: "c-1", title: "Yoga For Complete Beginners", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=v7AYKMP6rOE", duration_minutes: 20, tags: ["beginner", "foundation"] },
-  { id: "c-2", title: "20 Minute Morning Yoga", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=4pKly2JojMw", duration_minutes: 20, tags: ["beginner", "morning"] },
-  { id: "c-3", title: "Gentle Yoga Flow", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=oX6I1HHDgFI", duration_minutes: 20, tags: ["gentle", "flow"] },
-  { id: "c-4", title: "Yoga For Hips and Lower Back", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=hJbRpHZr_d0", duration_minutes: 25, tags: ["mobility", "hips", "back"] },
-  { id: "c-5", title: "Yoga For Flexibility", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=L_xrDAtykMI", duration_minutes: 20, tags: ["flexibility", "stretch"] },
-  { id: "c-6", title: "Yoga For Balance", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=M-8FvC3GD8c", duration_minutes: 20, tags: ["balance", "beginner"] },
-  { id: "c-7", title: "Beginner Full Body Flow", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=149LrbqKEbk", duration_minutes: 30, tags: ["beginner", "full-body"] },
-  { id: "c-8", title: "Restorative Yoga", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=BiWnAOs6e_E", duration_minutes: 35, tags: ["restorative", "gentle"] },
-  { id: "c-9", title: "Slow Stretch Flow", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=sTANio_2E0Q", duration_minutes: 30, tags: ["stretch", "restorative"] },
-  { id: "c-10", title: "Light Core Yoga", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=MZCXf9Wngc4", duration_minutes: 20, tags: ["core", "beginner"] },
+  { id: "c-2", title: "Day 1 - Ease Into It (30 Days of Yoga)", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=oBu-pQG6sTY", duration_minutes: 20, tags: ["beginner", "foundation"] },
+  { id: "c-3", title: "Full Body Flow", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=b1H3xO3x_Js", duration_minutes: 20, tags: ["beginner", "full-body"] },
+  { id: "c-4", title: "Yoga For Anxiety and Stress", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=hJbRpHZr_d0", duration_minutes: 25, tags: ["gentle", "stress"] },
+  { id: "c-5", title: "Total Body Yoga - Deep Stretch", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=GLy2rYHwUqY", duration_minutes: 30, tags: ["stretch", "restorative", "full-body"] },
+  { id: "c-6", title: "Yoga For Neck, Shoulders, Upper Back", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=X3-gKPNyrTA", duration_minutes: 10, tags: ["mobility", "back", "spine"] },
+  { id: "c-7", title: "Yoga At Your Desk", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=tAUf7aajBWE", duration_minutes: 15, tags: ["mobility", "gentle"] },
+  { id: "c-8", title: "Yoga For People Who Sit All Day", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=a-sZbOfau6c", duration_minutes: 25, tags: ["mobility", "hips", "back"] },
+  { id: "c-9", title: "Yoga For Heavy Hearts", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=2akHh5GgzvM", duration_minutes: 30, tags: ["gentle", "restorative"] },
+  { id: "c-10", title: "Mountain Flow - Hands Free Yoga", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=arydjHTU0iE", duration_minutes: 30, tags: ["balance", "full-body"] },
 ];
 
 // April 2026 + early May required dates: realistic-looking attendance.
