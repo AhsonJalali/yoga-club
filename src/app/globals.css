@@ -1,26 +1,37 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: #07070a;
+  --color-foreground: #fafafa;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html, body {
+  background: #07070a;
+  color: #fafafa;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
+  background-image:
+    radial-gradient(1200px 600px at 85% -10%, rgba(244, 63, 94, 0.18), transparent 60%),
+    radial-gradient(900px 500px at -10% 5%, rgba(245, 158, 11, 0.16), transparent 60%),
+    radial-gradient(800px 700px at 50% 110%, rgba(99, 102, 241, 0.18), transparent 60%);
+  background-attachment: fixed;
+  min-height: 100vh;
 }
+
+/* Subtle scrollbar in the dark theme */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: #2a2a35; border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: #3a3a48; }
+::-webkit-scrollbar-track { background: transparent; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp 400ms ease-out both; }
+.fade-up-2 { animation: fadeUp 400ms ease-out 80ms both; }
+.fade-up-3 { animation: fadeUp 400ms ease-out 160ms both; }
