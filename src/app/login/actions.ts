@@ -33,15 +33,12 @@ export async function registerAction(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const name = String(formData.get("name") ?? "").trim();
   const password = String(formData.get("password") ?? "");
-  const code = String(formData.get("code") ?? "");
 
   if (!email || !name || !password) redirect("/login?mode=register&error=invalid");
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) redirect("/login?mode=register&error=email");
   if (password.length < PASSWORD_MIN) redirect("/login?mode=register&error=short");
 
-  const expected = process.env.CLUB_CODE;
-  if (!expected || !isSupabaseConfigured()) redirect("/login?mode=register&error=server");
-  if (code !== expected) redirect("/login?mode=register&error=code");
+  if (!isSupabaseConfigured()) redirect("/login?mode=register&error=server");
 
   const sb = supabase();
 

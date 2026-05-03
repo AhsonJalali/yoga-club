@@ -6,7 +6,7 @@ A small accountability app for me and ~5–15 friends. Three required sessions a
 
 - Next.js 15 (App Router, TypeScript, Tailwind v4)
 - Supabase (Postgres) — free tier
-- No real auth: enter your name + email + shared club code (find-or-create), stored in an httpOnly cookie
+- Self-serve auth: name + email + password (bcrypt-hashed). httpOnly cookie session. No email verification — honor system all the way down.
 
 ## Deploying from scratch
 
@@ -15,24 +15,21 @@ A small accountability app for me and ~5–15 friends. Three required sessions a
 1. Create a free project at [supabase.com](https://supabase.com).
 2. **SQL Editor** → run `supabase/schema.sql` (creates `members`, `classes`, `check_ins`).
 3. **SQL Editor** → run `supabase/seed.sql` (12 curated Yoga With Adriene classes).
-4. (Optional) **Table Editor** → `members` → pre-seed anyone you want. Otherwise members self-register on first login (email + name + club code).
+4. (Optional) **Table Editor** → `members` → pre-seed anyone you want. Otherwise members self-register on first login (name + email + password).
 5. **Project Settings → API** → copy the Project URL, the `anon` public key, and the `service_role` key.
 
 ### 2. Vercel
 
 1. Push this repo to GitHub.
 2. Go to [vercel.com/new](https://vercel.com/new), import the repo. Framework auto-detects as Next.js.
-3. **Environment Variables** — add the four below. Set them for Production, Preview, and Development.
+3. **Environment Variables** — add the three below. Set them for Production, Preview, and Development.
 4. Click **Deploy**.
 
 ```
 NEXT_PUBLIC_SUPABASE_URL       = https://xxxx.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY  = eyJ... (anon public key)
-SUPABASE_SERVICE_ROLE_KEY      = eyJ... (service_role key — keep secret)
-CLUB_CODE                      = downward-dog-2026  (any memorable string)
+NEXT_PUBLIC_SUPABASE_ANON_KEY  = sb_publishable_... (or eyJ... anon public key)
+SUPABASE_SERVICE_ROLE_KEY      = sb_secret_...     (or eyJ... service_role key — keep secret)
 ```
-
-Share `CLUB_CODE` with friends out of band (text/Signal). They use it once per device.
 
 ### 3. Local dev
 
@@ -61,7 +58,7 @@ Edit `src/lib/schedule.ts` to change required days, penalty amount, or Venmo han
 
 ## Adding members later
 
-Just share the URL and the `CLUB_CODE`. New members register themselves on the login screen with email + name + code. No verification, no password — honor system.
+Just share the URL. New members register themselves on the login screen with name + email + password. No verification, honor system.
 
 ## Files of note
 

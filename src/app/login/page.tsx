@@ -21,8 +21,6 @@ export default async function LoginPage({
   const errMsg =
     error === "credentials"
       ? "Wrong email or password."
-      : error === "code"
-      ? "Wrong club code."
       : error === "email"
       ? "That doesn't look like an email."
       : error === "invalid"
@@ -85,7 +83,6 @@ export default async function LoginPage({
             <Field label="Your name" name="name" autoComplete="name" placeholder="Sara" />
             <Field label="Email" name="email" type="email" autoComplete="email" placeholder="you@example.com" />
             <Field label="Password" name="password" type="password" autoComplete="new-password" placeholder="At least 6 characters" />
-            <Field label="Club code" name="code" type="password" autoComplete="off" placeholder="Ask the club" />
 
             {errMsg ? <p className="text-sm text-rose-400">{errMsg}</p> : null}
 
