@@ -39,13 +39,19 @@ export function CheckInRoster({ members, meId, sessionDate, initialStatusByMembe
         const fd = new FormData();
         fd.set("sessionDate", sessionDate);
         fd.set("status", status);
-        const res = await fetch("/api/check-in", {
+        // Absolute same-origin URL guards against any base-URL surprises and
+        // makes the request unambiguously same-origin so cookies attach.
+        const url = `${window.location.origin}/api/check-in`;
+        const res = await fetch(url, {
           method: "POST",
           body: fd,
           credentials: "same-origin",
+          cache: "no-store",
         });
         if (!res.ok) {
-          console.error("[check-in] failed:", res.status);
+          let body = "";
+          try { body = await res.text(); } catch {}
+          console.error("[check-in] failed:", res.status, body);
           setStatuses(previous);
           if (res.status === 401) {
             setErrorMsg("Your session expired. Reload and sign in again.");
