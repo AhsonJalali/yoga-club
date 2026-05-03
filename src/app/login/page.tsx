@@ -2,7 +2,6 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { isSupabaseConfigured } from "../../lib/supabase";
 import { currentMember } from "../../lib/session";
-import { signInAction, registerAction } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -77,7 +76,8 @@ export default async function LoginPage({
 
         {isRegister ? (
           <form
-            action={registerAction}
+            action="/api/auth/register"
+            method="POST"
             className="mt-6 space-y-4 rounded-3xl border border-white/10 bg-zinc-950/60 p-6 backdrop-blur"
           >
             <Field label="Your name" name="name" autoComplete="name" placeholder="Sara" />
@@ -98,7 +98,8 @@ export default async function LoginPage({
           </form>
         ) : (
           <form
-            action={signInAction}
+            action="/api/auth/signin"
+            method="POST"
             className="mt-6 space-y-4 rounded-3xl border border-white/10 bg-zinc-950/60 p-6 backdrop-blur"
           >
             <Field label="Email" name="email" type="email" autoComplete="email" placeholder="you@example.com" />
