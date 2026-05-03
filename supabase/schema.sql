@@ -2,10 +2,20 @@
 
 create table if not exists members (
   id uuid primary key default gen_random_uuid(),
-  name text not null unique,
+  email text not null,
+  name text not null,
   venmo_handle text,
   created_at timestamptz not null default now()
 );
+create unique index if not exists members_email_unique_idx on members (lower(email));
+
+-- If you applied an earlier version of the schema (with `name unique` and no email),
+-- run these to migrate:
+--   alter table members add column if not exists email text;
+--   alter table members drop constraint if exists members_name_key;
+--   create unique index if not exists members_email_unique_idx on members (lower(email));
+--   -- backfill emails for existing rows, then:
+--   alter table members alter column email set not null;
 
 create table if not exists classes (
   id uuid primary key default gen_random_uuid(),

@@ -6,7 +6,7 @@ A small accountability app for me and ~5–15 friends. Three required sessions a
 
 - Next.js 15 (App Router, TypeScript, Tailwind v4)
 - Supabase (Postgres) — free tier
-- No real auth: pick your name + enter a shared club code, stored in an httpOnly cookie
+- No real auth: enter your name + email + shared club code (find-or-create), stored in an httpOnly cookie
 
 ## Deploying from scratch
 
@@ -61,7 +61,7 @@ Edit `src/lib/schedule.ts` to change required days, penalty amount, or Venmo han
 
 ## Adding members later
 
-Insert directly into the `members` table in Supabase. They show up in the login dropdown immediately.
+Just share the URL and the `CLUB_CODE`. New members register themselves on the login screen with email + name + code. No verification, no password — honor system.
 
 ## Files of note
 

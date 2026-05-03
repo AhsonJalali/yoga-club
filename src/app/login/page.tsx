@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
-import { supabase, isSupabaseConfigured, Member } from "../../lib/supabase";
+import { isSupabaseConfigured } from "../../lib/supabase";
 import { currentMember } from "../../lib/session";
-import { loginAction } from "./actions";
+import { signInOrRegisterAction } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -14,12 +14,17 @@ export default async function LoginPage({
   const me = await currentMember();
   if (me) redirect("/");
 
-  const { data: members } = await supabase()
-    .from("members")
-    .select("*")
-    .order("name", { ascending: true });
-
   const { error } = await searchParams;
+  const errMsg =
+    error === "code"
+      ? "Wrong club code."
+      : error === "email"
+      ? "That doesn't look like an email."
+      : error === "invalid"
+      ? "Email and name are required."
+      : error === "server"
+      ? "Server hiccup. Try again."
+      : null;
 
   return (
     <main className="mx-auto flex min-h-screen max-w-md items-center px-6">
@@ -36,23 +41,31 @@ export default async function LoginPage({
           <span className="bg-gradient-to-r from-amber-300 via-rose-400 to-violet-400 bg-clip-text text-transparent">Step on the mat.</span>
         </h2>
         <p className="mt-3 text-zinc-400">
-          Pick your name and enter the club code. We&apos;re building a habit together.
+          New here? We&apos;ll create your spot. Returning? Same email signs you back in.
         </p>
 
-        <form action={loginAction} className="mt-8 space-y-4 rounded-3xl border border-white/10 bg-zinc-950/60 p-6 backdrop-blur">
+        <form action={signInOrRegisterAction} className="mt-8 space-y-4 rounded-3xl border border-white/10 bg-zinc-950/60 p-6 backdrop-blur">
           <label className="block">
-            <span className="text-xs font-medium uppercase tracking-wider text-zinc-400">Who are you?</span>
-            <select
-              name="memberId"
+            <span className="text-xs font-medium uppercase tracking-wider text-zinc-400">Your name</span>
+            <input
+              name="name"
               required
-              defaultValue=""
-              className="mt-2 block w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-white focus:border-amber-400/50 focus:outline-none focus:ring-2 focus:ring-amber-400/30"
-            >
-              <option value="" disabled>Select your name</option>
-              {(members ?? []).map((m: Member) => (
-                <option key={m.id} value={m.id}>{m.name}</option>
-              ))}
-            </select>
+              autoComplete="name"
+              placeholder="Sara"
+              className="mt-2 block w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-white placeholder:text-zinc-500 focus:border-amber-400/50 focus:outline-none focus:ring-2 focus:ring-amber-400/30"
+            />
+          </label>
+
+          <label className="block">
+            <span className="text-xs font-medium uppercase tracking-wider text-zinc-400">Email</span>
+            <input
+              name="email"
+              type="email"
+              required
+              autoComplete="email"
+              placeholder="you@example.com"
+              className="mt-2 block w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-white placeholder:text-zinc-500 focus:border-amber-400/50 focus:outline-none focus:ring-2 focus:ring-amber-400/30"
+            />
           </label>
 
           <label className="block">
@@ -62,15 +75,12 @@ export default async function LoginPage({
               name="code"
               required
               autoComplete="off"
+              placeholder="Ask the club"
               className="mt-2 block w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-white placeholder:text-zinc-500 focus:border-amber-400/50 focus:outline-none focus:ring-2 focus:ring-amber-400/30"
             />
           </label>
 
-          {error ? (
-            <p className="text-sm text-rose-400">
-              {error === "code" ? "Wrong club code." : "Couldn't sign in. Try again."}
-            </p>
-          ) : null}
+          {errMsg ? <p className="text-sm text-rose-400">{errMsg}</p> : null}
 
           <button
             type="submit"
@@ -78,13 +88,10 @@ export default async function LoginPage({
           >
             Step on the mat
           </button>
-        </form>
-
-        {(members ?? []).length === 0 ? (
-          <p className="mt-6 text-sm text-amber-300">
-            No members yet. Add yourself in the Supabase <code>members</code> table to get started.
+          <p className="text-center text-[11px] text-zinc-500">
+            No password, no verification. Honor system all the way down.
           </p>
-        ) : null}
+        </form>
       </div>
     </main>
   );

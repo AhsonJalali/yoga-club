@@ -4,12 +4,12 @@
 import { Member, ClassItem, CheckIn } from "./supabase";
 
 export const DEMO_MEMBERS: Member[] = [
-  { id: "m-amir", name: "Amir", venmo_handle: "AceJalali", created_at: "2026-04-01T00:00:00Z" },
-  { id: "m-sara", name: "Sara", venmo_handle: null, created_at: "2026-04-01T00:00:00Z" },
-  { id: "m-jordan", name: "Jordan", venmo_handle: null, created_at: "2026-04-01T00:00:00Z" },
-  { id: "m-priya", name: "Priya", venmo_handle: null, created_at: "2026-04-01T00:00:00Z" },
-  { id: "m-leo", name: "Leo", venmo_handle: null, created_at: "2026-04-15T00:00:00Z" },
-  { id: "m-maya", name: "Maya", venmo_handle: null, created_at: "2026-04-15T00:00:00Z" },
+  { id: "m-amir", email: "amir@example.com", name: "Amir", venmo_handle: "AceJalali", created_at: "2026-04-01T00:00:00Z" },
+  { id: "m-sara", email: "sara@example.com", name: "Sara", venmo_handle: null, created_at: "2026-04-01T00:00:00Z" },
+  { id: "m-jordan", email: "jordan@example.com", name: "Jordan", venmo_handle: null, created_at: "2026-04-01T00:00:00Z" },
+  { id: "m-priya", email: "priya@example.com", name: "Priya", venmo_handle: null, created_at: "2026-04-01T00:00:00Z" },
+  { id: "m-leo", email: "leo@example.com", name: "Leo", venmo_handle: null, created_at: "2026-04-15T00:00:00Z" },
+  { id: "m-maya", email: "maya@example.com", name: "Maya", venmo_handle: null, created_at: "2026-04-15T00:00:00Z" },
 ];
 
 export const DEMO_CLASSES: ClassItem[] = [
