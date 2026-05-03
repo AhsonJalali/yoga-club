@@ -43,34 +43,29 @@ export function AuthForm({ mode, initialError }: Props) {
       const res = await fetch(endpoint, {
         method: "POST",
         body: fd,
-        // Important: include credentials so the Set-Cookie sticks to this origin.
+        // Include cookies so the Set-Cookie issued by the route handler sticks
+        // to this origin and is sent with subsequent requests.
         credentials: "same-origin",
-        // We don't want fetch to auto-follow the 303 — we want to read the
-        // response, then drive the navigation ourselves so the browser commits
-        // the cookie before the next request.
-        redirect: "manual",
+        // Follow the 303 ourselves — the browser DOES apply the Set-Cookie from
+        // the redirect response before fetching the Location URL, which means
+        // by the time we inspect res.url the cookie is already in the jar.
+        redirect: "follow",
       });
 
-      // With redirect: "manual", an opaqueredirect response has type === "opaqueredirect"
-      // and status === 0 in the spec. Browsers DO still apply Set-Cookie from the
-      // response. After this, we navigate with full page load to /.
-      if (res.type === "opaqueredirect" || res.status === 0 || (res.status >= 300 && res.status < 400) || res.ok) {
-        // Hard navigation guarantees the new request includes our freshly set cookie.
+      const finalUrl = new URL(res.url);
+      const err = finalUrl.searchParams.get("error");
+
+      // Success path: the route handler redirects to "/" on auth success. Any
+      // other final URL (typically /login?error=…) means auth failed.
+      if (finalUrl.pathname === "/" && !err) {
+        // Hard navigation guarantees a fresh server render that uses the
+        // new cookie. router.push would skip the cookie since the RSC payload
+        // for "/" is what we just received without auth context.
         window.location.assign("/");
         return;
       }
 
-      // Server returned a non-redirect error. Try to parse the redirect target
-      // out of the Location header (won't have one in opaqueredirect mode), or
-      // fall back to a generic error.
-      const location = res.headers.get("location");
-      if (location) {
-        const url = new URL(location, window.location.origin);
-        const err = url.searchParams.get("error");
-        setError(err && ERROR_MESSAGES[err] ? ERROR_MESSAGES[err] : ERROR_MESSAGES.server);
-      } else {
-        setError(ERROR_MESSAGES.server);
-      }
+      setError(err && ERROR_MESSAGES[err] ? ERROR_MESSAGES[err] : ERROR_MESSAGES.server);
     } catch (err) {
       console.error("[auth] submit failed:", err);
       setError(ERROR_MESSAGES.network);
