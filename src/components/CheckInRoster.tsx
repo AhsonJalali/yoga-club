@@ -1,11 +1,11 @@
 "use client";
 
-import { useOptimistic, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { CheckCircle2, XCircle, ExternalLink, Sparkles, Sunrise, Waves, Leaf, Moon, X } from "lucide-react";
 import { Avatar } from "./Avatar";
 import { Member, CheckInStatus } from "../lib/supabase";
 import { PENALTY_USD, venmoUrl, dayTheme, DayTheme } from "../lib/schedule";
-import { setStatusAction } from "../app/actions";
 
 type Props = {
   members: Member[];
@@ -15,39 +15,43 @@ type Props = {
   isRequiredDay: boolean;
 };
 
-
-
-type Action =
-  | { type: "set"; memberId: string; status: CheckInStatus }
-  | { type: "clear"; memberId: string };
-
 export function CheckInRoster({ members, meId, sessionDate, initialStatusByMember, isRequiredDay }: Props) {
+  const router = useRouter();
   const [, startTransition] = useTransition();
   const [showVenmoModal, setShowVenmoModal] = useState(false);
-  const [optimistic, applyOptimistic] = useOptimistic<
-    Record<string, CheckInStatus | undefined>,
-    Action
-  >(initialStatusByMember, (state, action) => {
-    if (action.type === "clear") {
-      const next = { ...state };
-      delete next[action.memberId];
-      return next;
-    }
-    return { ...state, [action.memberId]: action.status };
-  });
+  const [statuses, setStatuses] = useState<Record<string, CheckInStatus | undefined>>(initialStatusByMember);
 
   const onMark = (status: "done" | "skipped" | "clear") => {
+    const previous = statuses;
+    const next = { ...previous };
+    if (status === "clear") delete next[meId];
+    else next[meId] = status;
+    setStatuses(next);
+
     if (status === "skipped" && isRequiredDay) {
       setShowVenmoModal(true);
     }
+
     startTransition(async () => {
-      if (status === "clear") applyOptimistic({ type: "clear", memberId: meId });
-      else applyOptimistic({ type: "set", memberId: meId, status });
-      await setStatusAction(sessionDate, status);
+      try {
+        const fd = new FormData();
+        fd.set("sessionDate", sessionDate);
+        fd.set("status", status);
+        const res = await fetch("/api/check-in", { method: "POST", body: fd });
+        if (!res.ok) {
+          console.error("[check-in] failed:", res.status);
+          setStatuses(previous);
+          return;
+        }
+        router.refresh();
+      } catch (e) {
+        console.error("[check-in] error:", e);
+        setStatuses(previous);
+      }
     });
   };
 
-  const myStatus = optimistic[meId];
+  const myStatus = statuses[meId];
   const theme = dayTheme(parseLocalDate(sessionDate));
 
   return (
@@ -84,7 +88,7 @@ export function CheckInRoster({ members, meId, sessionDate, initialStatusByMembe
         {members
           .filter((m) => m.id !== meId)
           .map((m) => {
-            const status = optimistic[m.id];
+            const status = statuses[m.id];
             return (
               <li
                 key={m.id}
