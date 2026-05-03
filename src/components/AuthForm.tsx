@@ -115,7 +115,6 @@ export function AuthForm({ mode, initialError }: Props) {
   return (
     <form
       onSubmit={onSubmit}
-      action={endpoint}
       method="POST"
       className="mt-6 space-y-4 rounded-3xl border border-white/10 bg-zinc-950/60 p-6 backdrop-blur"
     >
