@@ -3,50 +3,63 @@
 import { redirect } from "next/navigation";
 import { supabase, isSupabaseConfigured } from "../../lib/supabase";
 import { setMemberCookie } from "../../lib/session";
+import { hashPassword, verifyPassword } from "../../lib/auth";
 
-export async function signInOrRegisterAction(formData: FormData) {
+const PASSWORD_MIN = 6;
+
+export async function signInAction(formData: FormData) {
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  const password = String(formData.get("password") ?? "");
+
+  if (!email || !password) redirect("/login?error=invalid");
+  if (!isSupabaseConfigured()) redirect("/login?error=server");
+
+  const sb = supabase();
+  const { data: member } = await sb
+    .from("members")
+    .select("id, password_hash")
+    .ilike("email", email)
+    .maybeSingle();
+
+  if (!member?.password_hash) redirect("/login?error=credentials");
+  const ok = await verifyPassword(password, member.password_hash);
+  if (!ok) redirect("/login?error=credentials");
+
+  await setMemberCookie(member.id);
+  redirect("/");
+}
+
+export async function registerAction(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const name = String(formData.get("name") ?? "").trim();
+  const password = String(formData.get("password") ?? "");
   const code = String(formData.get("code") ?? "");
 
-  if (!email || !name) {
-    redirect("/login?error=invalid");
-  }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    redirect("/login?error=email");
-  }
+  if (!email || !name || !password) redirect("/login?mode=register&error=invalid");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) redirect("/login?mode=register&error=email");
+  if (password.length < PASSWORD_MIN) redirect("/login?mode=register&error=short");
 
   const expected = process.env.CLUB_CODE;
-  if (!expected || !isSupabaseConfigured()) {
-    redirect("/login?error=server");
-  }
-  if (code !== expected) {
-    redirect("/login?error=code");
-  }
+  if (!expected || !isSupabaseConfigured()) redirect("/login?mode=register&error=server");
+  if (code !== expected) redirect("/login?mode=register&error=code");
 
   const sb = supabase();
 
-  // Find by email (case-insensitive via the unique index on lower(email)).
   const { data: existing } = await sb
     .from("members")
     .select("id")
     .ilike("email", email)
     .maybeSingle();
+  if (existing) redirect("/login?mode=register&error=exists");
 
-  let memberId = existing?.id;
+  const password_hash = await hashPassword(password);
+  const { data: created, error } = await sb
+    .from("members")
+    .insert({ email, name, password_hash })
+    .select("id")
+    .single();
+  if (error || !created) redirect("/login?mode=register&error=server");
 
-  if (!memberId) {
-    const { data: created, error } = await sb
-      .from("members")
-      .insert({ email, name })
-      .select("id")
-      .single();
-    if (error || !created) {
-      redirect("/login?error=server");
-    }
-    memberId = created.id;
-  }
-
-  await setMemberCookie(memberId);
+  await setMemberCookie(created.id);
   redirect("/");
 }
