@@ -58,9 +58,14 @@ export default async function RootLayout({
               <div className="flex items-center gap-3">
                 <span className="hidden text-xs text-zinc-400 sm:inline">{me.name}</span>
                 <Avatar name={me.name} size={32} />
-                <Link href="/logout" className="text-xs text-zinc-500 hover:text-white transition">
-                  Sign out
-                </Link>
+                <form action="/logout" method="POST">
+                  <button
+                    type="submit"
+                    className="text-xs text-zinc-500 hover:text-white transition"
+                  >
+                    Sign out
+                  </button>
+                </form>
               </div>
             </nav>
           </header>
