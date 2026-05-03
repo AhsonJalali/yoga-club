@@ -4,6 +4,9 @@
 export const REQUIRED_DOWS = [1, 3, 5] as const; // Mon, Wed, Fri (Sunday=0)
 export const PENALTY_USD = 50;
 export const VENMO_HANDLE = "AceJalali";
+// Yoga Club officially kicks off this date. Earlier required days don't
+// count toward the leaderboard or the pot, even if a member exists then.
+export const CLUB_START = "2026-05-06";
 
 export type DayKind = "required" | "rest";
 

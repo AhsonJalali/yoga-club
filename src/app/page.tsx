@@ -4,7 +4,7 @@ import { Clock3, Heart, PlayCircle, ExternalLink, Trophy, Moon, CheckCircle2 } f
 import { currentMember } from "../lib/session";
 import { supabase, isSupabaseConfigured, Member, ClassItem, CheckIn } from "../lib/supabase";
 import { DEMO_MEMBERS, DEMO_CLASSES, DEMO_CHECK_INS } from "../lib/demo";
-import { dayKind, isoDate, dowName, PENALTY_USD, VENMO_HANDLE, venmoUrl } from "../lib/schedule";
+import { dayKind, isoDate, dowName, PENALTY_USD, VENMO_HANDLE, venmoUrl, CLUB_START } from "../lib/schedule";
 import { pickClassForDate } from "../lib/picker";
 import { youtubeEmbedUrl, youtubeThumb } from "../lib/youtube";
 import { Avatar } from "../components/Avatar";
@@ -69,7 +69,8 @@ export default async function HomePage() {
 
   const leaderboard = members
     .map((m) => {
-      const since = m.created_at.slice(0, 10);
+      const memberSince = m.created_at.slice(0, 10);
+      const since = memberSince > CLUB_START ? memberSince : CLUB_START;
       const eligible = allRequiredDates.filter((d) => d >= since && d <= todayIso);
       const did: string[] = [];
       const missed: string[] = [];
@@ -94,9 +95,21 @@ export default async function HomePage() {
   const monthDays = monthGrid(today);
   const monthLabel = today.toLocaleDateString("en-US", { month: "long", year: "numeric" });
   const dateLabel = today.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+  const beforeKickoff = todayIso < CLUB_START;
+  const kickoffDate = new Date(CLUB_START + "T00:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
 
   return (
     <main className="mx-auto max-w-6xl px-6 py-10">
+      {beforeKickoff ? (
+        <div className="fade-up mb-6 flex items-center gap-3 rounded-2xl border border-amber-400/30 bg-gradient-to-r from-amber-400/15 via-rose-500/10 to-violet-500/10 px-5 py-3 text-sm">
+          <span className="inline-flex h-2 w-2 animate-pulse rounded-full bg-amber-400" />
+          <p className="text-amber-100">
+            <span className="font-semibold">Yoga Club kicks off {kickoffDate}.</span>{" "}
+            <span className="text-amber-200/70">Practice now if you want — nothing counts toward the pot until then.</span>
+          </p>
+        </div>
+      ) : null}
+
       {/* Hero header */}
       <div className="fade-up flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex flex-col gap-1">
@@ -267,6 +280,7 @@ export default async function HomePage() {
               const myDone = myCi?.status === "done";
               const mySkip = myCi?.status === "skipped";
               const past = dIso < todayIso;
+              const beforeKickoff = dIso < CLUB_START;
 
               if (!inMonth) {
                 return <div key={i} className="min-h-32 border-b border-r border-white/5 bg-black/30" />;
@@ -303,8 +317,10 @@ export default async function HomePage() {
                     </span>
                     {myDone ? (
                       <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
-                    ) : mySkip || past ? (
+                    ) : (mySkip || past) && !beforeKickoff ? (
                       <span className="text-[10px] font-medium text-rose-400">missed</span>
+                    ) : beforeKickoff ? (
+                      <span className="text-[10px] font-medium text-zinc-600">pre-kickoff</span>
                     ) : null}
                   </div>
                   {klass && klassThumb ? (
