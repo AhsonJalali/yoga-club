@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
+import { cookies } from "next/headers";
 import { currentMember } from "../lib/session";
 import { isSupabaseConfigured } from "../lib/supabase";
 import { Avatar } from "../components/Avatar";
@@ -38,6 +39,8 @@ export default async function RootLayout({
 }>) {
   const me = await currentMember();
   const demo = !isSupabaseConfigured();
+  const jar = await cookies();
+  const seenRules = jar.get("seen_rules")?.value === "1";
   return (
     <html
       lang="en"
@@ -57,7 +60,7 @@ export default async function RootLayout({
                 <span className="text-sm font-semibold tracking-tight text-white">Yoga Club</span>
               </Link>
               <div className="flex items-center gap-3">
-                <RulesButton />
+                <RulesButton autoOpen={!seenRules} />
                 <span className="hidden h-3 w-px bg-white/10 sm:inline-block" />
                 <span className="hidden text-xs text-zinc-400 sm:inline">{me.name}</span>
                 <Avatar name={me.name} size={32} />

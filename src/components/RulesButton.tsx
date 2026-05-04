@@ -3,8 +3,15 @@
 import { useState, useEffect } from "react";
 import { X, Calendar, Heart, DollarSign, Users } from "lucide-react";
 
-export function RulesButton() {
-  const [open, setOpen] = useState(false);
+const SEEN_COOKIE = "seen_rules";
+const ONE_YEAR = 365 * 24 * 60 * 60;
+
+type Props = {
+  autoOpen?: boolean;
+};
+
+export function RulesButton({ autoOpen = false }: Props) {
+  const [open, setOpen] = useState(autoOpen);
 
   // Lock body scroll while the modal is open.
   useEffect(() => {
@@ -20,11 +27,21 @@ export function RulesButton() {
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") handleClose();
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
+
+  function handleClose() {
+    setOpen(false);
+    // Mark rules as seen so we don't auto-open on every visit. Browser-wide
+    // cookie; if the user signs in on a different device they'll see it once
+    // there too. Re-openable any time via the "Rules" button.
+    const secure = typeof window !== "undefined" && window.location.protocol === "https:" ? "; Secure" : "";
+    document.cookie = `${SEEN_COOKIE}=1; Max-Age=${ONE_YEAR}; Path=/; SameSite=Lax${secure}`;
+  }
 
   return (
     <>
@@ -35,7 +52,7 @@ export function RulesButton() {
       >
         Rules
       </button>
-      {open ? <RulesModal onClose={() => setOpen(false)} /> : null}
+      {open ? <RulesModal onClose={handleClose} /> : null}
     </>
   );
 }
