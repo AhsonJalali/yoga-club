@@ -5,6 +5,7 @@ import "./globals.css";
 import { currentMember } from "../lib/session";
 import { isSupabaseConfigured } from "../lib/supabase";
 import { Avatar } from "../components/Avatar";
+import { RulesButton } from "../components/RulesButton";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -56,6 +57,8 @@ export default async function RootLayout({
                 <span className="text-sm font-semibold tracking-tight text-white">Yoga Club</span>
               </Link>
               <div className="flex items-center gap-3">
+                <RulesButton />
+                <span className="hidden h-3 w-px bg-white/10 sm:inline-block" />
                 <span className="hidden text-xs text-zinc-400 sm:inline">{me.name}</span>
                 <Avatar name={me.name} size={32} />
                 <form action="/logout" method="POST">
