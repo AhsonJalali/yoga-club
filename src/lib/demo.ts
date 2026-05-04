@@ -14,15 +14,15 @@ export const DEMO_MEMBERS: Member[] = [
 
 export const DEMO_CLASSES: ClassItem[] = [
   { id: "c-1", title: "Yoga For Complete Beginners", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=v7AYKMP6rOE", duration_minutes: 24, tags: ["foundation", "beginner"] },
-  { id: "c-2", title: "20 Min Yoga For Beginners - Start Here", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=vNyJuQuuMC8", duration_minutes: 22, tags: ["foundation", "beginner"] },
+  { id: "c-2", title: "15 Min Gentle Morning Yoga for Beginners", instructor: "Yoga With Kassandra", youtube_url: "https://www.youtube.com/watch?v=QyHO_BkBUp8", duration_minutes: 15, tags: ["foundation", "beginner", "gentle", "morning"] },
   { id: "c-3", title: "Foundations of Flow", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=1p-ayBIRRHs", duration_minutes: 20, tags: ["foundation", "beginner"] },
-  { id: "c-4", title: "Morning Yoga Flow - 20 Min", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=LqXZ628YNj4", duration_minutes: 22, tags: ["morning", "beginner", "gentle"] },
-  { id: "c-5", title: "Yoga For Neck, Shoulders, Upper Back", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=X3-gKPNyrTA", duration_minutes: 11, tags: ["mobility", "back", "spine"] },
+  { id: "c-4", title: "20 Min Morning Yoga for Energy", instructor: "Travis Eliot", youtube_url: "https://www.youtube.com/watch?v=q-BkzP-AXRo", duration_minutes: 20, tags: ["morning", "foundation"] },
+  { id: "c-5", title: "10 Min Yoga Stretch for Neck & Upper Back", instructor: "SarahBeth Yoga", youtube_url: "https://www.youtube.com/watch?v=fDzJbizG0cQ", duration_minutes: 10, tags: ["back", "mobility"] },
   { id: "c-6", title: "20 Min Yoga For Hips - Feel Good Flow", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=zwoVcrdmLOE", duration_minutes: 24, tags: ["hips", "mobility"] },
-  { id: "c-7", title: "Brain + Body Balance - 22 Min", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=XN3JB67-a_k", duration_minutes: 23, tags: ["balance", "mobility"] },
-  { id: "c-8", title: "Yoga Stretch", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=AF9d2Icl4fA", duration_minutes: 21, tags: ["stretch", "flexibility", "full-body"] },
-  { id: "c-9", title: "Yoga For Heavy Hearts", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=2akHh5GgzvM", duration_minutes: 19, tags: ["gentle", "restorative"] },
-  { id: "c-10", title: "Yoga Flow - 20 Min Vinyasa", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=xmeNZI8inWI", duration_minutes: 19, tags: ["full-body", "flexibility"] },
+  { id: "c-7", title: "Fine Tune Your Balance - 30 Min", instructor: "Five Parks Yoga", youtube_url: "https://www.youtube.com/watch?v=QF05F54ltzk", duration_minutes: 30, tags: ["balance", "mobility"] },
+  { id: "c-8", title: "20 Min Daily Yoga Flow - Full Body", instructor: "Charlie Follows", youtube_url: "https://www.youtube.com/watch?v=AkVJtluZLTo", duration_minutes: 20, tags: ["full-body", "flexibility"] },
+  { id: "c-9", title: "20 Min Yoga for Flexibility & Relaxation", instructor: "Yoga With Kassandra", youtube_url: "https://www.youtube.com/watch?v=4Lq5Sf9FDpY", duration_minutes: 20, tags: ["stretch", "flexibility", "restorative"] },
+  { id: "c-10", title: "20 Min Full Body Yoga to Recharge", instructor: "Yoga With Bird", youtube_url: "https://www.youtube.com/watch?v=lT_dNUpDvUE", duration_minutes: 20, tags: ["full-body", "stretch"] },
 ];
 
 // April 2026 + early May required dates: realistic-looking attendance.

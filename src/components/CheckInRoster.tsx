@@ -289,33 +289,30 @@ function DayThemeTag({ theme }: { theme: DayTheme }) {
 function VenmoModal({ onClose }: { onClose: () => void }) {
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm fade-up"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm fade-up"
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-md overflow-hidden rounded-3xl border border-rose-500/40 bg-gradient-to-br from-zinc-950 via-rose-950/40 to-zinc-950 p-8 shadow-2xl shadow-rose-500/20"
+        className="relative w-full max-w-sm overflow-hidden rounded-3xl border border-white/10 bg-zinc-950 p-7 shadow-2xl shadow-black/50"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* glow blob */}
-        <div className="pointer-events-none absolute -top-12 left-1/2 h-40 w-40 -translate-x-1/2 rounded-full bg-gradient-to-br from-amber-400 to-rose-500 opacity-30 blur-3xl" />
-
         <button
           onClick={onClose}
           aria-label="Close"
-          className="absolute right-4 top-4 rounded-full p-1 text-zinc-400 transition hover:bg-white/5 hover:text-white"
+          className="absolute right-3 top-3 rounded-full p-1.5 text-zinc-500 transition hover:bg-white/5 hover:text-white"
         >
-          <X className="h-5 w-5" />
+          <X className="h-4 w-4" />
         </button>
 
-        <div className="relative text-center">
-          <div className="mx-auto inline-flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-400 to-rose-500 text-4xl font-black text-black shadow-xl shadow-rose-500/40">
+        <div className="text-center">
+          <div className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-400 to-rose-500 text-xl font-black text-black shadow-md">
             $50
           </div>
-          <h3 className="mt-6 text-3xl font-bold tracking-tight text-white">
+          <h3 className="mt-5 text-2xl font-semibold tracking-tight text-white">
             You gotta pay!
           </h3>
           <p className="mt-2 text-sm text-zinc-400">
-            That&apos;s ${PENALTY_USD} into the pot. Square it now and start fresh next session — no shame.
+            ${PENALTY_USD} into the pot. Square it now and start fresh next session — no shame.
           </p>
 
           <a
@@ -323,10 +320,10 @@ function VenmoModal({ onClose }: { onClose: () => void }) {
             target="_blank"
             rel="noreferrer"
             onClick={onClose}
-            className="mt-7 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-400 to-rose-500 px-5 py-3.5 text-base font-bold text-black shadow-lg shadow-rose-500/40 transition hover:scale-[1.02] hover:brightness-110 active:scale-95"
+            className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-400 to-rose-500 px-5 py-3 text-sm font-semibold text-black transition hover:brightness-110 active:scale-[0.98]"
           >
             Venmo ${PENALTY_USD} now
-            <ExternalLink className="h-4 w-4" />
+            <ExternalLink className="h-3.5 w-3.5" />
           </a>
           <button
             type="button"
