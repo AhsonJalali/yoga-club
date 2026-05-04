@@ -341,7 +341,7 @@ function VenmoModal({ onClose }: { onClose: () => void }) {
 
         <div className="text-center">
           <div className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-400 to-rose-500 text-xl font-black text-black shadow-md">
-            $50
+            ${PENALTY_USD}
           </div>
           <h3 className="mt-5 text-2xl font-semibold tracking-tight text-white">
             You gotta pay!

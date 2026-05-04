@@ -108,8 +108,8 @@ function RulesModal({ onClose }: { onClose: () => void }) {
           <Rule
             icon={<DollarSign className="h-4 w-4 text-emerald-400" />}
             iconBg="bg-emerald-400/15 ring-emerald-400/30"
-            title="Miss a day → $50 to the pot"
-            body="Honor system. Tap 'No, I didn't' and Venmo @AceJalali $50. No drama, no shame — happens to everyone."
+            title="Miss a day → $25 to the pot"
+            body="Honor system. Tap 'No, I didn't' and Venmo @AceJalali $25. No drama, no shame — happens to everyone."
           />
           <Rule
             icon={<Users className="h-4 w-4 text-violet-300" />}

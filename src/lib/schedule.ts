@@ -1,8 +1,8 @@
 // Weekly schedule rules. Required sessions: Mon, Wed, Fri.
-// Penalty per missed required session: $50, payable to @AceJalali on Venmo.
+// Penalty per missed required session: $25, payable to @AceJalali on Venmo.
 
 export const REQUIRED_DOWS = [1, 3, 5] as const; // Mon, Wed, Fri (Sunday=0)
-export const PENALTY_USD = 50;
+export const PENALTY_USD = 25;
 export const VENMO_HANDLE = "AceJalali";
 // Yoga Club officially kicks off this date. Earlier required days don't
 // count toward the leaderboard or the pot, even if a member exists then.

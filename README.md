@@ -1,6 +1,6 @@
 # Yoga Club
 
-A small accountability app for me and ~5–15 friends. Three required sessions a week (Mon · Wed · Fri). Miss one, you owe $50 to [@AceJalali](https://venmo.com/AceJalali). The vibe is *building a habit together*, not punishing.
+A small accountability app for me and ~5–15 friends. Three required sessions a week (Mon · Wed · Fri). Miss one, you owe $25 to [@AceJalali](https://venmo.com/AceJalali). The vibe is *building a habit together*, not punishing.
 
 ## Stack
 
@@ -44,7 +44,7 @@ Open http://localhost:3000.
 ## How it works
 
 - Logged-in user marks their own session **Yes** or **No** for the day. Honor system.
-- "No" on a required day pops a Venmo modal and adds $50 to the **Group Pot**.
+- "No" on a required day pops a Venmo modal and adds $25 to the **Group Pot**.
 - Past required days with no answer auto-count as missed at midnight (logic recomputes on every page load).
 - Leaderboard ranks by fewest missed sessions; calendar shows the designated class for every required day.
 
@@ -62,7 +62,7 @@ Just share the URL. New members register themselves on the login screen with nam
 
 ## Files of note
 
-- `src/lib/schedule.ts` — required days, $50 penalty, Venmo handle, day-theme metadata
+- `src/lib/schedule.ts` — required days, $25 penalty, Venmo handle, day-theme metadata
 - `src/lib/picker.ts` — deterministic "class of the day" picker
 - `src/components/CheckInRoster.tsx` — Yes/No card + Venmo popup
 - `supabase/schema.sql` + `supabase/seed.sql` — database setup
