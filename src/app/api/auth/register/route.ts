@@ -55,5 +55,7 @@ export async function POST(req: NextRequest) {
     maxAge: MAX_AGE,
     secure: process.env.NODE_ENV === "production",
   });
+  // Reset the rules-seen flag so the new member sees the onboarding modal.
+  response.cookies.set("seen_rules", "", { maxAge: 0, path: "/" });
   return response;
 }
