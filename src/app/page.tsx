@@ -224,8 +224,10 @@ export default async function HomePage() {
                     <p className="truncate text-sm font-medium text-white">
                       {row.member.name}{isMe ? " · you" : ""}
                     </p>
-                    <p className={`text-[11px] ${row.owed === 0 ? "text-emerald-400" : "text-zinc-500"}`}>
-                      {row.owed === 0 ? "spotless" : `$${row.owed} owed`}
+                    <p className={`text-[11px] ${
+                      row.eligible === 0 ? "text-zinc-500" : row.owed === 0 ? "text-emerald-400" : "text-zinc-500"
+                    }`}>
+                      {row.eligible === 0 ? "not started" : row.owed === 0 ? "spotless" : `$${row.owed} owed`}
                     </p>
                   </div>
                   <div className="text-right tabular-nums">
@@ -390,7 +392,11 @@ export default async function HomePage() {
                   </div>
 
                   <div className="flex-1">
-                    {row.missed.length === 0 ? (
+                    {row.eligible === 0 ? (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-white/5 px-2.5 py-1 text-xs text-zinc-400 ring-1 ring-white/10">
+                        New member — no sessions yet
+                      </span>
+                    ) : row.missed.length === 0 ? (
                       <span className="inline-flex items-center gap-1 rounded-full bg-emerald-400/10 px-2.5 py-1 text-xs text-emerald-300 ring-1 ring-emerald-400/20">
                         Spotless — no missed sessions
                       </span>
