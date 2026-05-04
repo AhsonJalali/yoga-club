@@ -61,14 +61,13 @@ export function RulesButton({ autoOpen = false }: Props) {
 function RulesModal({ onClose }: { onClose: () => void }) {
   return (
     <div
-      className="fixed inset-0 z-50 overflow-y-auto bg-black/70 backdrop-blur-sm fade-up"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm fade-up"
       onClick={onClose}
     >
-      <div className="flex min-h-full items-end justify-center sm:items-center sm:p-4">
-        <div
-          className="relative my-0 w-full max-w-lg rounded-t-3xl border border-white/10 bg-zinc-950 p-6 shadow-2xl shadow-black/50 sm:my-4 sm:rounded-3xl sm:p-7"
-          onClick={(e) => e.stopPropagation()}
-        >
+      <div
+        className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl border border-white/10 bg-zinc-950 p-6 shadow-2xl shadow-black/50 sm:p-7"
+        onClick={(e) => e.stopPropagation()}
+      >
         <button
           onClick={onClose}
           aria-label="Close"
@@ -120,7 +119,6 @@ function RulesModal({ onClose }: { onClose: () => void }) {
         >
           Got it
         </button>
-        </div>
       </div>
     </div>
   );
