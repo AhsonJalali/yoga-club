@@ -13,9 +13,19 @@ type Props = {
   sessionDate: string;
   initialStatusByMember: Record<string, CheckInStatus | undefined>;
   isRequiredDay: boolean;
+  disabled?: boolean;
+  disabledMessage?: string;
 };
 
-export function CheckInRoster({ members, meId, sessionDate, initialStatusByMember, isRequiredDay }: Props) {
+export function CheckInRoster({
+  members,
+  meId,
+  sessionDate,
+  initialStatusByMember,
+  isRequiredDay,
+  disabled = false,
+  disabledMessage,
+}: Props) {
   const router = useRouter();
   const [, startTransition] = useTransition();
   const [showVenmoModal, setShowVenmoModal] = useState(false);
@@ -93,6 +103,8 @@ export function CheckInRoster({ members, meId, sessionDate, initialStatusByMembe
         onMark={onMark}
         isRequiredDay={isRequiredDay}
         showVenmoOnSkip={isRequiredDay}
+        disabled={disabled}
+        disabledMessage={disabledMessage}
       />
 
       {errorMsg ? (
@@ -145,14 +157,60 @@ function MyCard({
   onMark,
   isRequiredDay,
   showVenmoOnSkip,
+  disabled = false,
+  disabledMessage,
 }: {
   name: string;
   status: CheckInStatus | undefined;
   onMark: (status: "done" | "skipped" | "clear") => void;
   isRequiredDay: boolean;
   showVenmoOnSkip: boolean;
+  disabled?: boolean;
+  disabledMessage?: string;
 }) {
   const firstName = name.split(" ")[0];
+
+  if (disabled) {
+    return (
+      <div className="mt-6 overflow-hidden rounded-3xl border border-white/10 bg-zinc-950/60 p-6 backdrop-blur">
+        <div className="flex flex-col items-center gap-5 sm:flex-row">
+          <Avatar name={name} size={72} ring={null} />
+          <div className="flex-1 text-center sm:text-left">
+            <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
+              <Sparkles className="mr-1 inline-block h-3 w-3" />
+              Coming soon, {firstName}
+            </p>
+            <h4 className="mt-1 text-2xl font-semibold tracking-tight text-white">
+              Check-in not active yet
+            </h4>
+            <p className="mt-1 text-sm text-zinc-500">
+              {disabledMessage ?? "These buttons activate on scheduled yoga days."}
+            </p>
+          </div>
+          <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+            <button
+              type="button"
+              disabled
+              aria-disabled="true"
+              className="inline-flex cursor-not-allowed items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-zinc-500"
+            >
+              <CheckCircle2 className="h-4 w-4" />
+              Yes, I did it
+            </button>
+            <button
+              type="button"
+              disabled
+              aria-disabled="true"
+              className="inline-flex cursor-not-allowed items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-zinc-500"
+            >
+              <XCircle className="h-4 w-4" />
+              No, I didn&apos;t
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (status === "done") {
     return (

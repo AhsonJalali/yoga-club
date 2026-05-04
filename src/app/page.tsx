@@ -241,14 +241,20 @@ export default async function HomePage() {
         </aside>
       </section>
 
-      {/* Honor-system check-in roster (required days only, post-kickoff) */}
-      {beforeKickoff ? null : kind === "required" ? (
+      {/* Check-in roster — disabled grey state pre-kickoff, hidden on rest days */}
+      {kind === "required" ? (
         <CheckInRoster
           members={members}
           meId={me.id}
           sessionDate={todayIso}
           initialStatusByMember={todayStatusByMember}
           isRequiredDay={true}
+          disabled={beforeKickoff}
+          disabledMessage={
+            beforeKickoff
+              ? `Buttons activate ${kickoffDate} when Yoga Club kicks off.`
+              : undefined
+          }
         />
       ) : (
         <RestDayCard nextDate={nextRequiredDay(today)} />
