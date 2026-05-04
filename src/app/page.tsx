@@ -4,7 +4,7 @@ import { Clock3, Heart, PlayCircle, ExternalLink, Trophy, Moon, CheckCircle2, Su
 import { currentMember } from "../lib/session";
 import { supabase, isSupabaseConfigured, Member, ClassItem, CheckIn } from "../lib/supabase";
 import { DEMO_MEMBERS, DEMO_CLASSES, DEMO_CHECK_INS } from "../lib/demo";
-import { dayKind, isoDate, dowName, PENALTY_USD, VENMO_HANDLE, venmoUrl, CLUB_START, nextRequiredDay, dayTheme } from "../lib/schedule";
+import { dayKind, isoDate, PENALTY_USD, VENMO_HANDLE, venmoUrl, CLUB_START, nextRequiredDay, dayTheme } from "../lib/schedule";
 import { pickClassForDate } from "../lib/picker";
 import { youtubeEmbedUrl, youtubeThumb } from "../lib/youtube";
 import { Avatar } from "../components/Avatar";
@@ -113,10 +113,7 @@ export default async function HomePage() {
       {/* Hero header */}
       <div className="fade-up flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex flex-col gap-1">
-          <p className="text-xs font-medium uppercase tracking-[0.18em] text-amber-300/80">
-            {dowName(today)} · {todayIso}
-          </p>
-          <h1 className="mt-2 text-4xl font-semibold tracking-tight text-white sm:text-5xl">
+          <h1 className="text-4xl font-semibold tracking-tight text-white sm:text-5xl">
             {kind === "required" ? (
               <>Time to <span className="bg-gradient-to-r from-amber-300 via-rose-400 to-violet-400 bg-clip-text text-transparent">step on the mat</span></>
             ) : (
