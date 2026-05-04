@@ -8,7 +8,6 @@ delete from classes;
 insert into classes (title, instructor, youtube_url, duration_minutes, tags) values
   -- Yoga With Adriene · Foundation / beginner
   ('Yoga For Complete Beginners', 'Yoga With Adriene', 'https://www.youtube.com/watch?v=v7AYKMP6rOE', 24, array['foundation','beginner']),
-  ('Day 1 - Ease Into It (30 Days of Yoga)', 'Yoga With Adriene', 'https://www.youtube.com/watch?v=oBu-pQG6sTY', 35, array['foundation','beginner','gentle']),
   ('20 Min Yoga For Beginners - Start Here', 'Yoga With Adriene', 'https://www.youtube.com/watch?v=vNyJuQuuMC8', 22, array['foundation','beginner']),
   ('Yoga For Beginners - A Little Goes a Long Way', 'Yoga With Adriene', 'https://www.youtube.com/watch?v=M7JfqOfqSmI', 19, array['foundation','beginner']),
   ('Foundations of Flow', 'Yoga With Adriene', 'https://www.youtube.com/watch?v=1p-ayBIRRHs', 20, array['foundation','beginner']),
@@ -20,7 +19,6 @@ insert into classes (title, instructor, youtube_url, duration_minutes, tags) val
   -- Yoga With Adriene · Mobility / Wednesday
   ('Yoga For Neck, Shoulders, Upper Back', 'Yoga With Adriene', 'https://www.youtube.com/watch?v=X3-gKPNyrTA', 11, array['mobility','back','spine']),
   ('Yoga for People Who Sit All Day', 'Yoga With Adriene', 'https://www.youtube.com/watch?v=a-sZbOfau6c', 9, array['mobility','hips']),
-  ('Yoga for Neck Hump - Upper Spine Posture', 'Yoga With Adriene', 'https://www.youtube.com/watch?v=n1E8aTKJmVg', 28, array['mobility','spine','back']),
   ('Hip Mobility - Open Your Hips', 'Yoga With Adriene', 'https://www.youtube.com/watch?v=GffXQl3zvUI', 14, array['mobility','hips']),
   ('20 Min Yoga For Hips - Feel Good Flow', 'Yoga With Adriene', 'https://www.youtube.com/watch?v=zwoVcrdmLOE', 24, array['hips','mobility']),
   ('Yoga For Hips & Lower Back Release', 'Yoga With Adriene', 'https://www.youtube.com/watch?v=Ho9em79_0qg', 23, array['hips','back','mobility']),
@@ -29,7 +27,6 @@ insert into classes (title, instructor, youtube_url, duration_minutes, tags) val
   ('Disciplined Core - 15 Min', 'Yoga With Adriene', 'https://www.youtube.com/watch?v=yqRqRURB9IE', 15, array['core']),
   ('Morning Mobility Yoga', 'Yoga With Adriene', 'https://www.youtube.com/watch?v=2IcWJobNDck', 22, array['mobility','morning']),
   -- Yoga With Adriene · Stretch / Restorative / Friday
-  ('Total Body Yoga - Deep Stretch', 'Yoga With Adriene', 'https://www.youtube.com/watch?v=GLy2rYHwUqY', 30, array['stretch','restorative','full-body']),
   ('Full Body Flow - 20 Min', 'Yoga With Adriene', 'https://www.youtube.com/watch?v=b1H3xO3x_Js', 19, array['full-body','flexibility']),
   ('Yoga Flow - 20 Min Vinyasa Sequence', 'Yoga With Adriene', 'https://www.youtube.com/watch?v=xmeNZI8inWI', 19, array['full-body','flexibility']),
   ('Fill Your Cup Yoga - 20 Min', 'Yoga With Adriene', 'https://www.youtube.com/watch?v=H4dVbaLqg84', 21, array['full-body','gentle']),
@@ -38,7 +35,6 @@ insert into classes (title, instructor, youtube_url, duration_minutes, tags) val
   ('Yoga for Heavy Hearts', 'Yoga With Adriene', 'https://www.youtube.com/watch?v=2akHh5GgzvM', 19, array['gentle','restorative']),
   ('Yoga For When You Are Overstimulated', 'Yoga With Adriene', 'https://www.youtube.com/watch?v=rPcBPTrPsgU', 17, array['restorative','gentle']),
   ('Bedtime Yoga - 20 Min Practice', 'Yoga With Adriene', 'https://www.youtube.com/watch?v=v7SN-d4qXx0', 19, array['restorative','gentle']),
-  ('Flow Into Stillness - 30 Min', 'Yoga With Adriene', 'https://www.youtube.com/watch?v=PeWuJY7J2Gs', 30, array['restorative','full-body']),
   ('Yoga For Flexibility - 16 Min', 'Yoga With Adriene', 'https://www.youtube.com/watch?v=Yzm3fA2HhkQ', 16, array['flexibility','stretch']),
   ('Yoga Stretch', 'Yoga With Adriene', 'https://www.youtube.com/watch?v=AF9d2Icl4fA', 21, array['stretch','flexibility','full-body']),
   ('Yoga For Hamstrings', 'Yoga With Adriene', 'https://www.youtube.com/watch?v=-Mirm7LKvKk', 23, array['stretch','flexibility']),
@@ -48,8 +44,6 @@ insert into classes (title, instructor, youtube_url, duration_minutes, tags) val
   ('Rise and Shine - 10 Min Morning Yoga Flow', 'Yoga With Kassandra', 'https://www.youtube.com/watch?v=CBdpJUKeIYc', 10, array['foundation','morning','beginner']),
   ('10 Min Morning Yoga Flow - Spine Mobility', 'Yoga With Kassandra', 'https://www.youtube.com/watch?v=dyTpgGgVcwg', 10, array['mobility','spine','morning']),
   ('20 Min Yoga for Flexibility & Relaxation', 'Yoga With Kassandra', 'https://www.youtube.com/watch?v=4Lq5Sf9FDpY', 20, array['stretch','flexibility','restorative']),
-  ('30 Min Gentle Yoga for Flexibility & Relaxation', 'Yoga With Kassandra', 'https://www.youtube.com/watch?v=S6PQeVpmSfY', 30, array['stretch','flexibility','restorative']),
-  ('Yin Yoga for Fatigue and Depletion - 30 Min Unwind', 'Yoga With Kassandra', 'https://www.youtube.com/watch?v=XpVe3GV7IVM', 30, array['restorative','stretch']),
   -- SarahBeth Yoga
   ('10 Min Full Body Morning Yoga Stretch', 'SarahBeth Yoga', 'https://www.youtube.com/watch?v=jVgTcVEQSNw', 10, array['morning','foundation','gentle']),
   ('10 Min Morning Yoga Stretch in Bed', 'SarahBeth Yoga', 'https://www.youtube.com/watch?v=neRDhPokIWg', 10, array['morning','gentle','beginner']),
@@ -70,8 +64,6 @@ insert into classes (title, instructor, youtube_url, duration_minutes, tags) val
   ('20 Min Yoga for Flexibility - Full Body Stretch', 'Travis Eliot', 'https://www.youtube.com/watch?v=fyVjVAiWno8', 20, array['stretch','flexibility','full-body']),
   -- Boho Beautiful
   ('20 Min Yoga Workout For Mobility', 'Boho Beautiful', 'https://www.youtube.com/watch?v=x53Ua6mJbg4', 20, array['mobility','full-body']),
-  ('30 Min Gentle Yoga - Flexibility & Stress Relief', 'Boho Beautiful', 'https://www.youtube.com/watch?v=H9M9vOmwR9w', 30, array['stretch','flexibility','restorative']),
   -- Five Parks Yoga
-  ('Fine Tune Your Balance - 30 Min Yoga Class', 'Five Parks Yoga', 'https://www.youtube.com/watch?v=QF05F54ltzk', 30, array['balance','mobility']),
   -- Charlie Follows
   ('20 Min Daily Yoga Flow - Everyday Full Body', 'Charlie Follows', 'https://www.youtube.com/watch?v=AkVJtluZLTo', 20, array['full-body','flexibility']);
