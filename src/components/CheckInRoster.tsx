@@ -116,37 +116,6 @@ export function CheckInRoster({
       {showVenmoModal ? (
         <VenmoModal onClose={() => setShowVenmoModal(false)} />
       ) : null}
-
-      {/* Other members — read-only */}
-      <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-        {members
-          .filter((m) => m.id !== meId)
-          .map((m) => {
-            const status = statuses[m.id];
-            return (
-              <li
-                key={m.id}
-                className={`flex items-center gap-3 rounded-2xl border px-3 py-3 ${
-                  status === "done"
-                    ? "border-emerald-400/30 bg-emerald-400/5"
-                    : status === "skipped"
-                    ? "border-rose-500/30 bg-rose-500/5"
-                    : "border-white/10 bg-zinc-950/60"
-                }`}
-              >
-                <Avatar name={m.name} size={36} ring={status === "done" ? "ok" : status === "skipped" ? "miss" : null} />
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-medium text-white">{m.name}</p>
-                  <p className={`text-[11px] ${
-                    status === "done" ? "text-emerald-300" : status === "skipped" ? "text-rose-300" : "text-zinc-500"
-                  }`}>
-                    {status === "done" ? "Done" : status === "skipped" ? "Missed" : "—"}
-                  </p>
-                </div>
-              </li>
-            );
-          })}
-      </ul>
     </section>
   );
 }
