@@ -13,16 +13,16 @@ export const DEMO_MEMBERS: Member[] = [
 ];
 
 export const DEMO_CLASSES: ClassItem[] = [
-  { id: "c-1", title: "Yoga For Complete Beginners", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=v7AYKMP6rOE", duration_minutes: 20, tags: ["beginner", "foundation"] },
-  { id: "c-2", title: "Day 1 - Ease Into It (30 Days of Yoga)", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=oBu-pQG6sTY", duration_minutes: 20, tags: ["beginner", "foundation"] },
-  { id: "c-3", title: "Full Body Flow", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=b1H3xO3x_Js", duration_minutes: 20, tags: ["beginner", "full-body"] },
-  { id: "c-4", title: "Yoga For Anxiety and Stress", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=hJbRpHZr_d0", duration_minutes: 25, tags: ["gentle", "stress"] },
-  { id: "c-5", title: "Total Body Yoga - Deep Stretch", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=GLy2rYHwUqY", duration_minutes: 30, tags: ["stretch", "restorative", "full-body"] },
-  { id: "c-6", title: "Yoga For Neck, Shoulders, Upper Back", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=X3-gKPNyrTA", duration_minutes: 10, tags: ["mobility", "back", "spine"] },
-  { id: "c-7", title: "Yoga At Your Desk", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=tAUf7aajBWE", duration_minutes: 15, tags: ["mobility", "gentle"] },
-  { id: "c-8", title: "Yoga For People Who Sit All Day", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=a-sZbOfau6c", duration_minutes: 25, tags: ["mobility", "hips", "back"] },
-  { id: "c-9", title: "Yoga For Heavy Hearts", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=2akHh5GgzvM", duration_minutes: 30, tags: ["gentle", "restorative"] },
-  { id: "c-10", title: "Mountain Flow - Hands Free Yoga", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=arydjHTU0iE", duration_minutes: 30, tags: ["balance", "full-body"] },
+  { id: "c-1", title: "Yoga For Complete Beginners", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=v7AYKMP6rOE", duration_minutes: 24, tags: ["foundation", "beginner"] },
+  { id: "c-2", title: "20 Min Yoga For Beginners - Start Here", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=vNyJuQuuMC8", duration_minutes: 22, tags: ["foundation", "beginner"] },
+  { id: "c-3", title: "Foundations of Flow", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=1p-ayBIRRHs", duration_minutes: 20, tags: ["foundation", "beginner"] },
+  { id: "c-4", title: "Morning Yoga Flow - 20 Min", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=LqXZ628YNj4", duration_minutes: 22, tags: ["morning", "beginner", "gentle"] },
+  { id: "c-5", title: "Yoga For Neck, Shoulders, Upper Back", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=X3-gKPNyrTA", duration_minutes: 11, tags: ["mobility", "back", "spine"] },
+  { id: "c-6", title: "20 Min Yoga For Hips - Feel Good Flow", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=zwoVcrdmLOE", duration_minutes: 24, tags: ["hips", "mobility"] },
+  { id: "c-7", title: "Brain + Body Balance - 22 Min", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=XN3JB67-a_k", duration_minutes: 23, tags: ["balance", "mobility"] },
+  { id: "c-8", title: "Yoga Stretch", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=AF9d2Icl4fA", duration_minutes: 21, tags: ["stretch", "flexibility", "full-body"] },
+  { id: "c-9", title: "Yoga For Heavy Hearts", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=2akHh5GgzvM", duration_minutes: 19, tags: ["gentle", "restorative"] },
+  { id: "c-10", title: "Yoga Flow - 20 Min Vinyasa", instructor: "Yoga With Adriene", youtube_url: "https://www.youtube.com/watch?v=xmeNZI8inWI", duration_minutes: 19, tags: ["full-body", "flexibility"] },
 ];
 
 // April 2026 + early May required dates: realistic-looking attendance.

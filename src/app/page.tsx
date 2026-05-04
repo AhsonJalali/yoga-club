@@ -1,10 +1,10 @@
 import { redirect } from "next/navigation";
 import Image from "next/image";
-import { Clock3, Heart, PlayCircle, ExternalLink, Trophy, Moon, CheckCircle2 } from "lucide-react";
+import { Clock3, Heart, PlayCircle, ExternalLink, Trophy, Moon, CheckCircle2, Sunrise, Waves, Leaf } from "lucide-react";
 import { currentMember } from "../lib/session";
 import { supabase, isSupabaseConfigured, Member, ClassItem, CheckIn } from "../lib/supabase";
 import { DEMO_MEMBERS, DEMO_CLASSES, DEMO_CHECK_INS } from "../lib/demo";
-import { dayKind, isoDate, dowName, PENALTY_USD, VENMO_HANDLE, venmoUrl, CLUB_START } from "../lib/schedule";
+import { dayKind, isoDate, dowName, PENALTY_USD, VENMO_HANDLE, venmoUrl, CLUB_START, nextRequiredDay, dayTheme } from "../lib/schedule";
 import { pickClassForDate } from "../lib/picker";
 import { youtubeEmbedUrl, youtubeThumb } from "../lib/youtube";
 import { Avatar } from "../components/Avatar";
@@ -241,14 +241,18 @@ export default async function HomePage() {
         </aside>
       </section>
 
-      {/* Honor-system check-in roster */}
-      <CheckInRoster
-        members={members}
-        meId={me.id}
-        sessionDate={todayIso}
-        initialStatusByMember={todayStatusByMember}
-        isRequiredDay={kind === "required"}
-      />
+      {/* Honor-system check-in roster (required days only) */}
+      {kind === "required" ? (
+        <CheckInRoster
+          members={members}
+          meId={me.id}
+          sessionDate={todayIso}
+          initialStatusByMember={todayStatusByMember}
+          isRequiredDay={true}
+        />
+      ) : (
+        <RestDayCard nextDate={nextRequiredDay(today)} />
+      )}
 
       {/* Monthly calendar */}
       <section className="fade-up-3 mt-12">
@@ -452,4 +456,35 @@ function monthGrid(anchor: Date): Date[] {
 function formatDate(iso: string): string {
   const d = new Date(iso + "T00:00:00");
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
+
+function RestDayCard({ nextDate }: { nextDate: Date }) {
+  const theme = dayTheme(nextDate);
+  const Icon = theme.emoji === "sunrise" ? Sunrise : theme.emoji === "wave" ? Waves : theme.emoji === "leaf" ? Leaf : Moon;
+  const dayName = nextDate.toLocaleDateString("en-US", { weekday: "long" });
+  const monthDay = nextDate.toLocaleDateString("en-US", { month: "long", day: "numeric" });
+  return (
+    <section className="fade-up-3 mt-12">
+      <div className="overflow-hidden rounded-3xl border border-violet-400/20 bg-gradient-to-br from-violet-500/10 via-zinc-950/60 to-zinc-950/60 p-8 backdrop-blur sm:p-10">
+        <div className="mx-auto max-w-xl text-center">
+          <div className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500/30 to-indigo-500/20 ring-1 ring-violet-400/30">
+            <Moon className="h-6 w-6 text-violet-200" />
+          </div>
+          <h3 className="mt-5 text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+            No yoga scheduled today
+          </h3>
+          <p className="mt-3 text-base text-zinc-400">
+            Rest is part of the work — no penalty, nothing to log. Hydrate, walk, sleep well.
+          </p>
+          <div className="mt-7 inline-flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-left">
+            <Icon className="h-5 w-5 shrink-0 text-amber-300" />
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wider text-amber-300/80">Next session</p>
+              <p className="text-sm font-semibold text-white">{dayName}, {monthDay} · {theme.label}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }

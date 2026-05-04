@@ -77,3 +77,15 @@ export function dayTheme(date: Date): DayTheme {
   if (dow === 5) return { label: "Stretch Day", sub: "ease into the weekend", emoji: "leaf" };
   return { label: "Recovery Day", sub: "rest is part of the work", emoji: "moon" };
 }
+
+// Returns the next required day strictly after `from` (skipping today).
+export function nextRequiredDay(from: Date): Date {
+  const d = new Date(from);
+  d.setHours(0, 0, 0, 0);
+  for (let i = 1; i <= 7; i++) {
+    const cand = new Date(d);
+    cand.setDate(d.getDate() + i);
+    if (REQUIRED_DOWS.includes(cand.getDay() as 1 | 3 | 5)) return cand;
+  }
+  return d;
+}
