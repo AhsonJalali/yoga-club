@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { X, Calendar, Heart, DollarSign, Users, Info } from "lucide-react";
 
 const SEEN_COOKIE = "seen_rules";
@@ -59,7 +60,13 @@ export function RulesButton({ autoOpen = false }: Props) {
 }
 
 function RulesModal({ onClose }: { onClose: () => void }) {
-  return (
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return null;
+
+  // Render via portal to escape any ancestor containing block (the header has
+  // backdrop-blur, which traps position:fixed children inside it).
+  return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm fade-up"
       onClick={onClose}
@@ -120,7 +127,8 @@ function RulesModal({ onClose }: { onClose: () => void }) {
           Got it
         </button>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
