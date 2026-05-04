@@ -241,8 +241,8 @@ export default async function HomePage() {
         </aside>
       </section>
 
-      {/* Honor-system check-in roster (required days only) */}
-      {kind === "required" ? (
+      {/* Honor-system check-in roster (required days only, post-kickoff) */}
+      {beforeKickoff ? null : kind === "required" ? (
         <CheckInRoster
           members={members}
           meId={me.id}

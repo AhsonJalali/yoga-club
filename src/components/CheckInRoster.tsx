@@ -2,10 +2,10 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { CheckCircle2, XCircle, ExternalLink, Sparkles, Sunrise, Waves, Leaf, Moon, X } from "lucide-react";
+import { CheckCircle2, XCircle, ExternalLink, Sparkles, X } from "lucide-react";
 import { Avatar } from "./Avatar";
 import { Member, CheckInStatus } from "../lib/supabase";
-import { PENALTY_USD, venmoUrl, dayTheme, DayTheme } from "../lib/schedule";
+import { PENALTY_USD, venmoUrl } from "../lib/schedule";
 
 type Props = {
   members: Member[];
@@ -70,7 +70,6 @@ export function CheckInRoster({ members, meId, sessionDate, initialStatusByMembe
   };
 
   const myStatus = statuses[meId];
-  const theme = dayTheme(parseLocalDate(sessionDate));
 
   return (
     <section className="fade-up-3 mt-12">
@@ -85,7 +84,6 @@ export function CheckInRoster({ members, meId, sessionDate, initialStatusByMembe
               : "No required session today. Bonus credit if you practiced anyway."}
           </p>
         </div>
-        <DayThemeTag theme={theme} />
       </div>
 
       {/* My big interactive card */}
@@ -265,27 +263,6 @@ function MyCard({
   );
 }
 
-function DayThemeTag({ theme }: { theme: DayTheme }) {
-  const Icon = theme.emoji === "sunrise" ? Sunrise : theme.emoji === "wave" ? Waves : theme.emoji === "leaf" ? Leaf : Moon;
-  const color =
-    theme.emoji === "sunrise"
-      ? "from-amber-400/30 to-orange-500/20 text-amber-200 border-amber-400/30"
-      : theme.emoji === "wave"
-      ? "from-sky-400/30 to-cyan-500/20 text-sky-200 border-sky-400/30"
-      : theme.emoji === "leaf"
-      ? "from-emerald-400/30 to-teal-500/20 text-emerald-200 border-emerald-400/30"
-      : "from-violet-400/20 to-indigo-500/20 text-violet-200 border-violet-400/30";
-  return (
-    <div className={`flex items-center gap-3 rounded-2xl border bg-gradient-to-br ${color} px-4 py-2.5`}>
-      <Icon className="h-5 w-5" />
-      <div className="text-right">
-        <p className="text-sm font-semibold leading-tight">{theme.label}</p>
-        <p className="text-[11px] leading-tight opacity-80">{theme.sub}</p>
-      </div>
-    </div>
-  );
-}
-
 function VenmoModal({ onClose }: { onClose: () => void }) {
   return (
     <div
@@ -338,7 +315,3 @@ function VenmoModal({ onClose }: { onClose: () => void }) {
   );
 }
 
-function parseLocalDate(iso: string): Date {
-  const [y, m, d] = iso.split("-").map((n) => parseInt(n, 10));
-  return new Date(y, m - 1, d);
-}
