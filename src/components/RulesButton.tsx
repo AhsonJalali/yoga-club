@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Calendar, Heart, DollarSign, Users } from "lucide-react";
+import { X, Calendar, Heart, DollarSign, Users, Info } from "lucide-react";
 
 const SEEN_COOKIE = "seen_rules";
 const ONE_YEAR = 365 * 24 * 60 * 60;
@@ -48,8 +48,9 @@ export function RulesButton({ autoOpen = false }: Props) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="text-xs text-zinc-400 hover:text-white transition"
+        className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/30 bg-amber-400/10 px-3 py-1.5 text-xs font-semibold text-amber-200 transition hover:bg-amber-400/20 hover:text-amber-100"
       >
+        <Info className="h-3.5 w-3.5" />
         Rules
       </button>
       {open ? <RulesModal onClose={handleClose} /> : null}
@@ -60,13 +61,14 @@ export function RulesButton({ autoOpen = false }: Props) {
 function RulesModal({ onClose }: { onClose: () => void }) {
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 backdrop-blur-sm fade-up sm:items-center sm:p-4"
+      className="fixed inset-0 z-50 overflow-y-auto bg-black/70 backdrop-blur-sm fade-up"
       onClick={onClose}
     >
-      <div
-        className="relative w-full max-w-lg overflow-hidden rounded-t-3xl border border-white/10 bg-zinc-950 p-6 shadow-2xl shadow-black/50 sm:rounded-3xl sm:p-7"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="flex min-h-full items-end justify-center sm:items-center sm:p-4">
+        <div
+          className="relative my-0 w-full max-w-lg rounded-t-3xl border border-white/10 bg-zinc-950 p-6 shadow-2xl shadow-black/50 sm:my-4 sm:rounded-3xl sm:p-7"
+          onClick={(e) => e.stopPropagation()}
+        >
         <button
           onClick={onClose}
           aria-label="Close"
@@ -118,6 +120,7 @@ function RulesModal({ onClose }: { onClose: () => void }) {
         >
           Got it
         </button>
+        </div>
       </div>
     </div>
   );
