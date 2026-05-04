@@ -82,7 +82,7 @@ export function CheckInRoster({
   const myStatus = statuses[meId];
 
   return (
-    <section className="fade-up-3 mt-12">
+    <section className="fade-up-3">
       <div className="flex items-end justify-between">
         <div>
           <h3 className="text-2xl font-semibold tracking-tight text-white">

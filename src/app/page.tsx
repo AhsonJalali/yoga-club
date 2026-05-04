@@ -144,56 +144,77 @@ export default async function HomePage() {
         </div>
       </div>
 
-      {/* Hero video + leaderboard */}
+      {/* Hero: left col = video + check-in stacked. Right col = leaderboard. */}
       <section className="fade-up-2 mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-zinc-900 to-zinc-950 shadow-2xl shadow-black/40">
-          {todaysClass ? (
-            <>
-              <div className="relative aspect-video w-full bg-black">
-                {embed ? (
-                  <iframe
-                    className="absolute inset-0 h-full w-full"
-                    src={embed}
-                    title={todaysClass.title}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                  />
-                ) : thumb ? (
-                  <Image src={thumb} alt={todaysClass.title} fill className="object-cover" />
-                ) : null}
-              </div>
-              <div className="p-6">
-                <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-wider text-zinc-400">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/5 px-2.5 py-1">
-                    <Clock3 className="h-3 w-3" /> {todaysClass.duration_minutes} min
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/5 px-2.5 py-1">
-                    <Heart className="h-3 w-3" /> {todaysClass.instructor}
-                  </span>
-                  {todaysClass.tags.slice(0, 3).map((t) => (
-                    <span key={t} className="rounded-full bg-white/5 px-2.5 py-1">{t}</span>
-                  ))}
+        <div className="flex flex-col gap-6 lg:col-span-2">
+          <div className="overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-zinc-900 to-zinc-950 shadow-2xl shadow-black/40">
+            {todaysClass ? (
+              <>
+                <div className="relative aspect-video w-full bg-black">
+                  {embed ? (
+                    <iframe
+                      className="absolute inset-0 h-full w-full"
+                      src={embed}
+                      title={todaysClass.title}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                    />
+                  ) : thumb ? (
+                    <Image src={thumb} alt={todaysClass.title} fill className="object-cover" />
+                  ) : null}
                 </div>
-                <h2 className="mt-3 text-2xl font-semibold tracking-tight text-white">{todaysClass.title}</h2>
-                <p className="mt-3 flex items-center gap-2 text-sm text-zinc-400">
-                  {kind === "required" ? (
-                    <>
-                      <CheckCircle2 className="h-4 w-4 text-amber-400" />
-                      Press play, then tap your face below to check in.
-                    </>
-                  ) : (
-                    <>
-                      <PlayCircle className="h-4 w-4" />
-                      Optional today — no penalty if you skip.
-                    </>
-                  )}
-                </p>
+                <div className="p-6">
+                  <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-wider text-zinc-400">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-white/5 px-2.5 py-1">
+                      <Clock3 className="h-3 w-3" /> {todaysClass.duration_minutes} min
+                    </span>
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-white/5 px-2.5 py-1">
+                      <Heart className="h-3 w-3" /> {todaysClass.instructor}
+                    </span>
+                    {todaysClass.tags.slice(0, 3).map((t) => (
+                      <span key={t} className="rounded-full bg-white/5 px-2.5 py-1">{t}</span>
+                    ))}
+                  </div>
+                  <h2 className="mt-3 text-2xl font-semibold tracking-tight text-white">{todaysClass.title}</h2>
+                  <p className="mt-3 flex items-center gap-2 text-sm text-zinc-400">
+                    {kind === "required" ? (
+                      <>
+                        <CheckCircle2 className="h-4 w-4 text-amber-400" />
+                        Press play, then tap your face below to check in.
+                      </>
+                    ) : (
+                      <>
+                        <PlayCircle className="h-4 w-4" />
+                        Optional today — no penalty if you skip.
+                      </>
+                    )}
+                  </p>
+                </div>
+              </>
+            ) : (
+              <div className="p-10 text-center text-zinc-400">
+                No classes seeded yet. Add some in Supabase.
               </div>
-            </>
+            )}
+          </div>
+
+          {/* Check-in (or rest-day card) immediately below the video */}
+          {kind === "required" ? (
+            <CheckInRoster
+              members={members}
+              meId={me.id}
+              sessionDate={todayIso}
+              initialStatusByMember={todayStatusByMember}
+              isRequiredDay={true}
+              disabled={beforeKickoff}
+              disabledMessage={
+                beforeKickoff
+                  ? `Buttons activate ${kickoffDate} when Yoga Club kicks off.`
+                  : undefined
+              }
+            />
           ) : (
-            <div className="p-10 text-center text-zinc-400">
-              No classes seeded yet. Add some in Supabase.
-            </div>
+            <RestDayCard nextDate={nextRequiredDay(today)} />
           )}
         </div>
 
@@ -242,25 +263,6 @@ export default async function HomePage() {
           </ul>
         </aside>
       </section>
-
-      {/* Check-in roster — disabled grey state pre-kickoff, hidden on rest days */}
-      {kind === "required" ? (
-        <CheckInRoster
-          members={members}
-          meId={me.id}
-          sessionDate={todayIso}
-          initialStatusByMember={todayStatusByMember}
-          isRequiredDay={true}
-          disabled={beforeKickoff}
-          disabledMessage={
-            beforeKickoff
-              ? `Buttons activate ${kickoffDate} when Yoga Club kicks off.`
-              : undefined
-          }
-        />
-      ) : (
-        <RestDayCard nextDate={nextRequiredDay(today)} />
-      )}
 
       {/* Monthly calendar */}
       <section className="fade-up-3 mt-12">
@@ -476,7 +478,7 @@ function RestDayCard({ nextDate }: { nextDate: Date }) {
   const dayName = nextDate.toLocaleDateString("en-US", { weekday: "long" });
   const monthDay = nextDate.toLocaleDateString("en-US", { month: "long", day: "numeric" });
   return (
-    <section className="fade-up-3 mt-12">
+    <section className="fade-up-3">
       <div className="overflow-hidden rounded-3xl border border-violet-400/20 bg-gradient-to-br from-violet-500/10 via-zinc-950/60 to-zinc-950/60 p-8 backdrop-blur sm:p-10">
         <div className="mx-auto max-w-xl text-center">
           <div className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500/30 to-indigo-500/20 ring-1 ring-violet-400/30">
