@@ -4,7 +4,7 @@ import { Clock3, Heart, PlayCircle, ExternalLink, Trophy, Moon, CheckCircle2, Su
 import { currentMember } from "../lib/session";
 import { supabase, isSupabaseConfigured, Member, ClassItem, CheckIn } from "../lib/supabase";
 import { DEMO_MEMBERS, DEMO_CLASSES, DEMO_CHECK_INS } from "../lib/demo";
-import { dayKind, isoDate, PENALTY_USD, VENMO_HANDLE, venmoUrl, CLUB_START, nextRequiredDay, dayTheme } from "../lib/schedule";
+import { dayKind, isoDate, PENALTY_USD, VENMO_HANDLE, venmoUrl, CLUB_START, nextRequiredDay, dayTheme, todayEastern } from "../lib/schedule";
 import { pickClassForDate } from "../lib/picker";
 import { youtubeEmbedUrl, youtubeThumb } from "../lib/youtube";
 import { Avatar } from "../components/Avatar";
@@ -16,7 +16,7 @@ export default async function HomePage() {
   const me = await currentMember();
   if (!me) redirect("/login");
 
-  const today = new Date();
+  const today = todayEastern();
   const todayIso = isoDate(today);
   const kind = dayKind(today);
 

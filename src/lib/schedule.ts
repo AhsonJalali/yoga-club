@@ -8,6 +8,31 @@ export const VENMO_HANDLE = "AceJalali";
 // count toward the leaderboard or the pot, even if a member exists then.
 export const CLUB_START = "2026-05-06";
 
+// All "today" / day-boundary logic runs in Eastern time. Vercel servers run
+// UTC, so without this the day would flip at 8 PM ET (= midnight UTC), which
+// would mean a check-in done at 9 PM ET counts as the next day. Wrong.
+export const APP_TZ = "America/New_York";
+
+const ET_DATE_PARTS = new Intl.DateTimeFormat("en-CA", {
+  timeZone: APP_TZ,
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
+
+// Today's date in Eastern time, formatted YYYY-MM-DD.
+export function todayEasternIso(): string {
+  return ET_DATE_PARTS.format(new Date());
+}
+
+// Today's date in Eastern time, returned as a Date whose local accessors
+// (getDay/getDate/etc) yield Eastern values. Use this anywhere you'd reach
+// for `new Date()` to mean "now/today in club time".
+export function todayEastern(): Date {
+  const [y, m, d] = todayEasternIso().split("-").map(Number);
+  return new Date(y, m - 1, d);
+}
+
 export type DayKind = "required" | "rest";
 
 export function dayKind(date: Date): DayKind {
