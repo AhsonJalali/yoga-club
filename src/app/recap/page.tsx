@@ -1,11 +1,10 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Clock3, Flame, Sparkles, Trophy, Users } from "lucide-react";
+import { ArrowLeft, Clock3, Flame, Sparkles, Users } from "lucide-react";
 import { currentMember } from "../../lib/session";
 import { supabase, isSupabaseConfigured, Member, ClassItem, CheckIn } from "../../lib/supabase";
 import { DEMO_MEMBERS, DEMO_CLASSES, DEMO_CHECK_INS } from "../../lib/demo";
 import { PENALTY_USD, VENMO_HANDLE } from "../../lib/schedule";
-import { Avatar } from "../../components/Avatar";
 import { CountUp, ConfettiBurst } from "../../components/RecapAnimations";
 import { ShareRecapButton } from "../../components/ShareRecapButton";
 import {
@@ -205,56 +204,6 @@ export default async function RecapPage() {
             </p>
           </div>
         </div>
-
-        {/* Honor roll */}
-        {group.honorRoll.length > 0 ? (
-          <div className="mt-4 rounded-3xl border border-white/10 bg-zinc-950/60 p-6 backdrop-blur">
-            <div className="flex items-center gap-2">
-              <Trophy className="h-4 w-4 text-amber-400" />
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-white">
-                Most consistent
-              </h3>
-            </div>
-            <ul className="mt-4 space-y-2">
-              {group.honorRoll.map((row, i) => {
-                const isMe = row.member.id === me.id;
-                return (
-                  <li
-                    key={row.member.id}
-                    className={`flex items-center gap-3 rounded-2xl border px-3 py-2.5 ${
-                      isMe ? "border-amber-400/30 bg-amber-400/5" : "border-white/5 bg-white/[0.02]"
-                    }`}
-                  >
-                    <span
-                      className={`w-5 text-center text-xs font-bold ${
-                        i === 0 ? "text-amber-300" : i === 1 ? "text-zinc-300" : i === 2 ? "text-amber-700" : "text-zinc-600"
-                      }`}
-                    >
-                      {i + 1}
-                    </span>
-                    <Avatar name={row.member.name} size={32} />
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium text-white">
-                        {row.member.name}
-                        {isMe ? " · you" : ""}
-                      </p>
-                      {row.spotless ? (
-                        <p className="text-[11px] text-emerald-400">spotless — never missed</p>
-                      ) : null}
-                    </div>
-                    <div className="text-right tabular-nums">
-                      <p className="text-base font-bold text-white">
-                        {row.completed}
-                        <span className="text-zinc-600">/{row.eligible}</span>
-                      </p>
-                      <p className="text-[10px] uppercase tracking-wider text-zinc-600">done</p>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        ) : null}
       </section>
 
       {/* ---- Footer ---- */}
