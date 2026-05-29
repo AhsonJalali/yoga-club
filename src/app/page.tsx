@@ -6,15 +6,26 @@ import { supabase, isSupabaseConfigured, Member, ClassItem, CheckIn } from "../l
 import { DEMO_MEMBERS, DEMO_CLASSES, DEMO_CHECK_INS } from "../lib/demo";
 import { dayKind, isoDate, PENALTY_USD, VENMO_HANDLE, venmoUrl, CLUB_START, nextRequiredDay, dayTheme, todayEastern } from "../lib/schedule";
 import { pickClassForDate } from "../lib/picker";
+import { isRecapRevealed } from "../lib/recap";
 import { youtubeEmbedUrl, youtubeThumb } from "../lib/youtube";
 import { Avatar } from "../components/Avatar";
 import { CheckInRoster } from "../components/CheckInRoster";
 
 export const dynamic = "force-dynamic";
 
-export default async function HomePage() {
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ view?: string }>;
+}) {
   const me = await currentMember();
   if (!me) redirect("/login");
+
+  // Once the May recap unlocks, the recap *is* the landing experience — it's the
+  // first thing members see on Saturday. "?view=club" is the escape hatch the
+  // recap's "Back to Yoga Club" link uses to reach the normal app.
+  const { view } = await searchParams;
+  if (isRecapRevealed() && view !== "club") redirect("/recap");
 
   const today = todayEastern();
   const todayIso = isoDate(today);
