@@ -48,6 +48,11 @@ export default async function RecapPage() {
 
   const fav = mine?.favorite ? bucketMeta(mine.favorite) : null;
   const clubFav = group.favorite ? bucketMeta(group.favorite) : null;
+  const clubFavCount = group.favorite
+    ? group.buckets.find((b) => b.key === group.favorite)?.count ?? 0
+    : 0;
+  const clubFavPct =
+    group.totalSessions > 0 ? Math.round((clubFavCount / group.totalSessions) * 100) : 0;
 
   return (
     <main className="relative mx-auto max-w-5xl px-6 pb-24 pt-10">
@@ -200,7 +205,7 @@ export default async function RecapPage() {
               {clubFav ? `${clubFav.emoji} ${clubFav.label}` : "—"}
             </div>
             <p className="mt-1 text-xs text-zinc-400">
-              {group.participants} of {group.memberCount} members practiced
+              {clubFavCount} {clubFavCount === 1 ? "session" : "sessions"} · {clubFavPct}% of all
             </p>
           </div>
         </div>
