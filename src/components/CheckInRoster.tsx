@@ -2,8 +2,9 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { CheckCircle2, XCircle, ExternalLink, X } from "lucide-react";
+import { CheckCircle2, XCircle, ExternalLink, X, Camera } from "lucide-react";
 import { Avatar } from "./Avatar";
+import { RatingPhotoModal } from "./RatingPhotoModal";
 import { Member, CheckInStatus } from "../lib/supabase";
 import { PENALTY_USD, venmoUrl } from "../lib/schedule";
 
@@ -29,6 +30,7 @@ export function CheckInRoster({
   const router = useRouter();
   const [, startTransition] = useTransition();
   const [showVenmoModal, setShowVenmoModal] = useState(false);
+  const [showMomentModal, setShowMomentModal] = useState(false);
   const [statuses, setStatuses] = useState<Record<string, CheckInStatus | undefined>>(initialStatusByMember);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
@@ -42,6 +44,10 @@ export function CheckInRoster({
 
     if (status === "skipped" && isRequiredDay) {
       setShowVenmoModal(true);
+    }
+    // After a Yes, invite a rating + optional photo.
+    if (status === "done") {
+      setShowMomentModal(true);
     }
 
     startTransition(async () => {
@@ -96,6 +102,7 @@ export function CheckInRoster({
         name={members.find((m) => m.id === meId)?.name ?? "You"}
         status={myStatus}
         onMark={onMark}
+        onMoment={() => setShowMomentModal(true)}
         isRequiredDay={isRequiredDay}
         showVenmoOnSkip={isRequiredDay}
         disabled={disabled}
@@ -109,6 +116,7 @@ export function CheckInRoster({
       ) : null}
 
       {showVenmoModal ? <VenmoModal onClose={() => setShowVenmoModal(false)} /> : null}
+      {showMomentModal ? <RatingPhotoModal sessionDate={sessionDate} onClose={() => setShowMomentModal(false)} /> : null}
     </section>
   );
 }
@@ -117,6 +125,7 @@ function MyCard({
   name,
   status,
   onMark,
+  onMoment,
   isRequiredDay,
   showVenmoOnSkip,
   disabled = false,
@@ -125,6 +134,7 @@ function MyCard({
   name: string;
   status: CheckInStatus | undefined;
   onMark: (status: "done" | "skipped" | "clear") => void;
+  onMoment: () => void;
   isRequiredDay: boolean;
   showVenmoOnSkip: boolean;
   disabled?: boolean;
@@ -165,7 +175,12 @@ function MyCard({
             <h4 className="font-display mt-1 text-2xl font-medium text-ink">Yes, {firstName} — solid work today.</h4>
             <p className="mt-1 text-sm text-muted">Counts toward your streak. See you next session.</p>
           </div>
-          <button type="button" onClick={() => onMark("clear")} className="rounded-lg border border-line bg-raised px-3 py-2 text-xs text-muted transition hover:text-ink">Undo</button>
+          <div className="flex items-center gap-2">
+            <button type="button" onClick={onMoment} className="inline-flex items-center gap-1.5 rounded-lg border border-line bg-raised px-3 py-2 text-xs text-muted transition hover:text-ink">
+              <Camera className="h-3.5 w-3.5" /> Rate / photo
+            </button>
+            <button type="button" onClick={() => onMark("clear")} className="rounded-lg border border-line bg-raised px-3 py-2 text-xs text-muted transition hover:text-ink">Undo</button>
+          </div>
         </div>
       </div>
     );

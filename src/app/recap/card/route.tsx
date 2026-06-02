@@ -52,7 +52,7 @@ export async function GET() {
   }
 
   const challenge = revealedRecapChallenge(challenges);
-  const ZERO_GROUP: GroupRecap = { potTotal: 0, missedTotal: 0, totalSessions: 0, totalMinutes: 0, totalHours: 0, favorite: null, buckets: [], memberCount: 0, participants: 0, honorRoll: [] };
+  const ZERO_GROUP: GroupRecap = { potTotal: 0, missedTotal: 0, totalSessions: 0, totalMinutes: 0, totalHours: 0, favorite: null, buckets: [], memberCount: 0, participants: 0, honorRoll: [], avgRating: null, photos: [] };
   const { byMember, group } = challenge
     ? computeRecap(members, classes, checkIns, challenge, participants)
     : { byMember: new Map<string, MemberRecap>(), group: ZERO_GROUP };

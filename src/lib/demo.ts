@@ -43,7 +43,7 @@ export const DEMO_PARTICIPANTS: ChallengeParticipant[] = [
 
 function ci(member_id: string, session_date: string, opts: { hour?: number; challenge_id?: string | null } = {}): CheckIn {
   const created_at = opts.hour != null ? `${session_date}T${String(opts.hour).padStart(2, "0")}:00:00-04:00` : "";
-  return { id: `${member_id}-${session_date}`, member_id, class_id: null, session_date, status: "done", note: null, created_at, challenge_id: opts.challenge_id ?? null };
+  return { id: `${member_id}-${session_date}`, member_id, class_id: null, session_date, status: "done", note: null, created_at, challenge_id: opts.challenge_id ?? null, rating: null, photo_url: null };
 }
 
 // Pre-club April practice (untagged — belongs to no challenge).
@@ -73,6 +73,25 @@ export const DEMO_CHECK_INS: CheckIn[] = [
   ...Object.entries(MAY).flatMap(([mid, entries]) => entries.map(([d, h]) => ci(mid, d, { hour: h, challenge_id: "ch-may" }))),
   ...Object.entries(JUNE).flatMap(([mid, entries]) => entries.map(([d, h]) => ci(mid, d, { hour: h, challenge_id: "ch-june" }))),
 ];
+
+// Sprinkle ratings + a few shared photos onto May check-ins so the recap's
+// "How it felt" + "moments" render in demo mode. (picsum = deterministic stand-ins.)
+const RATINGS: Record<string, Record<string, number>> = {
+  "m-amir": { "2026-05-06": 5, "2026-05-08": 4, "2026-05-11": 5, "2026-05-13": 3, "2026-05-15": 4, "2026-05-18": 5, "2026-05-20": 4, "2026-05-27": 5 },
+  "m-priya": { "2026-05-06": 5, "2026-05-13": 5, "2026-05-20": 4, "2026-05-27": 5 },
+  "m-sara": { "2026-05-06": 4, "2026-05-15": 5 },
+};
+const PHOTOS: Record<string, Record<string, string>> = {
+  "m-amir": { "2026-05-06": "https://picsum.photos/seed/amir-mat/600", "2026-05-15": "https://picsum.photos/seed/amir-pose/600", "2026-05-27": "https://picsum.photos/seed/amir-flow/600" },
+  "m-priya": { "2026-05-13": "https://picsum.photos/seed/priya-mat/600" },
+  "m-sara": { "2026-05-15": "https://picsum.photos/seed/sara-mat/600" },
+  "m-maya": { "2026-05-20": "https://picsum.photos/seed/maya-mat/600" },
+};
+for (const c of DEMO_CHECK_INS) {
+  if (c.challenge_id !== "ch-may") continue;
+  c.rating = RATINGS[c.member_id]?.[c.session_date] ?? null;
+  c.photo_url = PHOTOS[c.member_id]?.[c.session_date] ?? null;
+}
 
 // "Logged-in" demo user.
 export const DEMO_ME: Member = DEMO_MEMBERS[0];

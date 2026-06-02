@@ -86,6 +86,9 @@ export type MemberRecap = {
   missed: number;            // required days missed
   owed: number;              // missed * PENALTY_USD
   bestStreak: number;        // longest run of consecutive required days done
+  avgRating: number | null;  // average of the ratings they gave, 1 decimal
+  ratedCount: number;        // how many sessions they rated
+  photos: string[];          // shared session photo URLs
 };
 
 export type GroupRecap = {
@@ -101,6 +104,8 @@ export type GroupRecap = {
   // Honor roll: members with the most completed required sessions (ties broken
   // by completion %), top few. Spotless = missed 0 of a non-zero eligible set.
   honorRoll: { member: Member; completed: number; eligible: number; spotless: boolean }[];
+  avgRating: number | null;   // club-wide average rating
+  photos: { url: string; memberName: string }[]; // shared moments across the club
 };
 
 export type Recap = {
@@ -166,6 +171,8 @@ export function computeRecap(
   const groupBucketCounts: Record<BucketKey, number> = {
     earlyMorning: 0, morning: 0, afternoon: 0, evening: 0, lateNight: 0,
   };
+  const groupPhotos: { url: string; memberName: string }[] = [];
+  const allRatings: number[] = [];
 
   for (const m of scopedMembers) {
     const done = doneByMember.get(m.id) ?? [];
@@ -200,6 +207,13 @@ export function computeRecap(
     const eligible = eligibleDates.length;
     const missed = eligible - completed;
 
+    // Ratings + shared photos.
+    const ratings = done.map((c) => c.rating).filter((r): r is number => typeof r === "number");
+    for (const r of ratings) allRatings.push(r);
+    const avgRating = ratings.length ? Math.round((ratings.reduce((a, b) => a + b, 0) / ratings.length) * 10) / 10 : null;
+    const photos = done.filter((c) => c.photo_url).map((c) => c.photo_url as string);
+    for (const url of photos) groupPhotos.push({ url, memberName: m.name });
+
     byMember.set(m.id, {
       member: m,
       sessions: done.length,
@@ -214,6 +228,9 @@ export function computeRecap(
       missed,
       owed: missed * PENALTY_USD,
       bestStreak: longestStreak(eligibleDates, doneDates),
+      avgRating,
+      ratedCount: ratings.length,
+      photos,
     });
   }
 
@@ -243,6 +260,8 @@ export function computeRecap(
     memberCount: scopedMembers.length,
     participants: recaps.filter((r) => r.sessions > 0).length,
     honorRoll,
+    avgRating: allRatings.length ? Math.round((allRatings.reduce((a, b) => a + b, 0) / allRatings.length) * 10) / 10 : null,
+    photos: groupPhotos,
   };
 
   return { byMember, group };

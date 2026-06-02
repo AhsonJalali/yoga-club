@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Clock3, Flame, CalendarDays, Sparkles, DollarSign, Trophy } from "lucide-react";
+import { ArrowLeft, Clock3, Flame, CalendarDays, Sparkles, DollarSign, Trophy, Star } from "lucide-react";
 import { currentMember } from "../../lib/session";
 import { supabase, isSupabaseConfigured, Member, ClassItem, CheckIn, Challenge, ChallengeParticipant } from "../../lib/supabase";
 import { DEMO_MEMBERS, DEMO_CLASSES, DEMO_CHECK_INS, DEMO_CHALLENGES, DEMO_PARTICIPANTS } from "../../lib/demo";
@@ -68,6 +68,10 @@ export default async function ProfilePage() {
   const avgCompletion = ratedChallenges.length
     ? Math.round(ratedChallenges.reduce((s, x) => s + x.recap.completionPct, 0) / ratedChallenges.length)
     : 0;
+  let ratingSum = 0;
+  let ratingN = 0;
+  for (const x of mine) if (x.recap.avgRating != null) { ratingSum += x.recap.avgRating * x.recap.ratedCount; ratingN += x.recap.ratedCount; }
+  const lifetimeRating = ratingN ? Math.round((ratingSum / ratingN) * 10) / 10 : null;
 
   // Lifetime favorite time of day across all challenges.
   const totals: Record<BucketKey, number> = { earlyMorning: 0, morning: 0, afternoon: 0, evening: 0, lateNight: 0 };
@@ -116,7 +120,7 @@ export default async function ProfilePage() {
           </section>
 
           {/* lifetime patterns + money */}
-          <section className="fade-up-2 mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <section className="fade-up-2 mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <Panel label="Favorite time">
               <div className="font-display text-2xl font-medium text-ink">{fav ? `${fav.emoji} ${fav.label}` : "—"}</div>
               <p className="mt-1 text-xs text-faint">{fav ? `your go-to window, ${fav.range}` : "no times logged yet"}</p>
@@ -124,6 +128,23 @@ export default async function ProfilePage() {
             <Panel label="Go-to day">
               <div className="font-display text-2xl font-medium text-ink">{topDowIdx >= 0 ? DOW_NAMES[topDowIdx] : "—"}</div>
               <p className="mt-1 text-xs text-faint">{topDowIdx >= 0 ? `${dow[topDowIdx]} sessions on this day` : "—"}</p>
+            </Panel>
+            <Panel label="How it felt">
+              {lifetimeRating != null ? (
+                <>
+                  <div className="flex items-center gap-0.5">
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <Star key={n} className={`h-4 w-4 ${Math.round(lifetimeRating) >= n ? "fill-coral text-coral" : "fill-transparent text-line-strong"}`} />
+                    ))}
+                  </div>
+                  <p className="mt-1 text-xs text-faint">{lifetimeRating} avg · {ratingN} rated</p>
+                </>
+              ) : (
+                <>
+                  <div className="font-display text-2xl font-medium text-ink">—</div>
+                  <p className="mt-1 text-xs text-faint">no ratings yet</p>
+                </>
+              )}
             </Panel>
             <Panel label="Into the pot, all-time">
               <div className={`font-display text-2xl font-medium ${owedTotal > 0 ? "text-ink" : "text-sage"}`}>${owedTotal}</div>

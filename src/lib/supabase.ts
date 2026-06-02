@@ -49,6 +49,8 @@ export type CheckIn = {
   note: string | null;
   created_at: string;
   challenge_id: string | null;
+  rating: number | null;      // 1-5, optional, set after a "done" check-in
+  photo_url: string | null;   // optional shared session photo (Supabase Storage)
 };
 
 export type Challenge = {

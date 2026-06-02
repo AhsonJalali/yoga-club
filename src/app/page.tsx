@@ -13,6 +13,7 @@ import { youtubeEmbedUrl, youtubeThumb } from "../lib/youtube";
 import { Avatar } from "../components/Avatar";
 import { CheckInRoster } from "../components/CheckInRoster";
 import { JoinChallengeCard } from "../components/JoinChallengeCard";
+import { MomentBadge, ShareMomentButton } from "../components/Moment";
 
 export const dynamic = "force-dynamic";
 
@@ -253,13 +254,19 @@ export default async function HomePage({
               {leaderboard.map((row, i) => {
                 const isMe = row.member.id === me.id;
                 const pct = row.eligible ? Math.round((row.completed / row.eligible) * 100) : 0;
+                const todayCi = checkInsByMemberDate.get(`${row.member.id}|${todayIso}`);
+                const photo = todayCi?.status === "done" ? todayCi.photo_url : null;
+                const canShare = isMe && todayCi?.status === "done" && !todayCi.photo_url;
                 return (
                   <li key={row.member.id} className={`flex items-center gap-3 py-2.5 ${isMe ? "-mx-2 rounded-lg bg-coral/[0.06] px-2" : ""}`}>
                     <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold tabular-nums ${i === 0 ? "bg-coral text-ground" : i === 1 ? "border border-sage/50 text-sage" : i === 2 ? "border border-clay/50 text-clay" : "border border-line-strong text-faint"}`}>{i + 1}</span>
                     <Avatar name={row.member.name} size={30} />
                     <div className="min-w-0 flex-1">
-                      <div className="flex items-baseline justify-between gap-2">
-                        <p className="truncate text-sm font-medium text-ink">{row.member.name}{isMe ? " · you" : ""}</p>
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex min-w-0 items-center gap-1.5">
+                          <p className="truncate text-sm font-medium text-ink">{row.member.name}{isMe ? " · you" : ""}</p>
+                          {photo ? <MomentBadge photoUrl={photo} memberName={row.member.name} /> : canShare ? <ShareMomentButton sessionDate={todayIso} /> : null}
+                        </div>
                         <p className="shrink-0 text-sm font-semibold tabular-nums text-ink">{row.completed}<span className="text-faint">/{row.eligible}</span></p>
                       </div>
                       <div className="mt-1.5 flex items-center gap-2">

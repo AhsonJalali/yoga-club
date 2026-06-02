@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Clock3, Flame, Sparkles, Users } from "lucide-react";
+import Image from "next/image";
+import { ArrowLeft, Clock3, Flame, Sparkles, Users, Star } from "lucide-react";
 import { currentMember } from "../../lib/session";
 import { supabase, isSupabaseConfigured, Member, ClassItem, CheckIn, Challenge, ChallengeParticipant } from "../../lib/supabase";
 import { DEMO_MEMBERS, DEMO_CLASSES, DEMO_CHECK_INS, DEMO_CHALLENGES, DEMO_PARTICIPANTS } from "../../lib/demo";
@@ -97,7 +98,7 @@ export default async function RecapPage() {
       </section>
 
       {/* ---- Personal stat grid ---- */}
-      <section className="fade-up-2 mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <section className="fade-up-2 mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
         <StatCard
           icon={<Clock3 className="h-4 w-4" />}
           label="Time on the mat"
@@ -145,6 +146,24 @@ export default async function RecapPage() {
             {mine && mine.bestStreak > 1 ? ` · ${mine.bestStreak} in a row` : ""}
           </p>
         </StatCard>
+
+        <StatCard icon={<Star className="h-4 w-4" />} label="How it felt" accent="clay">
+          {mine && mine.ratedCount > 0 ? (
+            <>
+              <div className="flex items-center gap-0.5">
+                {[1, 2, 3, 4, 5].map((n) => (
+                  <Star key={n} className={`h-5 w-5 ${Math.round(mine.avgRating ?? 0) >= n ? "fill-coral text-coral" : "fill-transparent text-line-strong"}`} />
+                ))}
+              </div>
+              <p className="mt-1 text-sm text-muted">{mine.avgRating} avg · {mine.ratedCount} rated</p>
+            </>
+          ) : (
+            <>
+              <div className="font-display text-2xl font-medium text-ink">—</div>
+              <p className="mt-1 text-sm text-muted">no ratings logged</p>
+            </>
+          )}
+        </StatCard>
       </section>
 
       {/* ---- Time-of-day bar chart ---- */}
@@ -160,6 +179,21 @@ export default async function RecapPage() {
         </p>
         <BarChart buckets={mine?.buckets ?? []} highlight={mine?.favorite ?? null} />
       </section>
+
+      {/* ---- Your moments ---- */}
+      {mine && mine.photos.length > 0 ? (
+        <section className="fade-up-2 mt-6 rounded-2xl border border-line bg-surface p-6 sm:p-8">
+          <h2 className="font-display text-lg font-medium text-ink">Your moments</h2>
+          <p className="mt-1 text-sm text-faint">Snapshots you shared this challenge.</p>
+          <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-5">
+            {mine.photos.map((url, i) => (
+              <div key={i} className="relative aspect-square overflow-hidden rounded-lg border border-line bg-black">
+                <Image src={url} alt="Your moment" fill sizes="200px" className="object-cover" unoptimized />
+              </div>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       {/* ---- Group section ---- */}
       <section className="fade-up-3 mt-10">
@@ -207,6 +241,19 @@ export default async function RecapPage() {
             </p>
           </div>
         </div>
+
+        {group.photos.length > 0 ? (
+          <div className="mt-4 rounded-2xl border border-line bg-surface p-6">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-faint">Moments from the club</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {group.photos.slice(0, 14).map((p, i) => (
+                <div key={i} className="relative h-16 w-16 overflow-hidden rounded-md border border-line bg-black" title={p.memberName}>
+                  <Image src={p.url} alt={`${p.memberName}'s moment`} fill sizes="64px" className="object-cover" unoptimized />
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : null}
       </section>
 
       {/* ---- Footer ---- */}
