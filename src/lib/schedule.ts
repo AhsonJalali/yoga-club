@@ -39,6 +39,12 @@ export function dayKind(date: Date): DayKind {
   return REQUIRED_DOWS.includes(date.getDay() as 1 | 3 | 5) ? "required" : "rest";
 }
 
+// Challenge-aware variant: is this date a required day for the given day-of-week
+// set (0=Sun..6=Sat)? Used once challenges drive the rules instead of constants.
+export function isRequiredDay(date: Date, requiredDows: number[]): boolean {
+  return requiredDows.includes(date.getDay());
+}
+
 export function dayLabel(date: Date): string {
   const dow = date.getDay();
   if (dow === 1) return "Monday — beginner foundation or gentle flow (~20 min)";

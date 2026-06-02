@@ -1,9 +1,9 @@
 import { ImageResponse } from "next/og";
 import { currentMember } from "../../../lib/session";
-import { supabase, isSupabaseConfigured, Member, ClassItem, CheckIn } from "../../../lib/supabase";
-import { DEMO_MEMBERS, DEMO_CLASSES, DEMO_CHECK_INS } from "../../../lib/demo";
-import { PENALTY_USD } from "../../../lib/schedule";
-import { BUCKETS, BucketKey, bucketMeta, computeRecap, MONTH_LABEL } from "../../../lib/recap";
+import { supabase, isSupabaseConfigured, Member, ClassItem, CheckIn, Challenge, ChallengeParticipant } from "../../../lib/supabase";
+import { DEMO_MEMBERS, DEMO_CLASSES, DEMO_CHECK_INS, DEMO_CHALLENGES, DEMO_PARTICIPANTS } from "../../../lib/demo";
+import { revealedRecapChallenge } from "../../../lib/challenges";
+import { BUCKETS, BucketKey, bucketMeta, computeRecap, MemberRecap, GroupRecap } from "../../../lib/recap";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -27,25 +27,39 @@ export async function GET() {
   let members: Member[];
   let classes: ClassItem[];
   let checkIns: CheckIn[];
+  let challenges: Challenge[];
+  let participants: ChallengeParticipant[];
   if (isSupabaseConfigured()) {
     const sb = supabase();
-    const [a, b, c] = await Promise.all([
+    const [a, b, c, d, e] = await Promise.all([
       sb.from("members").select("*").order("name"),
       sb.from("classes").select("*"),
       sb.from("check_ins").select("*"),
+      sb.from("challenges").select("*"),
+      sb.from("challenge_participants").select("*"),
     ]);
     members = (a.data ?? []) as Member[];
     classes = (b.data ?? []) as ClassItem[];
     checkIns = (c.data ?? []) as CheckIn[];
+    challenges = (d.data ?? []) as Challenge[];
+    participants = (e.data ?? []) as ChallengeParticipant[];
   } else {
     members = DEMO_MEMBERS;
     classes = DEMO_CLASSES;
     checkIns = DEMO_CHECK_INS;
+    challenges = DEMO_CHALLENGES;
+    participants = DEMO_PARTICIPANTS;
   }
 
-  const { byMember, group } = computeRecap(members, classes, checkIns);
-  const mine = me ? byMember.get(me.id) : undefined;
+  const challenge = revealedRecapChallenge(challenges);
+  const ZERO_GROUP: GroupRecap = { potTotal: 0, missedTotal: 0, totalSessions: 0, totalMinutes: 0, totalHours: 0, favorite: null, buckets: [], memberCount: 0, participants: 0, honorRoll: [] };
+  const { byMember, group } = challenge
+    ? computeRecap(members, classes, checkIns, challenge, participants)
+    : { byMember: new Map<string, MemberRecap>(), group: ZERO_GROUP };
+  const mine = me && challenge ? byMember.get(me.id) : undefined;
   const name = me?.name ?? "Yogi";
+  const challengeName = challenge?.name ?? "Yoga Club";
+  const penalty = challenge?.penalty_usd ?? 25;
 
   const sessions = mine?.sessions ?? 0;
   const minutes = mine?.minutes ?? 0;
@@ -98,7 +112,7 @@ export async function GET() {
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <div style={{ width: 34, height: 34, borderRadius: 10, background: "linear-gradient(135deg,#fbbf24,#fb7185,#7c3aed)", display: "flex" }} />
           <div style={{ display: "flex", fontSize: 26, fontWeight: 700, letterSpacing: 4, textTransform: "uppercase", color: "#fbbf24" }}>
-            {MONTH_LABEL} 2026 · Yoga Club
+            {challengeName} · Yoga Club
           </div>
         </div>
 
@@ -190,7 +204,7 @@ export async function GET() {
           <div style={{ ...tileStyle, alignItems: "center", textAlign: "center" }}>
             <div style={tileLabel}>The pot</div>
             <div style={{ display: "flex", fontSize: 60, fontWeight: 800, marginTop: 8 }}>${group.potTotal}</div>
-            <div style={{ display: "flex", fontSize: 22, color: "#a1a1aa", marginTop: 2 }}>{group.missedTotal} misses · ${PENALTY_USD} each</div>
+            <div style={{ display: "flex", fontSize: 22, color: "#a1a1aa", marginTop: 2 }}>{group.missedTotal} misses · ${penalty} each</div>
           </div>
           <div style={{ ...tileStyle, alignItems: "center", textAlign: "center" }}>
             <div style={tileLabel}>The club</div>

@@ -2,9 +2,10 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Clock3, Flame, Sparkles, Users } from "lucide-react";
 import { currentMember } from "../../lib/session";
-import { supabase, isSupabaseConfigured, Member, ClassItem, CheckIn } from "../../lib/supabase";
-import { DEMO_MEMBERS, DEMO_CLASSES, DEMO_CHECK_INS } from "../../lib/demo";
-import { PENALTY_USD, VENMO_HANDLE } from "../../lib/schedule";
+import { supabase, isSupabaseConfigured, Member, ClassItem, CheckIn, Challenge, ChallengeParticipant } from "../../lib/supabase";
+import { DEMO_MEMBERS, DEMO_CLASSES, DEMO_CHECK_INS, DEMO_CHALLENGES, DEMO_PARTICIPANTS } from "../../lib/demo";
+import { VENMO_HANDLE } from "../../lib/schedule";
+import { revealedRecapChallenge } from "../../lib/challenges";
 import { CountUp, ConfettiBurst } from "../../components/RecapAnimations";
 import { ShareRecapButton } from "../../components/ShareRecapButton";
 import {
@@ -12,8 +13,6 @@ import {
   BucketCount,
   bucketMeta,
   computeRecap,
-  isRecapRevealed,
-  MONTH_LABEL,
 } from "../../lib/recap";
 
 export const dynamic = "force-dynamic";
@@ -25,26 +24,38 @@ export default async function RecapPage() {
   let members: Member[];
   let classes: ClassItem[];
   let checkIns: CheckIn[];
+  let challenges: Challenge[];
+  let participants: ChallengeParticipant[];
 
   if (isSupabaseConfigured()) {
     const sb = supabase();
-    const [a, b, c] = await Promise.all([
+    const [a, b, c, d, e] = await Promise.all([
       sb.from("members").select("*").order("name"),
       sb.from("classes").select("*"),
       sb.from("check_ins").select("*"),
+      sb.from("challenges").select("*"),
+      sb.from("challenge_participants").select("*"),
     ]);
     members = (a.data ?? []) as Member[];
     classes = (b.data ?? []) as ClassItem[];
     checkIns = (c.data ?? []) as CheckIn[];
+    challenges = (d.data ?? []) as Challenge[];
+    participants = (e.data ?? []) as ChallengeParticipant[];
   } else {
     members = DEMO_MEMBERS;
     classes = DEMO_CLASSES;
     checkIns = DEMO_CHECK_INS;
+    challenges = DEMO_CHALLENGES;
+    participants = DEMO_PARTICIPANTS;
   }
 
-  const { byMember, group } = computeRecap(members, classes, checkIns);
+  // The recap always shows the most recent challenge whose reveal time has
+  // passed. If nothing has revealed yet, there's no recap to see.
+  const challenge = revealedRecapChallenge(challenges);
+  if (!challenge) redirect("/?view=club");
+
+  const { byMember, group } = computeRecap(members, classes, checkIns, challenge, participants);
   const mine = byMember.get(me.id);
-  const revealed = isRecapRevealed();
 
   const fav = mine?.favorite ? bucketMeta(mine.favorite) : null;
   const clubFav = group.favorite ? bucketMeta(group.favorite) : null;
@@ -58,19 +69,12 @@ export default async function RecapPage() {
     <main className="relative mx-auto max-w-5xl px-6 pb-24 pt-10">
       <ConfettiBurst />
 
-      {!revealed ? (
-        <div className="fade-up mb-6 flex items-center justify-center gap-2 rounded-full border border-violet-400/30 bg-violet-500/10 px-4 py-1.5 text-center text-xs text-violet-200">
-          <Sparkles className="h-3.5 w-3.5" />
-          Preview — the recap unlocks for everyone Saturday, May 30.
-        </div>
-      ) : null}
-
       {/* ---- Hero ---- */}
       <section className="fade-up relative overflow-hidden rounded-[2rem] border border-amber-400/25 bg-gradient-to-br from-amber-400/15 via-rose-500/10 to-violet-500/15 px-6 py-12 text-center backdrop-blur sm:px-10 sm:py-16">
         <div className="pointer-events-none absolute -left-10 -top-10 h-48 w-48 rounded-full bg-amber-400/30 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-12 -right-8 h-56 w-56 rounded-full bg-violet-500/25 blur-3xl" />
         <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-amber-300">
-          {MONTH_LABEL} 2026 · Yoga Club
+          {challenge.name} · Yoga Club
         </p>
         <h1 className="mx-auto mt-4 max-w-2xl text-4xl font-semibold tracking-tight text-white sm:text-6xl">
           Congratulations,{" "}
@@ -80,7 +84,7 @@ export default async function RecapPage() {
           ! 🎉
         </h1>
         <p className="mx-auto mt-4 max-w-xl text-base text-zinc-300 sm:text-lg">
-          You showed up this month. Here&apos;s everything you did on the mat in {MONTH_LABEL}.
+          You showed up. Here&apos;s everything you did on the mat in {challenge.name}.
         </p>
 
         <div className="mt-10 flex flex-col items-center">
@@ -181,7 +185,7 @@ export default async function RecapPage() {
               <CountUp value={group.potTotal} prefix="$" />
             </div>
             <p className="mt-1 text-xs text-zinc-400">
-              from {group.missedTotal} missed {group.missedTotal === 1 ? "session" : "sessions"} · ${PENALTY_USD}/miss
+              from {group.missedTotal} missed {group.missedTotal === 1 ? "session" : "sessions"} · ${challenge.penalty_usd}/miss
             </p>
           </div>
 
@@ -193,7 +197,7 @@ export default async function RecapPage() {
               <CountUp value={group.totalSessions} />
             </div>
             <p className="mt-1 text-xs text-zinc-400">
-              sessions · <CountUp value={group.totalHours} decimals={1} /> hours of yoga in {MONTH_LABEL}
+              sessions · <CountUp value={group.totalHours} decimals={1} /> hours of yoga in {challenge.name}
             </p>
           </div>
 

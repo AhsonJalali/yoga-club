@@ -60,6 +60,9 @@ export default async function RootLayout({
                 <span className="text-sm font-semibold tracking-tight text-white">Yoga Club</span>
               </Link>
               <div className="flex items-center gap-3">
+                <Link href="/me" className="text-xs font-medium text-zinc-400 transition hover:text-white">
+                  My stats
+                </Link>
                 <RulesButton autoOpen={!seenRules} />
                 <span className="hidden h-3 w-px bg-white/10 sm:inline-block" />
                 <span className="hidden text-xs text-zinc-400 sm:inline">{me.name}</span>
