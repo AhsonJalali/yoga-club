@@ -37,30 +37,30 @@ export default async function LoginPage({
     <main className="mx-auto flex min-h-screen max-w-md items-center px-6 py-10">
       <div className="fade-up w-full">
         <div className="mb-10 flex items-center gap-3">
-          <span className="inline-block h-10 w-10 rounded-xl bg-gradient-to-br from-amber-400 via-rose-500 to-violet-600 shadow-xl shadow-rose-500/30" />
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-line-strong bg-raised text-coral">
+            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3c1.6 2.4 1.6 5.2 0 7.6C10.4 8.2 10.4 5.4 12 3Z"/><path d="M5 13c2.8-.4 5.4.6 7 2.8-2.8.4-5.4-.6-7-2.8Z"/><path d="M19 13c-2.8-.4-5.4.6-7 2.8 2.8.4 5.4-.6 7-2.8Z"/><path d="M12 15.8V21"/></svg>
+          </span>
           <div>
-            <p className="text-xs font-medium uppercase tracking-[0.18em] text-amber-300/80">Welcome</p>
-            <h1 className="text-2xl font-semibold tracking-tight text-white">Yoga Club</h1>
+            <p className="text-xs font-medium uppercase tracking-[0.18em] text-clay">Welcome</p>
+            <h1 className="font-display text-2xl font-medium text-ink">Yoga Club</h1>
           </div>
         </div>
 
-        <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-          <span className="bg-gradient-to-r from-amber-300 via-rose-400 to-violet-400 bg-clip-text text-transparent">
-            Step on the mat.
-          </span>
+        <h2 className="font-display text-3xl font-medium tracking-tight text-ink sm:text-4xl">
+          Step on the <span className="italic text-clay">mat</span>.
         </h2>
-        <p className="mt-3 text-zinc-400">
+        <p className="mt-3 text-muted">
           {isRegister
             ? "New here? Create your account in 30 seconds."
             : "Welcome back. Sign in to log today's session."}
         </p>
 
         {/* Tab toggle */}
-        <div className="mt-6 inline-flex rounded-xl border border-white/10 bg-white/5 p-1">
+        <div className="mt-6 inline-flex rounded-xl border border-line bg-raised p-1">
           <Link
             href="/login"
             className={`rounded-lg px-4 py-1.5 text-sm font-medium transition ${
-              !isRegister ? "bg-white text-black shadow" : "text-zinc-400 hover:text-white"
+              !isRegister ? "bg-surface text-ink shadow-sm" : "text-faint hover:text-ink"
             }`}
           >
             Sign in
@@ -68,7 +68,7 @@ export default async function LoginPage({
           <Link
             href="/login?mode=register"
             className={`rounded-lg px-4 py-1.5 text-sm font-medium transition ${
-              isRegister ? "bg-white text-black shadow" : "text-zinc-400 hover:text-white"
+              isRegister ? "bg-surface text-ink shadow-sm" : "text-faint hover:text-ink"
             }`}
           >
             Create account
@@ -76,6 +76,14 @@ export default async function LoginPage({
         </div>
 
         <AuthForm mode={isRegister ? "register" : "signin"} initialError={errMsg} />
+
+        {!isRegister ? (
+          <p className="mt-5 text-center text-sm text-faint">
+            <Link href="/forgot" className="underline-offset-4 transition hover:text-ink hover:underline">
+              Forgot your password?
+            </Link>
+          </p>
+        ) : null}
       </div>
     </main>
   );
