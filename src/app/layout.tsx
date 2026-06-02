@@ -70,13 +70,12 @@ export default async function RootLayout({
                 <span className="font-display text-base font-medium tracking-tight text-ink">Yoga Club</span>
               </Link>
               <div className="flex items-center gap-4">
-                <Link href="/me" className="text-xs font-medium text-muted transition hover:text-ink">
-                  My stats
-                </Link>
                 <RulesButton autoOpen={!seenRules} />
                 <span className="hidden h-4 w-px bg-line-strong sm:inline-block" />
-                <span className="hidden text-xs text-muted sm:inline">{me.name}</span>
-                <Avatar name={me.name} size={30} />
+                <Link href="/me" className="group flex items-center gap-2.5" title="Your profile & stats">
+                  <span className="hidden text-xs text-muted transition group-hover:text-ink sm:inline">{me.name}</span>
+                  <Avatar name={me.name} size={30} />
+                </Link>
                 <form action="/logout" method="POST">
                   <button
                     type="submit"

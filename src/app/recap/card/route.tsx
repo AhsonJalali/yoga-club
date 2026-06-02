@@ -14,11 +14,11 @@ const W = 1080;
 const H = 1920;
 
 const BUCKET_COLOR: Record<BucketKey, string> = {
-  earlyMorning: "#f59e0b",
-  morning: "#fbbf24",
-  afternoon: "#38bdf8",
-  evening: "#fb7185",
-  lateNight: "#a78bfa",
+  earlyMorning: "#e07a52",
+  morning: "#e07a52",
+  afternoon: "#e07a52",
+  evening: "#e07a52",
+  lateNight: "#e07a52",
 };
 
 export async function GET() {
@@ -86,7 +86,7 @@ export async function GET() {
     fontSize: 22,
     letterSpacing: 3,
     textTransform: "uppercase" as const,
-    color: "#a1a1aa",
+    color: "#a89d8d",
   };
 
   return new ImageResponse(
@@ -97,21 +97,21 @@ export async function GET() {
           height: H,
           display: "flex",
           flexDirection: "column",
-          background: "linear-gradient(160deg, #0a0a0f 0%, #14101c 55%, #1a1020 100%)",
-          color: "white",
+          background: "linear-gradient(160deg, #171310 0%, #14110d 60%, #1b1612 100%)",
+          color: "#f1ebe1",
           fontFamily: "sans-serif",
           padding: "70px 64px",
           position: "relative",
         }}
       >
         {/* glows */}
-        <div style={{ position: "absolute", top: -120, left: -120, width: 420, height: 420, borderRadius: 420, background: "rgba(251,191,36,0.20)", filter: "blur(60px)", display: "flex" }} />
-        <div style={{ position: "absolute", bottom: -140, right: -120, width: 460, height: 460, borderRadius: 460, background: "rgba(167,139,250,0.20)", filter: "blur(60px)", display: "flex" }} />
+        <div style={{ position: "absolute", top: -120, left: -120, width: 420, height: 420, borderRadius: 420, background: "rgba(224,122,82,0.13)", filter: "blur(60px)", display: "flex" }} />
+        <div style={{ position: "absolute", bottom: -140, right: -120, width: 460, height: 460, borderRadius: 460, background: "rgba(163,178,154,0.11)", filter: "blur(60px)", display: "flex" }} />
 
         {/* header */}
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <div style={{ width: 34, height: 34, borderRadius: 10, background: "linear-gradient(135deg,#fbbf24,#fb7185,#7c3aed)", display: "flex" }} />
-          <div style={{ display: "flex", fontSize: 26, fontWeight: 700, letterSpacing: 4, textTransform: "uppercase", color: "#fbbf24" }}>
+          <div style={{ width: 34, height: 34, borderRadius: 10, background: "linear-gradient(135deg,#e07a52,#c2926a)", display: "flex" }} />
+          <div style={{ display: "flex", fontSize: 26, fontWeight: 700, letterSpacing: 4, textTransform: "uppercase", color: "#c2926a" }}>
             {challengeName} · Yoga Club
           </div>
         </div>
@@ -121,20 +121,20 @@ export async function GET() {
           <div style={{ display: "flex", fontSize: 76, fontWeight: 800, lineHeight: 1.05 }}>
             Congratulations,
           </div>
-          <div style={{ display: "flex", fontSize: 76, fontWeight: 800, lineHeight: 1.05, color: "#fb923c" }}>
+          <div style={{ display: "flex", fontSize: 76, fontWeight: 800, lineHeight: 1.05, color: "#e07a52" }}>
             {name}!
           </div>
-          <div style={{ display: "flex", marginTop: 18, fontSize: 30, color: "#d4d4d8" }}>
+          <div style={{ display: "flex", marginTop: 18, fontSize: 30, color: "#cbbfae" }}>
             Here&apos;s your month on the mat.
           </div>
         </div>
 
         {/* big sessions number */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: 40 }}>
-          <div style={{ display: "flex", fontSize: 240, fontWeight: 800, lineHeight: 1, background: "linear-gradient(90deg,#fcd34d,#fb7185,#a78bfa)", backgroundClip: "text", color: "transparent" }}>
+          <div style={{ display: "flex", fontSize: 240, fontWeight: 800, lineHeight: 1, background: "linear-gradient(90deg,#e8845c,#e07a52,#c2603a)", backgroundClip: "text", color: "transparent" }}>
             {sessions}
           </div>
-          <div style={{ display: "flex", fontSize: 30, letterSpacing: 6, textTransform: "uppercase", color: "#fcd34d", marginTop: 6 }}>
+          <div style={{ display: "flex", fontSize: 30, letterSpacing: 6, textTransform: "uppercase", color: "#e8845c", marginTop: 6 }}>
             Yoga Sessions
           </div>
         </div>
@@ -144,12 +144,12 @@ export async function GET() {
           <div style={tileStyle}>
             <div style={tileLabel}>On the mat</div>
             <div style={{ display: "flex", fontSize: 52, fontWeight: 800, marginTop: 12 }}>{minutes} min</div>
-            <div style={{ display: "flex", fontSize: 26, color: "#a1a1aa", marginTop: 4 }}>≈ {hours} hours</div>
+            <div style={{ display: "flex", fontSize: 26, color: "#a89d8d", marginTop: 4 }}>≈ {hours} hours</div>
           </div>
           <div style={tileStyle}>
             <div style={tileLabel}>Consistency</div>
             <div style={{ display: "flex", fontSize: 52, fontWeight: 800, marginTop: 12 }}>{completed}/{eligible}</div>
-            <div style={{ display: "flex", fontSize: 26, color: "#a1a1aa", marginTop: 4 }}>
+            <div style={{ display: "flex", fontSize: 26, color: "#a89d8d", marginTop: 4 }}>
               {pct}%{streak > 1 ? ` · ${streak} in a row` : ""}
             </div>
           </div>
@@ -169,7 +169,7 @@ export async function GET() {
         >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
             <div style={{ display: "flex", fontSize: 30, fontWeight: 700 }}>When you practiced</div>
-            <div style={{ display: "flex", fontSize: 26, color: fav ? "#fcd34d" : "#71717a" }}>
+            <div style={{ display: "flex", fontSize: 26, color: fav ? "#e8845c" : "#786d5e" }}>
               {fav ? `${fav.label} yogi` : "—"}
             </div>
           </div>
@@ -180,7 +180,7 @@ export async function GET() {
               const isFav = mine?.favorite === meta.key;
               return (
                 <div key={meta.key} style={{ display: "flex", flexDirection: "column", alignItems: "center", flex: 1 }}>
-                  <div style={{ display: "flex", fontSize: 26, fontWeight: 700, color: isFav ? "white" : "#71717a", marginBottom: 8 }}>{count}</div>
+                  <div style={{ display: "flex", fontSize: 26, fontWeight: 700, color: isFav ? "white" : "#786d5e", marginBottom: 8 }}>{count}</div>
                   <div
                     style={{
                       display: "flex",
@@ -190,7 +190,7 @@ export async function GET() {
                       background: isFav ? BUCKET_COLOR[meta.key] : "rgba(255,255,255,0.12)",
                     }}
                   />
-                  <div style={{ display: "flex", fontSize: 22, color: isFav ? "white" : "#a1a1aa", marginTop: 12, textAlign: "center" }}>
+                  <div style={{ display: "flex", fontSize: 22, color: isFav ? "white" : "#a89d8d", marginTop: 12, textAlign: "center" }}>
                     {meta.label}
                   </div>
                 </div>
@@ -204,19 +204,19 @@ export async function GET() {
           <div style={{ ...tileStyle, alignItems: "center", textAlign: "center" }}>
             <div style={tileLabel}>The pot</div>
             <div style={{ display: "flex", fontSize: 60, fontWeight: 800, marginTop: 8 }}>${group.potTotal}</div>
-            <div style={{ display: "flex", fontSize: 22, color: "#a1a1aa", marginTop: 2 }}>{group.missedTotal} misses · ${penalty} each</div>
+            <div style={{ display: "flex", fontSize: 22, color: "#a89d8d", marginTop: 2 }}>{group.missedTotal} misses · ${penalty} each</div>
           </div>
           <div style={{ ...tileStyle, alignItems: "center", textAlign: "center" }}>
             <div style={tileLabel}>The club</div>
             <div style={{ display: "flex", fontSize: 60, fontWeight: 800, marginTop: 8 }}>{group.totalSessions}</div>
-            <div style={{ display: "flex", fontSize: 22, color: "#a1a1aa", marginTop: 2 }}>sessions · {group.totalHours} hrs together</div>
+            <div style={{ display: "flex", fontSize: 22, color: "#a89d8d", marginTop: 2 }}>sessions · {group.totalHours} hrs together</div>
           </div>
         </div>
 
         {/* footer */}
         <div style={{ display: "flex", flex: 1 }} />
-        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 12, fontSize: 26, color: "#71717a" }}>
-          <div style={{ width: 22, height: 22, borderRadius: 7, background: "linear-gradient(135deg,#fbbf24,#fb7185,#7c3aed)", display: "flex" }} />
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 12, fontSize: 26, color: "#786d5e" }}>
+          <div style={{ width: 22, height: 22, borderRadius: 7, background: "linear-gradient(135deg,#e07a52,#c2926a)", display: "flex" }} />
           Three sessions a week. Building a habit together.
         </div>
       </div>

@@ -86,7 +86,7 @@ export default async function ProfilePage() {
 
   return (
     <main className="mx-auto max-w-4xl px-6 pb-20 pt-10">
-      <Link href="/?view=club" className="fade-up inline-flex items-center gap-2 text-sm text-zinc-400 transition hover:text-white">
+      <Link href="/?view=club" className="fade-up inline-flex items-center gap-2 text-sm text-muted transition hover:text-ink">
         <ArrowLeft className="h-4 w-4" /> Back to Yoga Club
       </Link>
 
@@ -94,67 +94,67 @@ export default async function ProfilePage() {
       <div className="fade-up mt-5 flex items-center gap-4">
         <Avatar name={me.name} size={56} />
         <div>
-          <h1 className="text-3xl font-semibold tracking-tight text-white">{me.name}</h1>
-          <p className="text-sm text-zinc-400">
+          <h1 className="font-display text-3xl font-medium text-ink">{me.name}</h1>
+          <p className="text-sm text-muted">
             {mine.length} {mine.length === 1 ? "challenge" : "challenges"} joined · {challengesCompleted} completed
           </p>
         </div>
       </div>
 
       {mine.length === 0 ? (
-        <p className="mt-10 rounded-3xl border border-white/10 bg-zinc-950/60 p-8 text-center text-zinc-400">
+        <p className="mt-10 rounded-2xl border border-line bg-surface p-8 text-center text-muted">
           You haven&apos;t joined a challenge yet. Once you do, your all-time stats show up here.
         </p>
       ) : (
         <>
           {/* lifetime totals */}
           <section className="fade-up-2 mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
-            <Stat icon={<Flame className="h-4 w-4" />} value={`${totalSessions}`} label="total sessions" accent="amber" />
-            <Stat icon={<Clock3 className="h-4 w-4" />} value={`${totalHours}`} label="hours on the mat" accent="rose" />
-            <Stat icon={<CalendarDays className="h-4 w-4" />} value={`${challengesCompleted}`} label="challenges done" accent="violet" />
-            <Stat icon={<Sparkles className="h-4 w-4" />} value={`${avgCompletion}%`} label="avg consistency" accent="emerald" />
+            <Stat icon={<Flame className="h-4 w-4" />} value={`${totalSessions}`} label="total sessions" accent="coral" />
+            <Stat icon={<Clock3 className="h-4 w-4" />} value={`${totalHours}`} label="hours on the mat" accent="clay" />
+            <Stat icon={<CalendarDays className="h-4 w-4" />} value={`${challengesCompleted}`} label="challenges done" accent="sage" />
+            <Stat icon={<Sparkles className="h-4 w-4" />} value={`${avgCompletion}%`} label="avg consistency" accent="sage" />
           </section>
 
           {/* lifetime patterns + money */}
           <section className="fade-up-2 mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
             <Panel label="Favorite time">
-              <div className="text-2xl font-bold text-white">{fav ? `${fav.emoji} ${fav.label}` : "—"}</div>
-              <p className="mt-1 text-xs text-zinc-400">{fav ? `your go-to window, ${fav.range}` : "no times logged yet"}</p>
+              <div className="font-display text-2xl font-medium text-ink">{fav ? `${fav.emoji} ${fav.label}` : "—"}</div>
+              <p className="mt-1 text-xs text-faint">{fav ? `your go-to window, ${fav.range}` : "no times logged yet"}</p>
             </Panel>
             <Panel label="Go-to day">
-              <div className="text-2xl font-bold text-white">{topDowIdx >= 0 ? DOW_NAMES[topDowIdx] : "—"}</div>
-              <p className="mt-1 text-xs text-zinc-400">{topDowIdx >= 0 ? `${dow[topDowIdx]} sessions on this day` : "—"}</p>
+              <div className="font-display text-2xl font-medium text-ink">{topDowIdx >= 0 ? DOW_NAMES[topDowIdx] : "—"}</div>
+              <p className="mt-1 text-xs text-faint">{topDowIdx >= 0 ? `${dow[topDowIdx]} sessions on this day` : "—"}</p>
             </Panel>
             <Panel label="Into the pot, all-time">
-              <div className={`text-2xl font-bold ${owedTotal > 0 ? "text-white" : "text-emerald-400"}`}>${owedTotal}</div>
-              <p className="mt-1 text-xs text-zinc-400">{owedTotal > 0 ? "across all challenges" : "spotless across the board"}</p>
+              <div className={`font-display text-2xl font-medium ${owedTotal > 0 ? "text-ink" : "text-sage"}`}>${owedTotal}</div>
+              <p className="mt-1 text-xs text-faint">{owedTotal > 0 ? "across all challenges" : "spotless across the board"}</p>
             </Panel>
           </section>
 
           {/* per-challenge history / consistency trend */}
           <section className="fade-up-3 mt-8">
             <div className="flex items-center gap-2">
-              <Trophy className="h-4 w-4 text-amber-400" />
-              <h2 className="text-sm font-semibold uppercase tracking-wider text-white">Challenge by challenge</h2>
+              <Trophy className="h-4 w-4 text-clay" />
+              <h2 className="text-sm font-semibold uppercase tracking-wider text-ink">Challenge by challenge</h2>
             </div>
-            <div className="mt-4 overflow-hidden rounded-3xl border border-white/10 bg-zinc-950/60 backdrop-blur">
+            <div className="mt-4 overflow-hidden rounded-2xl border border-line bg-surface">
               <ul>
                 {mine.map(({ challenge: c, recap: r }) => {
                   const ended = c.end_date < todayIso;
                   return (
-                    <li key={c.id} className="flex flex-col gap-3 border-b border-white/5 px-5 py-4 last:border-0 sm:flex-row sm:items-center">
+                    <li key={c.id} className="flex flex-col gap-3 border-b border-line px-5 py-4 last:border-0 sm:flex-row sm:items-center">
                       <div className="min-w-0 sm:w-48">
-                        <p className="font-medium text-white">{c.name}</p>
-                        <p className="text-xs text-zinc-500">{windowLabel(c)} · {ended ? "completed" : "in progress"}</p>
+                        <p className="font-medium text-ink">{c.name}</p>
+                        <p className="text-xs text-faint">{windowLabel(c)} · {ended ? "completed" : "in progress"}</p>
                       </div>
                       <div className="flex-1">
-                        <div className="h-2 w-full overflow-hidden rounded-full bg-white/10">
-                          <div className="h-full rounded-full bg-gradient-to-r from-amber-400 to-rose-500" style={{ width: `${r.completionPct}%` }} />
+                        <div className="h-2 w-full overflow-hidden rounded-full bg-line-strong">
+                          <div className="h-full rounded-full bg-coral" style={{ width: `${r.completionPct}%` }} />
                         </div>
                       </div>
                       <div className="flex items-center gap-4 sm:w-56 sm:justify-end">
-                        <span className="text-sm tabular-nums text-zinc-300">{r.completed}/{r.eligible} · {r.completionPct}%</span>
-                        <span className={`inline-flex items-center gap-1 text-sm font-semibold ${r.owed > 0 ? "text-white" : "text-emerald-400"}`}>
+                        <span className="text-sm tabular-nums text-muted">{r.completed}/{r.eligible} · {r.completionPct}%</span>
+                        <span className={`inline-flex items-center gap-1 text-sm font-semibold tabular-nums ${r.owed > 0 ? "text-ink" : "text-sage"}`}>
                           <DollarSign className="h-3.5 w-3.5" />{r.owed}
                         </span>
                       </div>
@@ -170,21 +170,21 @@ export default async function ProfilePage() {
   );
 }
 
-function Stat({ icon, value, label, accent }: { icon: React.ReactNode; value: string; label: string; accent: "amber" | "rose" | "violet" | "emerald" }) {
-  const color = accent === "amber" ? "text-amber-300" : accent === "rose" ? "text-rose-300" : accent === "violet" ? "text-violet-300" : "text-emerald-300";
+function Stat({ icon, value, label, accent }: { icon: React.ReactNode; value: string; label: string; accent: "coral" | "clay" | "sage" }) {
+  const color = accent === "coral" ? "text-coral" : accent === "clay" ? "text-clay" : "text-sage";
   return (
-    <div className="rounded-3xl border border-white/10 bg-zinc-950/60 p-5 backdrop-blur">
+    <div className="rounded-2xl border border-line bg-surface p-5">
       <span className={color}>{icon}</span>
-      <div className="mt-2 text-3xl font-bold tabular-nums text-white">{value}</div>
-      <div className="text-[11px] uppercase tracking-wider text-zinc-500">{label}</div>
+      <div className="font-display mt-2 text-3xl font-medium tabular-nums text-ink">{value}</div>
+      <div className="text-[11px] uppercase tracking-wider text-faint">{label}</div>
     </div>
   );
 }
 
 function Panel({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-3xl border border-white/10 bg-zinc-950/60 p-5 backdrop-blur">
-      <div className="text-[11px] font-semibold uppercase tracking-[0.15em] text-zinc-400">{label}</div>
+    <div className="rounded-2xl border border-line bg-surface p-5">
+      <div className="text-[11px] font-semibold uppercase tracking-[0.15em] text-faint">{label}</div>
       <div className="mt-2">{children}</div>
     </div>
   );
