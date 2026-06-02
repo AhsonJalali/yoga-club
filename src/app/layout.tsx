@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Fraunces } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
 import { cookies } from "next/headers";
@@ -18,6 +18,14 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Editorial serif for display headings — boutique-studio feel.
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  style: ["normal", "italic"],
+});
+
 export const metadata: Metadata = {
   title: "Yoga Club",
   description: "Three sessions a week. Building a habit together.",
@@ -29,7 +37,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport = {
-  themeColor: "#07070a",
+  themeColor: "#14110d",
 };
 
 export default async function RootLayout({
@@ -44,33 +52,35 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
+      className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} h-full antialiased dark`}
     >
       <body className="min-h-full flex flex-col">
         {demo ? (
-          <div className="border-b border-amber-400/20 bg-amber-400/10 px-6 py-1.5 text-center text-[11px] font-medium tracking-wide text-amber-300 backdrop-blur">
+          <div className="border-b border-clay/20 bg-clay/10 px-6 py-1.5 text-center text-[11px] font-medium tracking-wide text-clay">
             DEMO MODE · fake data, check-ins won&apos;t save · connect Supabase to go live
           </div>
         ) : null}
         {me ? (
-          <header className="sticky top-0 z-30 border-b border-white/5 bg-zinc-950/70 backdrop-blur-xl">
-            <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
-              <Link href="/" className="flex items-center gap-2 group">
-                <span className="inline-block h-7 w-7 rounded-lg bg-gradient-to-br from-amber-400 via-rose-500 to-violet-600 shadow-lg shadow-rose-500/30 transition group-hover:scale-105" />
-                <span className="text-sm font-semibold tracking-tight text-white">Yoga Club</span>
+          <header className="sticky top-0 z-30 border-b border-line bg-ground/90 backdrop-blur-sm">
+            <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3.5">
+              <Link href="/" className="group flex items-center gap-2.5">
+                <span className="flex h-7 w-7 items-center justify-center rounded-md border border-line-strong bg-raised text-coral transition group-hover:border-coral/50">
+                  <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3c1.6 2.4 1.6 5.2 0 7.6C10.4 8.2 10.4 5.4 12 3Z"/><path d="M5 13c2.8-.4 5.4.6 7 2.8-2.8.4-5.4-.6-7-2.8Z"/><path d="M19 13c-2.8-.4-5.4.6-7 2.8 2.8.4 5.4-.6 7-2.8Z"/><path d="M12 15.8V21"/></svg>
+                </span>
+                <span className="font-display text-base font-medium tracking-tight text-ink">Yoga Club</span>
               </Link>
-              <div className="flex items-center gap-3">
-                <Link href="/me" className="text-xs font-medium text-zinc-400 transition hover:text-white">
+              <div className="flex items-center gap-4">
+                <Link href="/me" className="text-xs font-medium text-muted transition hover:text-ink">
                   My stats
                 </Link>
                 <RulesButton autoOpen={!seenRules} />
-                <span className="hidden h-3 w-px bg-white/10 sm:inline-block" />
-                <span className="hidden text-xs text-zinc-400 sm:inline">{me.name}</span>
-                <Avatar name={me.name} size={32} />
+                <span className="hidden h-4 w-px bg-line-strong sm:inline-block" />
+                <span className="hidden text-xs text-muted sm:inline">{me.name}</span>
+                <Avatar name={me.name} size={30} />
                 <form action="/logout" method="POST">
                   <button
                     type="submit"
-                    className="text-xs text-zinc-500 hover:text-white transition"
+                    className="text-xs text-faint transition hover:text-ink"
                   >
                     Sign out
                   </button>

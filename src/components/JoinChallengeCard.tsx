@@ -45,15 +45,15 @@ export function JoinChallengeCard({
   }
 
   return (
-    <div className="overflow-hidden rounded-3xl border border-amber-400/25 bg-gradient-to-br from-amber-400/12 via-rose-500/8 to-violet-500/12 p-8 backdrop-blur sm:p-10">
+    <div className="overflow-hidden rounded-2xl border border-line bg-surface p-8 sm:p-10">
       <div className="mx-auto max-w-xl text-center">
-        <div className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-400/30 to-rose-500/20 ring-1 ring-amber-400/30">
-          <CalendarDays className="h-6 w-6 text-amber-200" />
+        <div className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-xl border border-coral/30 bg-coral/10">
+          <CalendarDays className="h-6 w-6 text-coral" />
         </div>
-        <h2 className="mt-5 text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+        <h2 className="font-display mt-5 text-2xl font-medium text-ink sm:text-3xl">
           You&apos;re not in the {challengeName} challenge yet
         </h2>
-        <p className="mt-3 text-base text-zinc-400">
+        <p className="mt-3 text-base text-muted">
           Opt in to join {memberCount} {memberCount === 1 ? "person" : "people"} already committed. Skip it with no penalty — but once you&apos;re in, missed sessions count.
         </p>
 
@@ -67,11 +67,11 @@ export function JoinChallengeCard({
           type="button"
           onClick={join}
           disabled={state === "joining" || state === "done"}
-          className="mt-7 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-400 to-rose-500 px-6 py-3 text-sm font-semibold text-black shadow-lg shadow-rose-500/20 transition hover:brightness-110 disabled:opacity-70"
+          className="mt-7 inline-flex items-center gap-2 rounded-lg bg-coral px-6 py-3 text-sm font-semibold text-ground transition hover:bg-coral-deep disabled:opacity-70"
         >
           {state === "joining" ? (<><Loader2 className="h-4 w-4 animate-spin" /> Joining…</>) : state === "done" ? (<><Check className="h-4 w-4" /> You&apos;re in!</>) : (<>Join the {challengeName} challenge</>)}
         </button>
-        {error ? <p className="mt-3 text-xs text-rose-400">Couldn&apos;t join: {error}</p> : null}
+        {error ? <p className="mt-3 text-xs text-coral-deep">Couldn&apos;t join: {error}</p> : null}
       </div>
     </div>
   );
@@ -79,10 +79,10 @@ export function JoinChallengeCard({
 
 function Fact({ icon, label, sub }: { icon: React.ReactNode; label: string; sub: string }) {
   return (
-    <div className="flex flex-col items-center gap-1 rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
-      <span className="text-amber-300">{icon}</span>
-      <span className="text-sm font-semibold text-white">{label}</span>
-      <span className="text-[11px] text-zinc-400">{sub}</span>
+    <div className="flex flex-col items-center gap-1 rounded-xl border border-line bg-raised px-3 py-3">
+      <span className="text-clay">{icon}</span>
+      <span className="text-sm font-semibold text-ink">{label}</span>
+      <span className="text-[11px] text-faint">{sub}</span>
     </div>
   );
 }

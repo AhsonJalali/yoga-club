@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { Clock3, Heart, PlayCircle, ExternalLink, Trophy, Moon, CheckCircle2, Sunrise, Waves, Leaf, CalendarDays, Sparkles } from "lucide-react";
+import { Clock3, Heart, PlayCircle, ExternalLink, Moon, CheckCircle2, Sunrise, Waves, Leaf, CalendarDays, Sparkles } from "lucide-react";
 import { currentMember } from "../lib/session";
 import { supabase, isSupabaseConfigured, Member, ClassItem, CheckIn, Challenge, ChallengeParticipant } from "../lib/supabase";
 import { DEMO_MEMBERS, DEMO_CLASSES, DEMO_CHECK_INS, DEMO_CHALLENGES, DEMO_PARTICIPANTS } from "../lib/demo";
@@ -70,8 +70,8 @@ export default async function HomePage({
   if (!focus) {
     return (
       <main className="mx-auto max-w-3xl px-6 py-20 text-center">
-        <h1 className="text-3xl font-semibold text-white">No challenge yet</h1>
-        <p className="mt-3 text-zinc-400">A new challenge hasn&apos;t been set up. Hang tight.</p>
+        <h1 className="font-display text-3xl font-medium text-ink">No challenge yet</h1>
+        <p className="mt-3 text-muted">A new challenge hasn&apos;t been set up. Hang tight.</p>
       </main>
     );
   }
@@ -146,45 +146,47 @@ export default async function HomePage({
       {recapReady && (afterEnd || isActive) ? (
         <Link
           href="/recap"
-          className="fade-up mb-6 flex items-center justify-between gap-3 rounded-2xl border border-violet-400/30 bg-gradient-to-r from-violet-500/15 via-rose-500/10 to-amber-400/10 px-5 py-3 text-sm transition hover:brightness-110"
+          className="fade-up mb-6 flex items-center justify-between gap-3 rounded-xl border border-line bg-surface px-5 py-3 text-sm transition hover:border-coral/40"
         >
-          <span className="flex items-center gap-2 text-violet-100">
-            <Sparkles className="h-4 w-4 text-violet-300" />
-            <span className="font-semibold">{recapReady.name} recap is ready</span> — see how everyone did.
+          <span className="flex items-center gap-2 text-muted">
+            <Sparkles className="h-4 w-4 text-coral" />
+            <span className="font-medium text-ink">{recapReady.name} recap is ready</span> — see how everyone did.
           </span>
-          <span className="text-violet-300">View →</span>
+          <span className="shrink-0 text-coral">View →</span>
         </Link>
       ) : null}
 
       {/* Hero header */}
-      <div className="fade-up flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-amber-300">
-            <CalendarDays className="h-3.5 w-3.5" />
-            {focus.name} · {windowLabel(focus)} · {statusPill}
+      <div className="fade-up flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex flex-col">
+          <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-faint">
+            <CalendarDays className="h-3.5 w-3.5 text-clay" />
+            {focus.name} · {windowLabel(focus)}
+            <span className={`ml-1 rounded-full border px-2 py-0.5 text-[10px] ${isActive ? "border-coral/40 text-coral" : "border-line-strong text-muted"}`}>{statusPill}</span>
           </div>
-          <h1 className="mt-2 text-4xl font-semibold tracking-tight text-white sm:text-5xl">
+          <h1 className="font-display mt-3 text-4xl font-medium leading-[1.1] tracking-tight text-ink sm:text-5xl">
             {joinable ? (
-              <>Join the <span className="bg-gradient-to-r from-amber-300 via-rose-400 to-violet-400 bg-clip-text text-transparent">{focus.name} challenge</span></>
+              <>Join the <span className="italic text-clay">{focus.name}</span> challenge</>
             ) : requiredToday ? (
-              <>Time to <span className="bg-gradient-to-r from-amber-300 via-rose-400 to-violet-400 bg-clip-text text-transparent">step on the mat</span></>
+              <>Time to <span className="italic text-clay">step on the mat</span></>
             ) : isActive ? (
-              <>Recovery day, <span className="bg-gradient-to-r from-amber-300 via-rose-400 to-violet-400 bg-clip-text text-transparent">rest is the work</span></>
+              <>Recovery day — <span className="italic text-clay">rest is the work</span></>
             ) : afterEnd ? (
-              <><span className="bg-gradient-to-r from-amber-300 via-rose-400 to-violet-400 bg-clip-text text-transparent">{focus.name}</span> is a wrap</>
+              <><span className="italic text-clay">{focus.name}</span> is a wrap</>
             ) : (
-              <>The <span className="bg-gradient-to-r from-amber-300 via-rose-400 to-violet-400 bg-clip-text text-transparent">{focus.name} challenge</span> is coming</>
+              <>The <span className="italic text-clay">{focus.name}</span> challenge is coming</>
             )}
           </h1>
-          <p className="mt-3 max-w-2xl text-base text-zinc-400">
+          <p className="mt-3 max-w-2xl text-[15px] text-muted">
             {dateLabel}. {requiredDowsLabel(focus)} each week · ${focus.penalty_usd}/missed session.
           </p>
         </div>
-        <div className="relative shrink-0 overflow-hidden rounded-3xl border border-amber-400/25 bg-gradient-to-br from-amber-400/15 via-rose-500/10 to-violet-500/10 px-6 py-4 backdrop-blur">
-          <div className="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-gradient-to-br from-amber-400 to-rose-500 opacity-30 blur-2xl" />
-          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-amber-300">{focus.name} Pot</p>
-          <p className="mt-1 text-4xl font-bold tabular-nums text-white sm:text-5xl">${potTotal.toLocaleString()}</p>
-          <p className="mt-0.5 text-[11px] text-zinc-400">from {missedTotal} missed {missedTotal === 1 ? "session" : "sessions"}</p>
+        <div className="shrink-0 rounded-2xl border border-line bg-surface px-6 py-4">
+          <p className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wider text-faint">
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-coral" />{focus.name} Pot
+          </p>
+          <p className="font-display mt-1.5 text-[2.75rem] font-medium leading-none tabular-nums text-ink">${potTotal.toLocaleString()}</p>
+          <p className="mt-1 text-[11px] text-faint">from {missedTotal} missed {missedTotal === 1 ? "session" : "sessions"}</p>
         </div>
       </div>
 
@@ -202,7 +204,7 @@ export default async function HomePage({
             />
           ) : (
             <>
-              <div className="overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-zinc-900 to-zinc-950 shadow-2xl shadow-black/40">
+              <div className="overflow-hidden rounded-2xl border border-line bg-surface shadow-[0_2px_12px_-4px_rgba(0,0,0,0.5)]">
                 {todaysClass ? (
                   <>
                     <div className="relative aspect-video w-full bg-black">
@@ -212,20 +214,20 @@ export default async function HomePage({
                         <Image src={thumb} alt={todaysClass.title} fill className="object-cover" />
                       ) : null}
                     </div>
-                    <div className="p-6">
-                      <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-wider text-zinc-400">
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-white/5 px-2.5 py-1"><Clock3 className="h-3 w-3" /> {todaysClass.duration_minutes} min</span>
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-white/5 px-2.5 py-1"><Heart className="h-3 w-3" /> {todaysClass.instructor}</span>
-                        {todaysClass.tags.slice(0, 3).map((t) => (<span key={t} className="rounded-full bg-white/5 px-2.5 py-1">{t}</span>))}
+                    <div className="border-t border-line p-6">
+                      <div className="flex flex-wrap items-center gap-2 text-[11px] uppercase tracking-wider text-muted">
+                        <span className="inline-flex items-center gap-1.5 rounded-md border border-line bg-raised px-2.5 py-1"><Clock3 className="h-3 w-3 text-clay" /> {todaysClass.duration_minutes} min</span>
+                        <span className="inline-flex items-center gap-1.5 rounded-md border border-line bg-raised px-2.5 py-1"><Heart className="h-3 w-3 text-clay" /> {todaysClass.instructor}</span>
+                        {todaysClass.tags.slice(0, 3).map((t) => (<span key={t} className="rounded-md border border-line bg-raised px-2.5 py-1">{t}</span>))}
                       </div>
-                      <h2 className="mt-3 text-2xl font-semibold tracking-tight text-white">{todaysClass.title}</h2>
-                      <p className="mt-3 flex items-center gap-2 text-sm text-zinc-400">
-                        {requiredToday ? (<><CheckCircle2 className="h-4 w-4 text-amber-400" /> Press play, then tap your face below to check in.</>) : (<><PlayCircle className="h-4 w-4" /> Optional today — no penalty if you skip.</>)}
+                      <h2 className="font-display mt-3 text-2xl font-medium text-ink">{todaysClass.title}</h2>
+                      <p className="mt-3 flex items-center gap-2 text-sm text-muted">
+                        {requiredToday ? (<><CheckCircle2 className="h-4 w-4 text-coral" /> Press play, then tap your face below to check in.</>) : (<><PlayCircle className="h-4 w-4 text-sage" /> Optional today — no penalty if you skip.</>)}
                       </p>
                     </div>
                   </>
                 ) : (
-                  <div className="p-10 text-center text-zinc-400">No classes seeded yet.</div>
+                  <div className="p-10 text-center text-muted">No classes seeded yet.</div>
                 )}
               </div>
 
@@ -239,31 +241,33 @@ export default async function HomePage({
         </div>
 
         {/* Leaderboard sidebar */}
-        <aside className="rounded-3xl border border-white/10 bg-zinc-950/60 p-5 backdrop-blur">
+        <aside className="rounded-2xl border border-line bg-surface p-5">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Trophy className="h-4 w-4 text-amber-400" />
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-white">Leaderboard</h3>
-            </div>
-            <span className="text-[11px] uppercase tracking-wider text-zinc-500">${focus.penalty_usd}/miss</span>
+            <h3 className="text-xs font-semibold uppercase tracking-[0.12em] text-ink">Ranking</h3>
+            <span className="text-[11px] tabular-nums text-faint">${focus.penalty_usd}/miss</span>
           </div>
           {leaderboard.length === 0 ? (
-            <p className="mt-4 text-sm text-zinc-500">No one&apos;s joined yet.</p>
+            <p className="mt-4 text-sm text-faint">No one&apos;s joined yet.</p>
           ) : (
-            <ul className="mt-4 space-y-2">
+            <ul className="mt-3 divide-y divide-line">
               {leaderboard.map((row, i) => {
                 const isMe = row.member.id === me.id;
+                const pct = row.eligible ? Math.round((row.completed / row.eligible) * 100) : 0;
                 return (
-                  <li key={row.member.id} className={`flex items-center gap-3 rounded-2xl border px-3 py-2.5 ${isMe ? "border-amber-400/30 bg-amber-400/5" : "border-white/5 bg-white/[0.02]"}`}>
-                    <span className={`w-5 text-center text-xs font-bold ${i === 0 ? "text-amber-300" : i === 1 ? "text-zinc-300" : i === 2 ? "text-amber-700" : "text-zinc-600"}`}>{i + 1}</span>
-                    <Avatar name={row.member.name} size={32} />
+                  <li key={row.member.id} className={`flex items-center gap-3 py-2.5 ${isMe ? "-mx-2 rounded-lg bg-coral/[0.06] px-2" : ""}`}>
+                    <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold tabular-nums ${i === 0 ? "bg-coral text-ground" : i === 1 ? "border border-sage/50 text-sage" : i === 2 ? "border border-clay/50 text-clay" : "border border-line-strong text-faint"}`}>{i + 1}</span>
+                    <Avatar name={row.member.name} size={30} />
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium text-white">{row.member.name}{isMe ? " · you" : ""}</p>
-                      <p className={`text-[11px] ${row.eligible === 0 ? "text-zinc-500" : row.owed === 0 ? "text-emerald-400" : "text-zinc-500"}`}>{row.eligible === 0 ? "just joined" : row.owed === 0 ? "spotless" : `$${row.owed} owed`}</p>
-                    </div>
-                    <div className="text-right tabular-nums">
-                      <p className="text-base font-bold text-white">{row.completed}<span className="text-zinc-600">/{row.eligible}</span></p>
-                      <p className="text-[10px] uppercase tracking-wider text-zinc-600">sessions</p>
+                      <div className="flex items-baseline justify-between gap-2">
+                        <p className="truncate text-sm font-medium text-ink">{row.member.name}{isMe ? " · you" : ""}</p>
+                        <p className="shrink-0 text-sm font-semibold tabular-nums text-ink">{row.completed}<span className="text-faint">/{row.eligible}</span></p>
+                      </div>
+                      <div className="mt-1.5 flex items-center gap-2">
+                        <div className="h-1 flex-1 overflow-hidden rounded-full bg-line-strong">
+                          <div className="h-full rounded-full bg-coral/70" style={{ width: `${pct}%` }} />
+                        </div>
+                        <span className={`w-14 shrink-0 text-right text-[10px] ${row.eligible === 0 ? "text-faint" : row.owed === 0 ? "text-sage" : "text-muted"}`}>{row.eligible === 0 ? "joined" : row.owed === 0 ? "spotless" : `$${row.owed} owed`}</span>
+                      </div>
                     </div>
                   </li>
                 );
@@ -277,14 +281,14 @@ export default async function HomePage({
       <section className="fade-up-3 mt-12">
         <div className="flex items-end justify-between">
           <div>
-            <h3 className="text-2xl font-semibold tracking-tight text-white">{monthLabel}</h3>
-            <p className="text-sm text-zinc-500">Every required day&apos;s designated class. Tap to play.</p>
+            <h3 className="font-display text-2xl font-medium text-ink">{monthLabel}</h3>
+            <p className="text-sm text-faint">Every required day&apos;s designated class. Tap to play.</p>
           </div>
         </div>
-        <div className="mt-5 overflow-hidden rounded-3xl border border-white/10 bg-zinc-950/60 backdrop-blur">
-          <div className="grid grid-cols-7 border-b border-white/5 bg-white/5">
+        <div className="mt-5 overflow-hidden rounded-2xl border border-line bg-surface">
+          <div className="grid grid-cols-7 border-b border-line bg-raised">
             {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d) => (
-              <div key={d} className="px-3 py-2 text-center text-[11px] font-medium uppercase tracking-wider text-zinc-500">{d}</div>
+              <div key={d} className="px-3 py-2 text-center text-[11px] font-medium uppercase tracking-wider text-faint">{d}</div>
             ))}
           </div>
           <div className="grid grid-cols-7">
@@ -301,25 +305,25 @@ export default async function HomePage({
               const myDone = myCi?.status === "done";
               const past = dIso < todayIso;
 
-              if (!inMonth) return <div key={i} className="min-h-32 border-b border-r border-white/5 bg-black/30" />;
+              if (!inMonth) return <div key={i} className="min-h-32 border-b border-r border-line bg-black/20" />;
 
               if (!required || !inWindow) {
                 return (
-                  <div key={i} className={`min-h-32 border-b border-r border-white/5 p-2 ${isToday ? "bg-white/[0.04]" : ""}`}>
+                  <div key={i} className={`min-h-32 border-b border-r border-line p-2 ${isToday ? "bg-raised" : ""}`}>
                     <div className="flex items-center justify-between">
-                      <span className={`text-xs ${isToday ? "font-bold text-white" : "text-zinc-600"}`}>{d.getDate()}</span>
-                      <Moon className="h-3 w-3 text-zinc-700" />
+                      <span className={`text-xs ${isToday ? "font-semibold text-ink" : "text-faint"}`}>{d.getDate()}</span>
+                      <Moon className="h-3 w-3 text-line-strong" />
                     </div>
-                    <p className="mt-2 text-[11px] uppercase tracking-wider text-zinc-700">{inWindow ? "Rest" : "—"}</p>
+                    <p className="mt-2 text-[11px] uppercase tracking-wider text-faint/70">{inWindow ? "Rest" : "—"}</p>
                   </div>
                 );
               }
 
               return (
-                <a key={i} href={klass?.youtube_url ?? "#"} target="_blank" rel="noreferrer" className={`group flex min-h-32 flex-col gap-2 border-b border-r border-white/5 p-2 transition hover:bg-white/[0.04] ${isToday ? "bg-amber-400/10 ring-1 ring-inset ring-amber-400/40" : ""}`}>
+                <a key={i} href={klass?.youtube_url ?? "#"} target="_blank" rel="noreferrer" className={`group flex min-h-32 flex-col gap-2 border-b border-r border-line p-2 transition hover:bg-raised ${isToday ? "bg-coral/[0.08] ring-1 ring-inset ring-coral/40" : ""}`}>
                   <div className="flex items-center justify-between">
-                    <span className={`text-xs ${isToday ? "font-bold text-amber-300" : past ? "text-zinc-300" : "text-zinc-400"}`}>{d.getDate()}</span>
-                    {myDone ? <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" /> : past ? <span className="text-[10px] font-medium text-rose-400">missed</span> : null}
+                    <span className={`text-xs ${isToday ? "font-semibold text-coral" : past ? "text-muted" : "text-faint"}`}>{d.getDate()}</span>
+                    {myDone ? <CheckCircle2 className="h-3.5 w-3.5 text-sage" /> : past ? <span className="text-[10px] font-medium text-coral-deep">missed</span> : null}
                   </div>
                   {klass && klassThumb ? (
                     <div className="relative aspect-video overflow-hidden rounded-md bg-black">
@@ -328,9 +332,9 @@ export default async function HomePage({
                       <div className="absolute bottom-1 left-1 right-1"><p className="line-clamp-2 text-[10px] font-medium leading-tight text-white">{klass.title}</p></div>
                     </div>
                   ) : null}
-                  <div className="mt-auto flex items-center justify-between text-[10px] text-zinc-500">
+                  <div className="mt-auto flex items-center justify-between text-[10px] text-faint">
                     <span>{klass?.duration_minutes ?? "—"} min</span>
-                    {past ? <span>{doneCount}/{roster.length}</span> : null}
+                    {past ? <span className="tabular-nums">{doneCount}/{roster.length}</span> : null}
                   </div>
                 </a>
               );
@@ -344,41 +348,41 @@ export default async function HomePage({
         <section className="fade-up-3 mt-12">
           <div className="flex items-end justify-between">
             <div>
-              <h3 className="text-2xl font-semibold tracking-tight text-white">Skin in the game</h3>
-              <p className="text-sm text-zinc-500">
+              <h3 className="font-display text-2xl font-medium text-ink">Skin in the game</h3>
+              <p className="text-sm text-faint">
                 Each member, each missed session. Pay manually via Venmo to{" "}
-                <a href={`https://venmo.com/${VENMO_HANDLE}`} target="_blank" rel="noreferrer" className="text-white underline decoration-amber-400/60 underline-offset-2 hover:decoration-amber-400">@{VENMO_HANDLE}</a>.
+                <a href={`https://venmo.com/${VENMO_HANDLE}`} target="_blank" rel="noreferrer" className="text-ink underline decoration-clay/60 underline-offset-2 hover:decoration-clay">@{VENMO_HANDLE}</a>.
               </p>
             </div>
           </div>
-          <div className="mt-5 overflow-hidden rounded-3xl border border-white/10 bg-zinc-950/60 backdrop-blur">
+          <div className="mt-5 overflow-hidden rounded-2xl border border-line bg-surface">
             <ul>
               {leaderboard.map((row) => {
                 const isMe = row.member.id === me.id;
                 return (
-                  <li key={row.member.id} className="flex flex-col gap-3 border-b border-white/5 px-5 py-4 last:border-0 sm:flex-row sm:items-center">
+                  <li key={row.member.id} className="flex flex-col gap-3 border-b border-line px-5 py-4 last:border-0 sm:flex-row sm:items-center">
                     <div className="flex min-w-0 items-center gap-3 sm:w-64">
-                      <Avatar name={row.member.name} size={40} />
+                      <Avatar name={row.member.name} size={38} />
                       <div className="min-w-0">
-                        <p className="truncate font-medium text-white">{row.member.name}{isMe ? " · you" : ""}</p>
-                        <p className="text-xs text-zinc-500">{row.completed}/{row.eligible} done</p>
+                        <p className="truncate font-medium text-ink">{row.member.name}{isMe ? " · you" : ""}</p>
+                        <p className="text-xs tabular-nums text-faint">{row.completed}/{row.eligible} done</p>
                       </div>
                     </div>
                     <div className="flex-1">
                       {row.eligible === 0 ? (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-white/5 px-2.5 py-1 text-xs text-zinc-400 ring-1 ring-white/10">Just joined — no required days yet</span>
+                        <span className="inline-flex items-center gap-1 rounded-full border border-line bg-raised px-2.5 py-1 text-xs text-muted">Just joined — no required days yet</span>
                       ) : row.missed.length === 0 ? (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-emerald-400/10 px-2.5 py-1 text-xs text-emerald-300 ring-1 ring-emerald-400/20">Spotless — no missed sessions</span>
+                        <span className="inline-flex items-center gap-1 rounded-full bg-sage/10 px-2.5 py-1 text-xs text-sage ring-1 ring-sage/25">Spotless — no missed sessions</span>
                       ) : (
                         <div className="flex flex-wrap gap-1.5">
-                          {row.missed.map((d) => (<span key={d} className="rounded-md bg-rose-500/10 px-2 py-1 text-[11px] font-medium text-rose-300 ring-1 ring-rose-500/20">{formatDate(d)}</span>))}
+                          {row.missed.map((d) => (<span key={d} className="rounded-md bg-coral-deep/10 px-2 py-1 text-[11px] font-medium text-coral-deep ring-1 ring-coral-deep/25">{formatDate(d)}</span>))}
                         </div>
                       )}
                     </div>
                     <div className="flex items-center justify-end gap-3 sm:w-56">
-                      <span className={`text-lg font-semibold ${row.owed > 0 ? "text-white" : "text-zinc-500"}`}>${row.owed}</span>
+                      <span className={`text-lg font-semibold tabular-nums ${row.owed > 0 ? "text-ink" : "text-faint"}`}>${row.owed}</span>
                       {row.owed > 0 && isMe ? (
-                        <a href={venmoUrl(row.owed, `Yoga Club ${focus.name} — ${row.missed.length} missed`)} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-400 to-rose-500 px-3 py-1.5 text-xs font-semibold text-black shadow-lg shadow-rose-500/20 transition hover:brightness-110">Pay ${row.owed}<ExternalLink className="h-3 w-3" /></a>
+                        <a href={venmoUrl(row.owed, `Yoga Club ${focus.name} — ${row.missed.length} missed`)} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-lg bg-coral px-3 py-1.5 text-xs font-semibold text-ground transition hover:bg-coral-deep">Pay ${row.owed}<ExternalLink className="h-3 w-3" /></a>
                       ) : null}
                     </div>
                   </li>
@@ -417,18 +421,18 @@ function RestDayCard({ nextDate }: { nextDate: Date }) {
   const monthDay = nextDate.toLocaleDateString("en-US", { month: "long", day: "numeric" });
   return (
     <section className="fade-up-3">
-      <div className="overflow-hidden rounded-3xl border border-violet-400/20 bg-gradient-to-br from-violet-500/10 via-zinc-950/60 to-zinc-950/60 p-8 backdrop-blur sm:p-10">
+      <div className="overflow-hidden rounded-2xl border border-line bg-surface p-8 sm:p-10">
         <div className="mx-auto max-w-xl text-center">
-          <div className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500/30 to-indigo-500/20 ring-1 ring-violet-400/30">
-            <Moon className="h-6 w-6 text-violet-200" />
+          <div className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-xl border border-sage/30 bg-sage/10">
+            <Moon className="h-6 w-6 text-sage" />
           </div>
-          <h3 className="mt-5 text-2xl font-semibold tracking-tight text-white sm:text-3xl">No yoga scheduled today</h3>
-          <p className="mt-3 text-base text-zinc-400">Rest is part of the work — no penalty, nothing to log. Hydrate, walk, sleep well.</p>
-          <div className="mt-7 inline-flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-left">
-            <Icon className="h-5 w-5 shrink-0 text-amber-300" />
+          <h3 className="font-display mt-5 text-2xl font-medium text-ink sm:text-3xl">No yoga scheduled today</h3>
+          <p className="mt-3 text-base text-muted">Rest is part of the work — no penalty, nothing to log. Hydrate, walk, sleep well.</p>
+          <div className="mt-7 inline-flex items-center gap-3 rounded-xl border border-line bg-raised px-5 py-3 text-left">
+            <Icon className="h-5 w-5 shrink-0 text-clay" />
             <div>
-              <p className="text-xs font-medium uppercase tracking-wider text-amber-300/80">Next session</p>
-              <p className="text-sm font-semibold text-white">{dayName}, {monthDay} · {theme.label}</p>
+              <p className="text-xs font-medium uppercase tracking-wider text-faint">Next session</p>
+              <p className="text-sm font-semibold text-ink">{dayName}, {monthDay} · {theme.label}</p>
             </div>
           </div>
         </div>
