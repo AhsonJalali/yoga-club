@@ -23,6 +23,14 @@ export const DEMO_CLASSES: ClassItem[] = [
   { id: "c-8", title: "20 Min Daily Yoga Flow - Full Body", instructor: "Charlie Follows", youtube_url: "https://www.youtube.com/watch?v=AkVJtluZLTo", duration_minutes: 20, tags: ["full-body", "flexibility"] },
   { id: "c-9", title: "20 Min Yoga for Flexibility & Relaxation", instructor: "Yoga With Kassandra", youtube_url: "https://www.youtube.com/watch?v=4Lq5Sf9FDpY", duration_minutes: 20, tags: ["stretch", "flexibility", "restorative"] },
   { id: "c-10", title: "20 Min Full Body Yoga to Recharge", instructor: "Yoga With Bird", youtube_url: "https://www.youtube.com/watch?v=lT_dNUpDvUE", duration_minutes: 20, tags: ["full-body", "stretch"] },
+  { id: "c-11", title: "10 Min Morning Yoga Stretch in Bed", instructor: "SarahBeth Yoga", youtube_url: "https://www.youtube.com/watch?v=neRDhPokIWg", duration_minutes: 10, tags: ["morning", "gentle", "beginner"] },
+  { id: "c-12", title: "12 Min Yoga for Hips", instructor: "Yoga With Bird", youtube_url: "https://www.youtube.com/watch?v=SoYieueub6w", duration_minutes: 12, tags: ["hips", "mobility"] },
+  { id: "c-13", title: "12 Min Yoga for Neck, Shoulders, Upper Back", instructor: "Yoga With Tim", youtube_url: "https://www.youtube.com/watch?v=0jqR4zVIs4I", duration_minutes: 12, tags: ["mobility", "back", "spine"] },
+  { id: "c-14", title: "15 Min Morning Yoga Stretch", instructor: "Yoga With Bird", youtube_url: "https://www.youtube.com/watch?v=au4g9pWygJY", duration_minutes: 15, tags: ["morning", "gentle", "beginner"] },
+  { id: "c-15", title: "15 Min Yoga Practice for Strength", instructor: "Patrick Beach", youtube_url: "https://www.youtube.com/watch?v=C8jy0HQIHgY", duration_minutes: 16, tags: ["core", "full-body"] },
+  { id: "c-16", title: "15 Min Full Body Morning Yoga Stretch", instructor: "Sean Vigue", youtube_url: "https://www.youtube.com/watch?v=3vtHmDfzj9E", duration_minutes: 15, tags: ["morning", "full-body", "stretch"] },
+  { id: "c-17", title: "20 Min Beginner Home Morning Yoga Workout", instructor: "Yoga With Tim", youtube_url: "https://www.youtube.com/watch?v=8Zz7wTpqojc", duration_minutes: 18, tags: ["morning", "beginner", "foundation"] },
+  { id: "c-18", title: "20 Min Yoga for Flexibility - Full Body Stretch", instructor: "Travis Eliot", youtube_url: "https://www.youtube.com/watch?v=fyVjVAiWno8", duration_minutes: 20, tags: ["stretch", "flexibility", "full-body"] },
 ];
 
 // Two challenges: May (completed, recap revealed) and June (current, opt-in open).

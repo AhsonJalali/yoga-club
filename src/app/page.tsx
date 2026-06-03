@@ -8,7 +8,7 @@ import { DEMO_MEMBERS, DEMO_CLASSES, DEMO_CHECK_INS, DEMO_CHALLENGES, DEMO_PARTI
 import { isoDate, isRequiredDay, VENMO_HANDLE, venmoUrl, nextRequiredDay, dayTheme, todayEastern } from "../lib/schedule";
 import { currentChallenge, upcomingChallenge, lastEndedChallenge, revealedRecapChallenge, joinOpen, participantsFor, windowLabel, requiredDowsLabel } from "../lib/challenges";
 import { requiredDatesBetween } from "../lib/recap";
-import { pickClassForDate } from "../lib/picker";
+import { assignChallengeClasses } from "../lib/picker";
 import { youtubeEmbedUrl, youtubeThumb } from "../lib/youtube";
 import { Avatar } from "../components/Avatar";
 import { CheckInRoster } from "../components/CheckInRoster";
@@ -119,7 +119,8 @@ export default async function HomePage({
   const todayStatusByMember: Record<string, "done" | "skipped" | undefined> = {};
   for (const m of roster) todayStatusByMember[m.id] = checkInsByMemberDate.get(`${m.id}|${todayIso}`)?.status;
 
-  const todaysClass = pickClassForDate(classes, today);
+  const sessionByDate = assignChallengeClasses(classes, focus);
+  const todaysClass = sessionByDate.get(todayIso) ?? null;
   const embed = todaysClass ? youtubeEmbedUrl(todaysClass.youtube_url) : null;
   const thumb = todaysClass ? youtubeThumb(todaysClass.youtube_url) : null;
 
@@ -214,7 +215,7 @@ export default async function HomePage({
               joinByLabel={focus.join_closes_at ? new Date(focus.join_closes_at + "T00:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" }) : null}
               memberCount={roster.length}
             />
-          ) : (
+          ) : requiredToday ? (
             <>
               <div className="overflow-hidden rounded-2xl border border-line bg-surface shadow-[0_2px_12px_-4px_rgba(0,0,0,0.5)]">
                 {todaysClass ? (
@@ -239,16 +240,14 @@ export default async function HomePage({
                     </div>
                   </>
                 ) : (
-                  <div className="p-10 text-center text-muted">No classes seeded yet.</div>
+                  <div className="p-10 text-center text-muted">No session assigned today.</div>
                 )}
               </div>
 
-              {requiredToday ? (
-                <CheckInRoster members={roster} meId={me.id} sessionDate={todayIso} initialStatusByMember={todayStatusByMember} isRequiredDay={true} disabled={!enrolledMe || !isActive} disabledMessage={!enrolledMe ? "You're not in this challenge." : !isActive ? "This challenge isn't active." : undefined} />
-              ) : (
-                <RestDayCard nextDate={nextRequiredDay(today)} />
-              )}
+              <CheckInRoster members={roster} meId={me.id} sessionDate={todayIso} initialStatusByMember={todayStatusByMember} isRequiredDay={true} disabled={!enrolledMe || !isActive} disabledMessage={!enrolledMe ? "You're not in this challenge." : !isActive ? "This challenge isn't active." : undefined} />
             </>
+          ) : (
+            <RestDayCard nextDate={nextRequiredDay(today)} />
           )}
         </div>
 
@@ -316,7 +315,7 @@ export default async function HomePage({
               const inWindow = dIso >= focus.start_date && dIso <= focus.end_date;
               const inMonth = d.getMonth() === anchor.getMonth();
               const isToday = dIso === todayIso;
-              const klass = pickClassForDate(classes, d);
+              const klass = sessionByDate.get(dIso) ?? null;
               const klassThumb = klass ? youtubeThumb(klass.youtube_url) : null;
               const doneCount = (doneByDate.get(dIso) ?? new Set()).size;
               const myCi = checkInsByMemberDate.get(`${me.id}|${dIso}`);

@@ -11,7 +11,7 @@
 //      on that. It's a proxy for practice time, not a guarantee.
 
 import { CheckIn, ClassItem, Member, Challenge, ChallengeParticipant } from "./supabase";
-import { pickClassForDate } from "./picker";
+import { pickClassForDate, assignChallengeClasses } from "./picker";
 import { APP_TZ, isoDate } from "./schedule";
 
 // ---------------------------------------------------------------------------
@@ -145,15 +145,15 @@ export function computeRecap(
   const joinedById = new Map(rows.map((p) => [p.member_id, p.joined_at.slice(0, 10)]));
   const memberIds = new Set(rows.map((p) => p.member_id));
   const scopedMembers = members.filter((m) => memberIds.has(m.id));
-  // Designated-class duration for a date, cached so we don't re-pick per member.
-  const durationCache = new Map<string, number>();
+  // Minutes come from the challenge's assigned session for each day (the same
+  // no-repeat 10/15/20 plan the calendar shows). Done-on-a-rest-day falls back
+  // to the weekday designated class.
+  const assigned = assignChallengeClasses(classes, challenge);
   const durationForDate = (dateIso: string): number => {
-    const hit = durationCache.get(dateIso);
-    if (hit !== undefined) return hit;
+    const a = assigned.get(dateIso);
+    if (a) return a.duration_minutes;
     const klass = pickClassForDate(classes, new Date(dateIso + "T00:00:00"));
-    const mins = klass?.duration_minutes ?? 20; // fallback if library empty
-    durationCache.set(dateIso, mins);
-    return mins;
+    return klass?.duration_minutes ?? 20;
   };
 
   // Index done check-ins by member, only those belonging to this challenge.
