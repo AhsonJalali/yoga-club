@@ -27,6 +27,7 @@ export type Member = {
   name: string;
   venmo_handle: string | null;
   created_at: string;
+  avatar_url: string | null;
 };
 
 export type ClassItem = {

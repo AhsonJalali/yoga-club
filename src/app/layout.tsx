@@ -74,7 +74,7 @@ export default async function RootLayout({
                 <span className="hidden h-4 w-px bg-line-strong sm:inline-block" />
                 <Link href="/me" className="group flex items-center gap-2.5" title="Your profile & stats">
                   <span className="hidden text-xs text-muted transition group-hover:text-ink sm:inline">{me.name}</span>
-                  <Avatar name={me.name} size={30} />
+                  <Avatar name={me.name} size={30} src={me.avatar_url} />
                 </Link>
                 <form action="/logout" method="POST">
                   <button
