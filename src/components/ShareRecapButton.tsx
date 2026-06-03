@@ -49,7 +49,7 @@ export function ShareRecapButton() {
       type="button"
       onClick={handle}
       disabled={busy}
-      className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-400 to-rose-500 px-5 py-3 text-sm font-semibold text-black shadow-lg shadow-rose-500/20 transition hover:brightness-110 disabled:opacity-60"
+      className="inline-flex items-center gap-2 rounded-lg bg-coral px-5 py-3 text-sm font-semibold text-ground transition hover:bg-coral-deep disabled:opacity-60"
     >
       {canNativeShare ? <Share2 className="h-4 w-4" /> : <Download className="h-4 w-4" />}
       {busy ? "Preparing image…" : canNativeShare ? "Share your recap" : "Download your recap"}

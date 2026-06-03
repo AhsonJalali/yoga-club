@@ -48,4 +48,27 @@ export type CheckIn = {
   status: CheckInStatus;
   note: string | null;
   created_at: string;
+  challenge_id: string | null;
+  rating: number | null;      // 1-5, optional, set after a "done" check-in
+  photo_url: string | null;   // optional shared session photo (Supabase Storage)
+};
+
+export type Challenge = {
+  id: string;
+  slug: string;
+  name: string;
+  start_date: string;        // YYYY-MM-DD
+  end_date: string;          // YYYY-MM-DD (inclusive)
+  join_closes_at: string | null; // YYYY-MM-DD; last day to opt in (grace window)
+  required_dows: number[];   // 0=Sun .. 6=Sat
+  penalty_usd: number;
+  reveal_at: string;         // ISO timestamp the recap unlocks
+  created_at: string;
+};
+
+export type ChallengeParticipant = {
+  id: string;
+  challenge_id: string;
+  member_id: string;
+  joined_at: string;
 };

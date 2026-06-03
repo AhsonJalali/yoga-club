@@ -49,7 +49,7 @@ export function RulesButton({ autoOpen = false }: Props) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/30 bg-amber-400/10 px-3 py-1.5 text-xs font-semibold text-amber-200 transition hover:bg-amber-400/20 hover:text-amber-100"
+        className="inline-flex items-center gap-1.5 rounded-full border border-line bg-raised px-3 py-1.5 text-xs font-medium text-muted transition hover:text-ink"
       >
         <Info className="h-3.5 w-3.5" />
         Rules
@@ -72,48 +72,48 @@ function RulesModal({ onClose }: { onClose: () => void }) {
       onClick={onClose}
     >
       <div
-        className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl border border-white/10 bg-zinc-950 p-6 shadow-2xl shadow-black/50 sm:p-7"
+        className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-line bg-surface p-6 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.7)] sm:p-7"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={onClose}
           aria-label="Close"
-          className="absolute right-3 top-3 rounded-full p-1.5 text-zinc-500 transition hover:bg-white/5 hover:text-white"
+          className="absolute right-3 top-3 rounded-full p-1.5 text-faint transition hover:bg-raised hover:text-ink"
         >
           <X className="h-5 w-5" />
         </button>
 
         <div className="mb-5 pr-8">
-          <p className="text-xs font-medium uppercase tracking-[0.18em] text-amber-300/80">
+          <p className="text-xs font-medium uppercase tracking-[0.18em] text-clay">
             How it works
           </p>
-          <h3 className="mt-1 text-2xl font-semibold tracking-tight text-white">
+          <h3 className="font-display mt-1 text-2xl font-medium text-ink">
             The rules
           </h3>
         </div>
 
-        <ul className="space-y-4 text-sm leading-relaxed text-zinc-300">
+        <ul className="space-y-4 text-sm leading-relaxed text-muted">
           <Rule
-            icon={<Calendar className="h-4 w-4 text-amber-400" />}
-            iconBg="bg-amber-400/15 ring-amber-400/30"
+            icon={<Calendar className="h-4 w-4 text-clay" />}
+            iconBg="bg-clay/15 ring-clay/30"
             title="Sign up = commit"
             body="If you join, you're in the club. Three sessions a week, every week."
           />
           <Rule
-            icon={<Heart className="h-4 w-4 text-rose-400" />}
-            iconBg="bg-rose-500/15 ring-rose-400/30"
+            icon={<Heart className="h-4 w-4 text-sage" />}
+            iconBg="bg-sage/15 ring-sage/30"
             title="Self-paced, but same-day"
             body="Mon · Wed · Fri. Do the session any time during the day, but it must happen that day. ~20 minutes, beginner-friendly."
           />
           <Rule
-            icon={<DollarSign className="h-4 w-4 text-emerald-400" />}
-            iconBg="bg-emerald-400/15 ring-emerald-400/30"
+            icon={<DollarSign className="h-4 w-4 text-coral" />}
+            iconBg="bg-coral/15 ring-coral/30"
             title="Miss a day → $25 to the pot"
             body="Honor system. Tap 'No, I didn't' and Venmo @AceJalali $25. No drama, no shame — happens to everyone."
           />
           <Rule
-            icon={<Users className="h-4 w-4 text-violet-300" />}
-            iconBg="bg-violet-400/15 ring-violet-400/30"
+            icon={<Users className="h-4 w-4 text-sage" />}
+            iconBg="bg-sage/15 ring-sage/30"
             title="End of month → group dinner"
             body="Whatever's in the pot funds dinner with everyone who participated. We're building a habit together — and eating together."
           />
@@ -122,7 +122,7 @@ function RulesModal({ onClose }: { onClose: () => void }) {
         <button
           type="button"
           onClick={onClose}
-          className="mt-7 w-full rounded-xl bg-gradient-to-r from-amber-400 to-rose-500 px-5 py-3 text-sm font-semibold text-black transition hover:brightness-110 active:scale-[0.98]"
+          className="mt-7 w-full rounded-lg bg-coral px-5 py-3 text-sm font-semibold text-ground transition hover:bg-coral-deep active:scale-[0.98]"
         >
           Got it
         </button>
@@ -149,8 +149,8 @@ function Rule({
         {icon}
       </span>
       <span>
-        <strong className="block font-semibold text-white">{title}</strong>
-        <span className="mt-0.5 block text-zinc-400">{body}</span>
+        <strong className="block font-semibold text-ink">{title}</strong>
+        <span className="mt-0.5 block text-muted">{body}</span>
       </span>
     </li>
   );

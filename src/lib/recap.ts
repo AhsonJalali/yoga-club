@@ -10,22 +10,9 @@
 //      created_at (when you tapped check-in), so time-of-day buckets are based
 //      on that. It's a proxy for practice time, not a guarantee.
 
-import { CheckIn, ClassItem, Member } from "./supabase";
+import { CheckIn, ClassItem, Member, Challenge, ChallengeParticipant } from "./supabase";
 import { pickClassForDate } from "./picker";
-import { APP_TZ, CLUB_START, dayKind, isoDate, PENALTY_USD } from "./schedule";
-
-// The challenge runs through end of Friday May 29, 2026. The recap covers the
-// whole month of May; the reveal unlocks at midnight ET on Saturday May 30.
-export const MONTH_START = "2026-05-01";
-export const MONTH_END = "2026-05-31";
-export const CHALLENGE_END = "2026-05-29";
-export const MONTH_LABEL = "May";
-// Midnight ET on Sat May 30 (EDT = UTC-4 in May).
-export const RECAP_REVEAL_ISO = "2026-05-30T00:00:00-04:00";
-
-export function isRecapRevealed(now: Date = new Date()): boolean {
-  return now.getTime() >= new Date(RECAP_REVEAL_ISO).getTime();
-}
+import { APP_TZ, isoDate } from "./schedule";
 
 // ---------------------------------------------------------------------------
 // Time-of-day buckets
@@ -99,6 +86,9 @@ export type MemberRecap = {
   missed: number;            // required days missed
   owed: number;              // missed * PENALTY_USD
   bestStreak: number;        // longest run of consecutive required days done
+  avgRating: number | null;  // average of the ratings they gave, 1 decimal
+  ratedCount: number;        // how many sessions they rated
+  photos: string[];          // shared session photo URLs
 };
 
 export type GroupRecap = {
@@ -114,6 +104,8 @@ export type GroupRecap = {
   // Honor roll: members with the most completed required sessions (ties broken
   // by completion %), top few. Spotless = missed 0 of a non-zero eligible set.
   honorRoll: { member: Member; completed: number; eligible: number; spotless: boolean }[];
+  avgRating: number | null;   // club-wide average rating
+  photos: { url: string; memberName: string }[]; // shared moments across the club
 };
 
 export type Recap = {
@@ -121,26 +113,38 @@ export type Recap = {
   group: GroupRecap;
 };
 
-// Required dates in [startIso, endIso], inclusive.
-function requiredDatesBetween(startIso: string, endIso: string): string[] {
+// Required dates in [startIso, endIso] inclusive, matching the challenge's days.
+export function requiredDatesBetween(startIso: string, endIso: string, requiredDows: number[]): string[] {
   const out: string[] = [];
   const start = new Date(startIso + "T00:00:00");
   const end = new Date(endIso + "T00:00:00");
   for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-    if (dayKind(d) === "required") out.push(isoDate(d));
+    if (requiredDows.includes(d.getDay())) out.push(isoDate(d));
   }
   return out;
 }
 
-function inMay(dateIso: string): boolean {
-  return dateIso >= MONTH_START && dateIso <= MONTH_END;
+// A check-in counts toward a challenge if it's explicitly tagged to it, or
+// (legacy/untagged) falls inside the challenge's date window.
+function belongsToChallenge(ci: CheckIn, challenge: Challenge): boolean {
+  if (ci.challenge_id) return ci.challenge_id === challenge.id;
+  return ci.session_date >= challenge.start_date && ci.session_date <= challenge.end_date;
 }
 
+// Per-challenge recap: scoped to the challenge's enrolled participants, its
+// date window, its required days, and its penalty.
 export function computeRecap(
   members: Member[],
   classes: ClassItem[],
-  checkIns: CheckIn[]
+  checkIns: CheckIn[],
+  challenge: Challenge,
+  participants: ChallengeParticipant[]
 ): Recap {
+  const PENALTY_USD = challenge.penalty_usd;
+  const rows = participants.filter((p) => p.challenge_id === challenge.id);
+  const joinedById = new Map(rows.map((p) => [p.member_id, p.joined_at.slice(0, 10)]));
+  const memberIds = new Set(rows.map((p) => p.member_id));
+  const scopedMembers = members.filter((m) => memberIds.has(m.id));
   // Designated-class duration for a date, cached so we don't re-pick per member.
   const durationCache = new Map<string, number>();
   const durationForDate = (dateIso: string): number => {
@@ -152,23 +156,25 @@ export function computeRecap(
     return mins;
   };
 
-  // Index done check-ins by member, only within May.
+  // Index done check-ins by member, only those belonging to this challenge.
   const doneByMember = new Map<string, CheckIn[]>();
   for (const ci of checkIns) {
-    if (ci.status !== "done" || !inMay(ci.session_date)) continue;
+    if (ci.status !== "done" || !belongsToChallenge(ci, challenge)) continue;
     const arr = doneByMember.get(ci.member_id) ?? [];
     arr.push(ci);
     doneByMember.set(ci.member_id, arr);
   }
 
-  const allRequired = requiredDatesBetween(CLUB_START, CHALLENGE_END);
+  const allRequired = requiredDatesBetween(challenge.start_date, challenge.end_date, challenge.required_dows);
 
   const byMember = new Map<string, MemberRecap>();
   const groupBucketCounts: Record<BucketKey, number> = {
     earlyMorning: 0, morning: 0, afternoon: 0, evening: 0, lateNight: 0,
   };
+  const groupPhotos: { url: string; memberName: string }[] = [];
+  const allRatings: number[] = [];
 
-  for (const m of members) {
+  for (const m of scopedMembers) {
     const done = doneByMember.get(m.id) ?? [];
     const doneDates = new Set(done.map((c) => c.session_date));
 
@@ -192,14 +198,21 @@ export function computeRecap(
     const buckets: BucketCount[] = BUCKETS.map((b) => ({ key: b.key, count: counts[b.key] }));
     const favorite = pickFavorite(buckets);
 
-    // Required-day accounting, bounded by when they joined.
-    const memberSince = m.created_at.slice(0, 10);
-    const since = memberSince > CLUB_START ? memberSince : CLUB_START;
+    // Required-day accounting, bounded by when they joined the challenge.
+    const joinedAt = joinedById.get(m.id) ?? challenge.start_date;
+    const since = joinedAt > challenge.start_date ? joinedAt : challenge.start_date;
     const eligibleDates = allRequired.filter((d) => d >= since);
     let completed = 0;
     for (const d of eligibleDates) if (doneDates.has(d)) completed += 1;
     const eligible = eligibleDates.length;
     const missed = eligible - completed;
+
+    // Ratings + shared photos.
+    const ratings = done.map((c) => c.rating).filter((r): r is number => typeof r === "number");
+    for (const r of ratings) allRatings.push(r);
+    const avgRating = ratings.length ? Math.round((ratings.reduce((a, b) => a + b, 0) / ratings.length) * 10) / 10 : null;
+    const photos = done.filter((c) => c.photo_url).map((c) => c.photo_url as string);
+    for (const url of photos) groupPhotos.push({ url, memberName: m.name });
 
     byMember.set(m.id, {
       member: m,
@@ -215,6 +228,9 @@ export function computeRecap(
       missed,
       owed: missed * PENALTY_USD,
       bestStreak: longestStreak(eligibleDates, doneDates),
+      avgRating,
+      ratedCount: ratings.length,
+      photos,
     });
   }
 
@@ -241,9 +257,11 @@ export function computeRecap(
     totalHours: Math.round((totalMinutes / 60) * 10) / 10,
     favorite: pickFavorite(groupBuckets),
     buckets: groupBuckets,
-    memberCount: members.length,
+    memberCount: scopedMembers.length,
     participants: recaps.filter((r) => r.sessions > 0).length,
     honorRoll,
+    avgRating: allRatings.length ? Math.round((allRatings.reduce((a, b) => a + b, 0) / allRatings.length) * 10) / 10 : null,
+    photos: groupPhotos,
   };
 
   return { byMember, group };

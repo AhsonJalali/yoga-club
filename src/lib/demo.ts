@@ -1,7 +1,7 @@
 // Mock data shown when Supabase isn't configured. Lets you click through the
 // UI to see the visual vibe without standing up a backend.
 
-import { Member, ClassItem, CheckIn } from "./supabase";
+import { Member, ClassItem, CheckIn, Challenge, ChallengeParticipant } from "./supabase";
 
 export const DEMO_MEMBERS: Member[] = [
   { id: "m-amir", email: "amir@example.com", name: "Amir", venmo_handle: "AceJalali", created_at: "2026-04-01T00:00:00Z" },
@@ -25,28 +25,73 @@ export const DEMO_CLASSES: ClassItem[] = [
   { id: "c-10", title: "20 Min Full Body Yoga to Recharge", instructor: "Yoga With Bird", youtube_url: "https://www.youtube.com/watch?v=lT_dNUpDvUE", duration_minutes: 20, tags: ["full-body", "stretch"] },
 ];
 
-// April 2026 + early May required dates: realistic-looking attendance.
-function ci(member_id: string, session_date: string): CheckIn {
-  return { id: `${member_id}-${session_date}`, member_id, class_id: null, session_date, status: "done", note: null, created_at: "" };
+// Two challenges: May (completed, recap revealed) and June (current, opt-in open).
+export const DEMO_CHALLENGES: Challenge[] = [
+  { id: "ch-may", slug: "may-2026", name: "May 2026", start_date: "2026-05-06", end_date: "2026-05-29", join_closes_at: "2026-05-06", required_dows: [1, 3, 5], penalty_usd: 25, reveal_at: "2026-05-30T00:00:00-04:00", created_at: "2026-05-01T00:00:00Z" },
+  { id: "ch-june", slug: "june-2026", name: "June 2026", start_date: "2026-06-01", end_date: "2026-06-26", join_closes_at: "2026-06-07", required_dows: [1, 3, 5], penalty_usd: 25, reveal_at: "2026-06-27T00:00:00-04:00", created_at: "2026-05-25T00:00:00Z" },
+];
+
+// May: everyone. June: Sara, Priya, Jordan are in — Amir (the demo "me") is NOT,
+// so the opt-in flow is visible.
+const enroll = (challenge_id: string, ids: string[], joined_at: string): ChallengeParticipant[] =>
+  ids.map((member_id, i) => ({ id: `${challenge_id}-p${i}`, challenge_id, member_id, joined_at }));
+
+export const DEMO_PARTICIPANTS: ChallengeParticipant[] = [
+  ...enroll("ch-may", ["m-amir", "m-sara", "m-jordan", "m-priya", "m-leo", "m-maya"], "2026-05-06T00:00:00Z"),
+  ...enroll("ch-june", ["m-sara", "m-priya", "m-jordan"], "2026-06-01T00:00:00Z"),
+];
+
+function ci(member_id: string, session_date: string, opts: { hour?: number; challenge_id?: string | null } = {}): CheckIn {
+  const created_at = opts.hour != null ? `${session_date}T${String(opts.hour).padStart(2, "0")}:00:00-04:00` : "";
+  return { id: `${member_id}-${session_date}`, member_id, class_id: null, session_date, status: "done", note: null, created_at, challenge_id: opts.challenge_id ?? null, rating: null, photo_url: null };
 }
 
-const DATES = {
-  amir: ["2026-04-01", "2026-04-03", "2026-04-06", "2026-04-10", "2026-04-13", "2026-04-17", "2026-04-22", "2026-04-24", "2026-04-27", "2026-04-29", "2026-05-01"],
-  sara: ["2026-04-01", "2026-04-06", "2026-04-10", "2026-04-17", "2026-04-24", "2026-04-27"],
-  jordan: ["2026-04-06", "2026-04-13", "2026-04-20", "2026-04-27"],
-  priya: ["2026-04-01", "2026-04-03", "2026-04-06", "2026-04-08", "2026-04-10", "2026-04-13", "2026-04-15", "2026-04-17", "2026-04-20", "2026-04-22", "2026-04-24", "2026-04-27", "2026-04-29", "2026-05-01"],
-  leo: ["2026-04-17", "2026-04-24", "2026-05-01"],
-  maya: ["2026-04-22", "2026-04-27", "2026-05-01"],
+// Pre-club April practice (untagged — belongs to no challenge).
+const APRIL: Record<string, string[]> = {
+  "m-amir": ["2026-04-01", "2026-04-06", "2026-04-13", "2026-04-22", "2026-04-29"],
+  "m-priya": ["2026-04-03", "2026-04-10", "2026-04-17", "2026-04-24"],
+};
+
+// May challenge sessions with check-in times [date, ET hour].
+const MAY: Record<string, [string, number][]> = {
+  "m-amir": [["2026-05-06", 19], ["2026-05-08", 20], ["2026-05-10", 9], ["2026-05-11", 18], ["2026-05-13", 22], ["2026-05-15", 19], ["2026-05-18", 7], ["2026-05-20", 20], ["2026-05-22", 21], ["2026-05-27", 19]],
+  "m-sara": [["2026-05-06", 14], ["2026-05-11", 13], ["2026-05-15", 16], ["2026-05-20", 15], ["2026-05-22", 12], ["2026-05-27", 14]],
+  "m-jordan": [["2026-05-08", 23], ["2026-05-15", 22], ["2026-05-22", 21], ["2026-05-29", 23]],
+  "m-priya": [["2026-05-06", 8], ["2026-05-08", 9], ["2026-05-11", 7], ["2026-05-13", 8], ["2026-05-15", 9], ["2026-05-18", 7], ["2026-05-20", 8], ["2026-05-22", 9], ["2026-05-25", 7], ["2026-05-27", 8], ["2026-05-29", 9]],
+  "m-leo": [["2026-05-06", 22], ["2026-05-13", 23], ["2026-05-20", 22], ["2026-05-27", 21], ["2026-05-29", 23]],
+  "m-maya": [["2026-05-06", 13], ["2026-05-08", 15], ["2026-05-13", 14], ["2026-05-15", 16], ["2026-05-20", 13], ["2026-05-22", 15], ["2026-05-27", 14]],
+};
+
+// June challenge — a little activity on day one (Mon Jun 1).
+const JUNE: Record<string, [string, number][]> = {
+  "m-priya": [["2026-06-01", 8]],
+  "m-sara": [["2026-06-01", 13]],
 };
 
 export const DEMO_CHECK_INS: CheckIn[] = [
-  ...DATES.amir.map((d) => ci("m-amir", d)),
-  ...DATES.sara.map((d) => ci("m-sara", d)),
-  ...DATES.jordan.map((d) => ci("m-jordan", d)),
-  ...DATES.priya.map((d) => ci("m-priya", d)),
-  ...DATES.leo.map((d) => ci("m-leo", d)),
-  ...DATES.maya.map((d) => ci("m-maya", d)),
+  ...Object.entries(APRIL).flatMap(([mid, dates]) => dates.map((d) => ci(mid, d))),
+  ...Object.entries(MAY).flatMap(([mid, entries]) => entries.map(([d, h]) => ci(mid, d, { hour: h, challenge_id: "ch-may" }))),
+  ...Object.entries(JUNE).flatMap(([mid, entries]) => entries.map(([d, h]) => ci(mid, d, { hour: h, challenge_id: "ch-june" }))),
 ];
+
+// Sprinkle ratings + a few shared photos onto May check-ins so the recap's
+// "How it felt" + "moments" render in demo mode. (picsum = deterministic stand-ins.)
+const RATINGS: Record<string, Record<string, number>> = {
+  "m-amir": { "2026-05-06": 5, "2026-05-08": 4, "2026-05-11": 5, "2026-05-13": 3, "2026-05-15": 4, "2026-05-18": 5, "2026-05-20": 4, "2026-05-27": 5 },
+  "m-priya": { "2026-05-06": 5, "2026-05-13": 5, "2026-05-20": 4, "2026-05-27": 5 },
+  "m-sara": { "2026-05-06": 4, "2026-05-15": 5 },
+};
+const PHOTOS: Record<string, Record<string, string>> = {
+  "m-amir": { "2026-05-06": "https://picsum.photos/seed/amir-mat/600", "2026-05-15": "https://picsum.photos/seed/amir-pose/600", "2026-05-27": "https://picsum.photos/seed/amir-flow/600" },
+  "m-priya": { "2026-05-13": "https://picsum.photos/seed/priya-mat/600" },
+  "m-sara": { "2026-05-15": "https://picsum.photos/seed/sara-mat/600" },
+  "m-maya": { "2026-05-20": "https://picsum.photos/seed/maya-mat/600" },
+};
+for (const c of DEMO_CHECK_INS) {
+  if (c.challenge_id !== "ch-may") continue;
+  c.rating = RATINGS[c.member_id]?.[c.session_date] ?? null;
+  c.photo_url = PHOTOS[c.member_id]?.[c.session_date] ?? null;
+}
 
 // "Logged-in" demo user.
 export const DEMO_ME: Member = DEMO_MEMBERS[0];

@@ -1,37 +1,61 @@
 @import "tailwindcss";
 
+/*
+  Design system — "boutique yoga studio meets Strava club challenge".
+  Warm charcoal base, bone text, sage + clay naturals, muted coral as the single
+  athletic accent (rank #1, active state, progress, CTAs). Flat surfaces, hairline
+  borders, soft shadows — no neon, glass, or rainbow gradients.
+*/
 @theme inline {
-  --color-background: #07070a;
-  --color-foreground: #fafafa;
+  --color-ground: #14110d;        /* warm charcoal page */
+  --color-surface: #1b1713;     /* card */
+  --color-raised: #221d18;      /* raised / hover */
+  --color-line: #2c2620;        /* hairline border */
+  --color-line-strong: #3a332b;
+  --color-ink: #f1ebe1;         /* warm bone text */
+  --color-muted: #a89d8d;       /* secondary text */
+  --color-faint: #786d5e;       /* tertiary text */
+  --color-sage: #a3b29c;        /* eucalyptus — calm positive */
+  --color-sage-deep: #6f8470;
+  --color-clay: #c2926a;        /* clay / terracotta — earthy */
+  --color-coral: #e07a52;       /* athletic accent — use sparingly */
+  --color-coral-deep: #c2603a;
+
+  --color-background: #14110d;
+  --color-foreground: #f1ebe1;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-fraunces);
 }
 
 html, body {
-  background: #07070a;
-  color: #fafafa;
+  background: var(--color-ground);
+  color: var(--color-ink);
 }
 
 body {
   font-family: var(--font-geist-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
-  background-image:
-    radial-gradient(1200px 600px at 85% -10%, rgba(244, 63, 94, 0.18), transparent 60%),
-    radial-gradient(900px 500px at -10% 5%, rgba(245, 158, 11, 0.16), transparent 60%),
-    radial-gradient(800px 700px at 50% 110%, rgba(99, 102, 241, 0.18), transparent 60%);
+  /* Flat warm base with a barely-there top warmth — no decorative blobs. */
+  background-color: #14110d;
+  background-image: linear-gradient(180deg, #171310 0%, #14110d 38%);
   background-attachment: fixed;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Subtle scrollbar in the dark theme */
+/* Editorial serif for display headings. */
+.font-display { font-family: var(--font-fraunces), Georgia, "Times New Roman", serif; }
+
+/* Warm, quiet scrollbar */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
-::-webkit-scrollbar-thumb { background: #2a2a35; border-radius: 6px; }
-::-webkit-scrollbar-thumb:hover { background: #3a3a48; }
+::-webkit-scrollbar-thumb { background: #2c2620; border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: #3a332b; }
 ::-webkit-scrollbar-track { background: transparent; }
 
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
-.fade-up { animation: fadeUp 400ms ease-out both; }
-.fade-up-2 { animation: fadeUp 400ms ease-out 80ms both; }
-.fade-up-3 { animation: fadeUp 400ms ease-out 160ms both; }
+.fade-up { animation: fadeUp 350ms ease-out both; }
+.fade-up-2 { animation: fadeUp 350ms ease-out 70ms both; }
+.fade-up-3 { animation: fadeUp 350ms ease-out 140ms both; }

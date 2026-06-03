@@ -79,7 +79,7 @@ export function AuthForm({ mode, initialError }: Props) {
       <form
         onSubmit={onSubmit}
         method="POST"
-        className="mt-6 space-y-4 rounded-3xl border border-white/10 bg-zinc-950/60 p-6 backdrop-blur"
+        className="mt-6 space-y-4 rounded-2xl border border-line bg-surface p-6"
       >
         <Field label="Your name" name="name" autoComplete="name" placeholder="Sara" />
         <Field label="Email" name="email" type="email" autoComplete="email" placeholder="you@example.com" />
@@ -91,16 +91,16 @@ export function AuthForm({ mode, initialError }: Props) {
           placeholder="At least 6 characters"
         />
 
-        {error ? <p className="text-sm text-rose-400">{error}</p> : null}
+        {error ? <p className="text-sm text-coral-deep">{error}</p> : null}
 
         <button
           type="submit"
           disabled={submitting}
-          className="w-full rounded-xl bg-gradient-to-r from-amber-400 to-rose-500 px-4 py-3 text-sm font-semibold text-black shadow-lg shadow-rose-500/20 transition hover:shadow-rose-500/40 hover:brightness-110 disabled:opacity-60"
+          className="w-full rounded-xl bg-coral px-4 py-3 text-sm font-semibold text-ground transition hover:bg-coral-deep disabled:opacity-60"
         >
           {submitting ? "Creating account…" : "Create account"}
         </button>
-        <p className="text-center text-[11px] text-zinc-500">
+        <p className="text-center text-[11px] text-faint">
           No email verification — just a name, an email, and a password you&apos;ll remember.
         </p>
       </form>
@@ -111,7 +111,7 @@ export function AuthForm({ mode, initialError }: Props) {
     <form
       onSubmit={onSubmit}
       method="POST"
-      className="mt-6 space-y-4 rounded-3xl border border-white/10 bg-zinc-950/60 p-6 backdrop-blur"
+      className="mt-6 space-y-4 rounded-2xl border border-line bg-surface p-6"
     >
       <Field label="Email" name="email" type="email" autoComplete="email" placeholder="you@example.com" />
       <Field
@@ -122,16 +122,16 @@ export function AuthForm({ mode, initialError }: Props) {
         placeholder="Your password"
       />
 
-      {error ? <p className="text-sm text-rose-400">{error}</p> : null}
+      {error ? <p className="text-sm text-coral-deep">{error}</p> : null}
 
       <button
         type="submit"
         disabled={submitting}
-        className="w-full rounded-xl bg-gradient-to-r from-amber-400 to-rose-500 px-4 py-3 text-sm font-semibold text-black shadow-lg shadow-rose-500/20 transition hover:shadow-rose-500/40 hover:brightness-110 disabled:opacity-60"
+        className="w-full rounded-xl bg-coral px-4 py-3 text-sm font-semibold text-ground transition hover:bg-coral-deep disabled:opacity-60"
       >
         {submitting ? "Signing in…" : "Sign in"}
       </button>
-      <p className="text-center text-[11px] text-zinc-500">
+      <p className="text-center text-[11px] text-faint">
         Forgot your password? Ask whoever runs the club to reset it for you.
       </p>
     </form>
@@ -153,14 +153,14 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="text-xs font-medium uppercase tracking-wider text-zinc-400">{label}</span>
+      <span className="text-xs font-medium uppercase tracking-wider text-faint">{label}</span>
       <input
         name={name}
         type={type}
         required
         autoComplete={autoComplete}
         placeholder={placeholder}
-        className="mt-2 block w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-white placeholder:text-zinc-500 focus:border-amber-400/50 focus:outline-none focus:ring-2 focus:ring-amber-400/30"
+        className="mt-2 block w-full rounded-xl border border-line bg-raised px-3 py-2.5 text-ink placeholder:text-faint focus:border-coral/50 focus:outline-none focus:ring-2 focus:ring-coral/30"
       />
     </label>
   );

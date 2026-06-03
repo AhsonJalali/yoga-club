@@ -95,7 +95,7 @@ export function ConfettiBurst() {
     resize();
     window.addEventListener("resize", resize);
 
-    const colors = ["#fbbf24", "#fb7185", "#a78bfa", "#34d399", "#60a5fa", "#f472b6"];
+    const colors = ["#e07a52", "#c2926a", "#a3b29c", "#c2603a", "#d9a679", "#8a9e8b"];
     const W = () => window.innerWidth;
     type P = { x: number; y: number; vx: number; vy: number; rot: number; vr: number; size: number; color: string; shape: number };
     const N = 160;
