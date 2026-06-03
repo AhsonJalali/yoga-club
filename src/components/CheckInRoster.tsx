@@ -100,6 +100,7 @@ export function CheckInRoster({
 
       <MyCard
         name={members.find((m) => m.id === meId)?.name ?? "You"}
+        avatarUrl={members.find((m) => m.id === meId)?.avatar_url ?? null}
         status={myStatus}
         onMark={onMark}
         onMoment={() => setShowMomentModal(true)}
@@ -123,6 +124,7 @@ export function CheckInRoster({
 
 function MyCard({
   name,
+  avatarUrl,
   status,
   onMark,
   onMoment,
@@ -132,6 +134,7 @@ function MyCard({
   disabledMessage,
 }: {
   name: string;
+  avatarUrl: string | null;
   status: CheckInStatus | undefined;
   onMark: (status: "done" | "skipped" | "clear") => void;
   onMoment: () => void;
@@ -146,7 +149,7 @@ function MyCard({
     return (
       <div className="mt-6 overflow-hidden rounded-2xl border border-line bg-surface p-6">
         <div className="flex flex-col items-center gap-5 sm:flex-row">
-          <Avatar name={name} size={68} ring={null} />
+          <Avatar name={name} src={avatarUrl} size={68} ring={null} />
           <div className="flex-1 text-center sm:text-left">
             <p className="text-xs font-medium uppercase tracking-wider text-faint">Coming soon, {firstName}</p>
             <h4 className="font-display mt-1 text-2xl font-medium text-ink">Check-in not active yet</h4>
@@ -169,7 +172,7 @@ function MyCard({
     return (
       <div className="mt-6 overflow-hidden rounded-2xl border border-sage/30 bg-sage/[0.06] p-6">
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center sm:gap-6">
-          <Avatar name={name} size={68} ring="ok" />
+          <Avatar name={name} src={avatarUrl} size={68} ring="ok" />
           <div className="flex-1 text-center sm:text-left">
             <p className="text-[11px] font-medium uppercase tracking-wider text-sage">Logged · Done</p>
             <h4 className="font-display mt-1 text-2xl font-medium text-ink">Yes, {firstName} — solid work today.</h4>
@@ -190,7 +193,7 @@ function MyCard({
     return (
       <div className="mt-6 overflow-hidden rounded-2xl border border-coral-deep/30 bg-coral-deep/[0.06] p-6">
         <div className="flex flex-col items-center gap-5 sm:flex-row">
-          <Avatar name={name} size={68} ring="miss" />
+          <Avatar name={name} src={avatarUrl} size={68} ring="miss" />
           <div className="flex-1 text-center sm:text-left">
             <p className="text-[11px] font-medium uppercase tracking-wider text-coral-deep">Logged · Skipped</p>
             <h4 className="font-display mt-1 text-2xl font-medium text-ink">
@@ -217,7 +220,7 @@ function MyCard({
   return (
     <div className="mt-6 overflow-hidden rounded-2xl border border-line bg-surface p-6">
       <div className="flex flex-col items-center gap-5 sm:flex-row">
-        <Avatar name={name} size={68} ring={null} />
+        <Avatar name={name} src={avatarUrl} size={68} ring={null} />
         <div className="flex-1 text-center sm:text-left">
           <p className="text-xs font-medium uppercase tracking-wider text-clay">Your turn, {firstName}</p>
           <h4 className="font-display mt-1 text-2xl font-medium text-ink">

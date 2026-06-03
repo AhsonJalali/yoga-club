@@ -270,7 +270,7 @@ export default async function HomePage({
                 return (
                   <li key={row.member.id} className={`flex items-center gap-3 py-2.5 ${isMe ? "-mx-2 rounded-lg bg-coral/[0.06] px-2" : ""}`}>
                     <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold tabular-nums ${i === 0 ? "bg-coral text-ground" : i === 1 ? "border border-sage/50 text-sage" : i === 2 ? "border border-clay/50 text-clay" : "border border-line-strong text-faint"}`}>{i + 1}</span>
-                    <Avatar name={row.member.name} size={30} />
+                    <Avatar name={row.member.name} size={30} src={row.member.avatar_url} />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-2">
                         <div className="flex min-w-0 items-center gap-1.5">
@@ -385,7 +385,7 @@ export default async function HomePage({
                 return (
                   <li key={row.member.id} className="flex flex-col gap-3 border-b border-line px-5 py-4 last:border-0 sm:flex-row sm:items-center">
                     <div className="flex min-w-0 items-center gap-3 sm:w-64">
-                      <Avatar name={row.member.name} size={38} />
+                      <Avatar name={row.member.name} size={38} src={row.member.avatar_url} />
                       <div className="min-w-0">
                         <p className="truncate font-medium text-ink">{row.member.name}{isMe ? " · you" : ""}</p>
                         <p className="text-xs tabular-nums text-faint">{row.completed}/{row.eligible} done</p>

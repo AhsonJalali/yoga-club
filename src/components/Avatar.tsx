@@ -21,10 +21,12 @@ export function Avatar({
   name,
   size = 40,
   ring,
+  src,
 }: {
   name: string;
   size?: number;
   ring?: "ok" | "miss" | null;
+  src?: string | null;
 }) {
   const initials = name
     .split(/\s+/)
@@ -41,11 +43,21 @@ export function Avatar({
       : "";
   return (
     <div
-      style={{ width: size, height: size, fontSize: Math.max(11, size * 0.36), backgroundColor: colorFor(name) }}
-      className={`inline-flex items-center justify-center rounded-full border border-white/10 font-medium text-[#f1ebe1] ${ringClass}`}
+      style={{ width: size, height: size }}
+      className={`relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/10 ${ringClass}`}
       title={name}
     >
-      {initials}
+      {src ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={src} alt={name} className="h-full w-full object-cover" />
+      ) : (
+        <span
+          style={{ fontSize: Math.max(11, size * 0.36), backgroundColor: colorFor(name) }}
+          className="flex h-full w-full items-center justify-center font-medium text-[#f1ebe1]"
+        >
+          {initials}
+        </span>
+      )}
     </div>
   );
 }

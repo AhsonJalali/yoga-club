@@ -7,7 +7,7 @@ import { DEMO_MEMBERS, DEMO_CLASSES, DEMO_CHECK_INS, DEMO_CHALLENGES, DEMO_PARTI
 import { isoDate, todayEastern } from "../../lib/schedule";
 import { challengeIdsForMember, windowLabel } from "../../lib/challenges";
 import { BUCKETS, BucketKey, bucketMeta, computeRecap, MemberRecap } from "../../lib/recap";
-import { Avatar } from "../../components/Avatar";
+import { AvatarUploader } from "../../components/AvatarUploader";
 
 export const dynamic = "force-dynamic";
 
@@ -96,7 +96,7 @@ export default async function ProfilePage() {
 
       {/* header */}
       <div className="fade-up mt-5 flex items-center gap-4">
-        <Avatar name={me.name} size={56} />
+        <AvatarUploader name={me.name} avatarUrl={me.avatar_url} size={64} />
         <div>
           <h1 className="font-display text-3xl font-medium text-ink">{me.name}</h1>
           <p className="text-sm text-muted">
