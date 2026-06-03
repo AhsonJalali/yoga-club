@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { Clock3, Heart, PlayCircle, ExternalLink, Moon, CheckCircle2, Sunrise, Waves, Leaf, CalendarDays, Sparkles } from "lucide-react";
+import { Clock3, Heart, PlayCircle, ExternalLink, Moon, CheckCircle2, Sunrise, Waves, Leaf, CalendarDays, Sparkles, Star } from "lucide-react";
 import { currentMember } from "../lib/session";
 import { supabase, isSupabaseConfigured, Member, ClassItem, CheckIn, Challenge, ChallengeParticipant } from "../lib/supabase";
 import { DEMO_MEMBERS, DEMO_CLASSES, DEMO_CHECK_INS, DEMO_CHALLENGES, DEMO_PARTICIPANTS } from "../lib/demo";
@@ -95,6 +95,7 @@ export default async function HomePage({
     c.challenge_id ? c.challenge_id === focus.id : c.session_date >= focus.start_date && c.session_date <= focus.end_date;
   const checkInsByMemberDate = new Map<string, CheckIn>();
   const doneByDate = new Map<string, Set<string>>();
+  const ratingsByDate = new Map<string, number[]>(); // cumulative session ratings per day
   for (const c of checkIns) {
     if (!inFocus(c)) continue;
     checkInsByMemberDate.set(`${c.member_id}|${c.session_date}`, c);
@@ -102,8 +103,18 @@ export default async function HomePage({
       const set = doneByDate.get(c.session_date) ?? new Set<string>();
       set.add(c.member_id);
       doneByDate.set(c.session_date, set);
+      if (typeof c.rating === "number") {
+        const arr = ratingsByDate.get(c.session_date) ?? [];
+        arr.push(c.rating);
+        ratingsByDate.set(c.session_date, arr);
+      }
     }
   }
+  const avgRatingFor = (dateIso: string): { avg: number; count: number } | null => {
+    const arr = ratingsByDate.get(dateIso);
+    if (!arr || arr.length === 0) return null;
+    return { avg: Math.round((arr.reduce((a, b) => a + b, 0) / arr.length) * 10) / 10, count: arr.length };
+  };
 
   const todayStatusByMember: Record<string, "done" | "skipped" | undefined> = {};
   for (const m of roster) todayStatusByMember[m.id] = checkInsByMemberDate.get(`${m.id}|${todayIso}`)?.status;
@@ -311,6 +322,7 @@ export default async function HomePage({
               const myCi = checkInsByMemberDate.get(`${me.id}|${dIso}`);
               const myDone = myCi?.status === "done";
               const past = dIso < todayIso;
+              const rating = avgRatingFor(dIso);
 
               if (!inMonth) return <div key={i} className="min-h-32 border-b border-r border-line bg-black/20" />;
 
@@ -336,6 +348,11 @@ export default async function HomePage({
                     <div className="relative aspect-video overflow-hidden rounded-md bg-black">
                       <Image src={klassThumb} alt={klass.title} fill className="object-cover transition group-hover:scale-105" sizes="160px" />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+                      {rating ? (
+                        <div className="absolute right-1 top-1 inline-flex items-center gap-0.5 rounded-md bg-black/75 px-1.5 py-0.5 text-[10px] font-semibold text-white" title={`Avg rating from ${rating.count} ${rating.count === 1 ? "person" : "people"}`}>
+                          <Star className="h-2.5 w-2.5 fill-coral text-coral" /> {rating.avg}
+                        </div>
+                      ) : null}
                       <div className="absolute bottom-1 left-1 right-1"><p className="line-clamp-2 text-[10px] font-medium leading-tight text-white">{klass.title}</p></div>
                     </div>
                   ) : null}

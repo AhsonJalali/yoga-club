@@ -78,8 +78,8 @@ export const DEMO_CHECK_INS: CheckIn[] = [
 // "How it felt" + "moments" render in demo mode. (picsum = deterministic stand-ins.)
 const RATINGS: Record<string, Record<string, number>> = {
   "m-amir": { "2026-05-06": 5, "2026-05-08": 4, "2026-05-11": 5, "2026-05-13": 3, "2026-05-15": 4, "2026-05-18": 5, "2026-05-20": 4, "2026-05-27": 5 },
-  "m-priya": { "2026-05-06": 5, "2026-05-13": 5, "2026-05-20": 4, "2026-05-27": 5 },
-  "m-sara": { "2026-05-06": 4, "2026-05-15": 5 },
+  "m-priya": { "2026-05-06": 5, "2026-05-13": 5, "2026-05-20": 4, "2026-05-27": 5, "2026-06-01": 5 },
+  "m-sara": { "2026-05-06": 4, "2026-05-15": 5, "2026-06-01": 4 },
 };
 const PHOTOS: Record<string, Record<string, string>> = {
   "m-amir": { "2026-05-06": "https://picsum.photos/seed/amir-mat/600", "2026-05-15": "https://picsum.photos/seed/amir-pose/600", "2026-05-27": "https://picsum.photos/seed/amir-flow/600" },
@@ -88,7 +88,6 @@ const PHOTOS: Record<string, Record<string, string>> = {
   "m-maya": { "2026-05-20": "https://picsum.photos/seed/maya-mat/600" },
 };
 for (const c of DEMO_CHECK_INS) {
-  if (c.challenge_id !== "ch-may") continue;
   c.rating = RATINGS[c.member_id]?.[c.session_date] ?? null;
   c.photo_url = PHOTOS[c.member_id]?.[c.session_date] ?? null;
 }
