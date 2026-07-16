@@ -9,3 +9,9 @@ export async function hashPassword(plain: string): Promise<string> {
 export async function verifyPassword(plain: string, hash: string): Promise<boolean> {
   return bcrypt.compare(plain, hash);
 }
+
+// Escape LIKE/ILIKE wildcards so user-supplied strings (emails) match
+// literally — otherwise "a%@x.com" would pattern-match other rows.
+export function escapeLike(s: string): string {
+  return s.replace(/[\\%_]/g, (m) => `\\${m}`);
+}

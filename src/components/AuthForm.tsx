@@ -15,6 +15,8 @@ const ERROR_MESSAGES: Record<string, string> = {
   invalid: "All fields are required.",
   exists: "An account with that email already exists. Sign in instead.",
   short: "Password must be at least 6 characters.",
+  invite: "That invite code isn't right. Ask whoever runs the club for the current one.",
+  "slow-down": "Too many attempts. Wait a few minutes and try again.",
   server: "Server hiccup. Try again.",
   network: "Network error. Try again.",
 };
@@ -89,6 +91,12 @@ export function AuthForm({ mode, initialError }: Props) {
           type="password"
           autoComplete="new-password"
           placeholder="At least 6 characters"
+        />
+        <Field
+          label="Invite code"
+          name="invite"
+          autoComplete="off"
+          placeholder="From the group chat"
         />
 
         {error ? <p className="text-sm text-coral-deep">{error}</p> : null}
