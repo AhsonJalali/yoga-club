@@ -5,7 +5,7 @@ import { Clock3, Heart, PlayCircle, ExternalLink, Moon, CheckCircle2, Sunrise, W
 import { currentMember } from "../lib/session";
 import { supabase, isSupabaseConfigured, Member, ClassItem, CheckIn, Challenge, ChallengeParticipant } from "../lib/supabase";
 import { DEMO_MEMBERS, DEMO_CLASSES, DEMO_CHECK_INS, DEMO_CHALLENGES, DEMO_PARTICIPANTS } from "../lib/demo";
-import { isoDate, isRequiredDay, VENMO_HANDLE, venmoUrl, nextRequiredDay, dayTheme, todayEastern } from "../lib/schedule";
+import { isoDate, isRequiredDay, VENMO_HANDLE, venmoUrl, dayTheme, todayEastern } from "../lib/schedule";
 import { currentChallenge, upcomingChallenge, lastEndedChallenge, revealedRecapChallenge, joinOpen, participantsFor, windowLabel, requiredDowsLabel } from "../lib/challenges";
 import { requiredDatesBetween } from "../lib/recap";
 import { assignChallengeClasses } from "../lib/picker";
@@ -247,7 +247,14 @@ export default async function HomePage({
               <CheckInRoster members={roster} meId={me.id} sessionDate={todayIso} initialStatusByMember={todayStatusByMember} isRequiredDay={true} disabled={!enrolledMe || !isActive} disabledMessage={!enrolledMe ? "You're not in this challenge." : !isActive ? "This challenge isn't active." : undefined} />
             </>
           ) : (
-            <RestDayCard nextDate={nextRequiredDay(today)} />
+            <RestDayCard
+              nextDate={(() => {
+                // Next required day inside this challenge's window and rules;
+                // null once the challenge is over (no next session to tease).
+                const next = requiredDatesBetween(focus.start_date, focus.end_date, focus.required_dows).find((d) => d > todayIso);
+                return next ? new Date(next + "T00:00:00") : null;
+              })()}
+            />
           )}
         </div>
 
@@ -341,7 +348,7 @@ export default async function HomePage({
                 <a key={i} href={klass?.youtube_url ?? "#"} target="_blank" rel="noreferrer" className={`group flex min-h-32 flex-col gap-2 border-b border-r border-line p-2 transition hover:bg-raised ${isToday ? "bg-coral/[0.08] ring-1 ring-inset ring-coral/40" : ""}`}>
                   <div className="flex items-center justify-between">
                     <span className={`text-xs ${isToday ? "font-semibold text-coral" : past ? "text-muted" : "text-faint"}`}>{d.getDate()}</span>
-                    {myDone ? <CheckCircle2 className="h-3.5 w-3.5 text-sage" /> : past ? <span className="text-[10px] font-medium text-coral-deep">missed</span> : null}
+                    {myDone ? <CheckCircle2 className="h-3.5 w-3.5 text-sage" /> : past && enrolledMe ? <span className="text-[10px] font-medium text-coral-deep">missed</span> : null}
                   </div>
                   {klass && klassThumb ? (
                     <div className="relative aspect-video overflow-hidden rounded-md bg-black">
@@ -437,11 +444,9 @@ function formatDate(iso: string): string {
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
-function RestDayCard({ nextDate }: { nextDate: Date }) {
-  const theme = dayTheme(nextDate);
-  const Icon = theme.emoji === "sunrise" ? Sunrise : theme.emoji === "wave" ? Waves : theme.emoji === "leaf" ? Leaf : Moon;
-  const dayName = nextDate.toLocaleDateString("en-US", { weekday: "long" });
-  const monthDay = nextDate.toLocaleDateString("en-US", { month: "long", day: "numeric" });
+function RestDayCard({ nextDate }: { nextDate: Date | null }) {
+  const theme = nextDate ? dayTheme(nextDate) : null;
+  const Icon = theme?.emoji === "sunrise" ? Sunrise : theme?.emoji === "wave" ? Waves : theme?.emoji === "leaf" ? Leaf : Moon;
   return (
     <section className="fade-up-3">
       <div className="overflow-hidden rounded-2xl border border-line bg-surface p-8 sm:p-10">
@@ -451,13 +456,17 @@ function RestDayCard({ nextDate }: { nextDate: Date }) {
           </div>
           <h3 className="font-display mt-5 text-2xl font-medium text-ink sm:text-3xl">No yoga scheduled today</h3>
           <p className="mt-3 text-base text-muted">Rest is part of the work — no penalty, nothing to log. Hydrate, walk, sleep well.</p>
-          <div className="mt-7 inline-flex items-center gap-3 rounded-xl border border-line bg-raised px-5 py-3 text-left">
-            <Icon className="h-5 w-5 shrink-0 text-clay" />
-            <div>
-              <p className="text-xs font-medium uppercase tracking-wider text-faint">Next session</p>
-              <p className="text-sm font-semibold text-ink">{dayName}, {monthDay} · {theme.label}</p>
+          {nextDate && theme ? (
+            <div className="mt-7 inline-flex items-center gap-3 rounded-xl border border-line bg-raised px-5 py-3 text-left">
+              <Icon className="h-5 w-5 shrink-0 text-clay" />
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wider text-faint">Next session</p>
+                <p className="text-sm font-semibold text-ink">
+                  {nextDate.toLocaleDateString("en-US", { weekday: "long" })}, {nextDate.toLocaleDateString("en-US", { month: "long", day: "numeric" })} · {theme.label}
+                </p>
+              </div>
             </div>
-          </div>
+          ) : null}
         </div>
       </div>
     </section>

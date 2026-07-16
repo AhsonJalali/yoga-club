@@ -1,12 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { Download, Share2 } from "lucide-react";
+
+// navigator.canShare only exists in the browser; snapshotting it through
+// useSyncExternalStore keeps the server render (false → Download) from
+// mismatching the client render on share-capable browsers.
+const subscribeNever = () => () => {};
+const canShareSnapshot = () =>
+  typeof (navigator as Navigator & { canShare?: unknown }).canShare === "function";
+
+type Props = {
+  challengeName: string;
+  challengeSlug: string;
+};
 
 // Fetches the server-rendered share card (/recap/card) and either opens the
 // native share sheet (mobile) with the PNG attached, or downloads it.
-export function ShareRecapButton() {
+export function ShareRecapButton({ challengeName, challengeSlug }: Props) {
   const [busy, setBusy] = useState(false);
+  const canNativeShare = useSyncExternalStore(subscribeNever, canShareSnapshot, () => false);
+  const fileName = `my-yoga-${challengeSlug}.png`;
 
   async function handle() {
     if (busy) return;
@@ -15,18 +29,18 @@ export function ShareRecapButton() {
       const res = await fetch("/recap/card", { cache: "no-store" });
       if (!res.ok) throw new Error("card failed");
       const blob = await res.blob();
-      const file = new File([blob], "my-yoga-may.png", { type: "image/png" });
+      const file = new File([blob], fileName, { type: "image/png" });
 
       const nav = navigator as Navigator & {
         canShare?: (data?: { files?: File[] }) => boolean;
       };
       if (nav.canShare?.({ files: [file] }) && navigator.share) {
-        await navigator.share({ files: [file], title: "My May in Yoga 🧘" });
+        await navigator.share({ files: [file], title: `My ${challengeName} in Yoga 🧘` });
       } else {
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = "my-yoga-may.png";
+        a.download = fileName;
         document.body.appendChild(a);
         a.click();
         a.remove();
@@ -39,10 +53,6 @@ export function ShareRecapButton() {
       setBusy(false);
     }
   }
-
-  const canNativeShare =
-    typeof navigator !== "undefined" &&
-    typeof (navigator as Navigator & { canShare?: unknown }).canShare === "function";
 
   return (
     <button
