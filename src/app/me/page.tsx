@@ -115,7 +115,7 @@ export default async function ProfilePage() {
           <section className="fade-up-2 mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
             <Stat icon={<Flame className="h-4 w-4" />} value={`${totalSessions}`} label="total sessions" accent="coral" />
             <Stat icon={<Clock3 className="h-4 w-4" />} value={`${totalHours}`} label="hours on the mat" accent="clay" />
-            <Stat icon={<CalendarDays className="h-4 w-4" />} value={`${challengesCompleted}`} label="challenges done" accent="sage" />
+            <Stat icon={<CalendarDays className="h-4 w-4" />} value={`${challengesCompleted}`} label={challengesCompleted === 1 ? "challenge done" : "challenges done"} accent="sage" />
             <Stat icon={<Sparkles className="h-4 w-4" />} value={`${avgCompletion}%`} label="avg consistency" accent="sage" />
           </section>
 

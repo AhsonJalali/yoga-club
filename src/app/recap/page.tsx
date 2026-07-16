@@ -75,29 +75,44 @@ export default async function RecapPage() {
         <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-clay">
           {challenge.name} · Yoga Club
         </p>
-        <h1 className="font-display mx-auto mt-4 max-w-2xl text-4xl font-medium tracking-tight text-ink sm:text-6xl">
-          Congratulations, <span className="italic text-clay">{me.name}</span>
-        </h1>
-        <p className="mx-auto mt-4 max-w-xl text-base text-muted sm:text-lg">
-          You showed up. Here&apos;s everything you did on the mat in {challenge.name}.
-        </p>
+        {mine ? (
+          <>
+            <h1 className="font-display mx-auto mt-4 max-w-2xl text-4xl font-medium tracking-tight text-ink sm:text-6xl">
+              Congratulations, <span className="italic text-clay">{me.name}</span>
+            </h1>
+            <p className="mx-auto mt-4 max-w-xl text-base text-muted sm:text-lg">
+              You showed up. Here&apos;s everything you did on the mat in {challenge.name}.
+            </p>
 
-        <div className="mt-10 flex flex-col items-center">
-          <CountUp
-            value={mine?.sessions ?? 0}
-            className="font-display text-7xl font-medium tabular-nums text-coral sm:text-8xl"
-          />
-          <p className="mt-1 text-sm uppercase tracking-[0.2em] text-faint">
-            yoga sessions
-          </p>
-        </div>
+            <div className="mt-10 flex flex-col items-center">
+              <CountUp
+                value={mine.sessions}
+                className="font-display text-7xl font-medium tabular-nums text-coral sm:text-8xl"
+              />
+              <p className="mt-1 text-sm uppercase tracking-[0.2em] text-faint">
+                yoga sessions
+              </p>
+            </div>
 
-        <div className="mt-9 flex justify-center">
-          <ShareRecapButton />
-        </div>
+            <div className="mt-9 flex justify-center">
+              <ShareRecapButton challengeName={challenge.name} challengeSlug={challenge.slug} />
+            </div>
+          </>
+        ) : (
+          <>
+            <h1 className="font-display mx-auto mt-4 max-w-2xl text-4xl font-medium tracking-tight text-ink sm:text-6xl">
+              The <span className="italic text-clay">{challenge.name}</span> recap
+            </h1>
+            <p className="mx-auto mt-4 max-w-xl text-base text-muted sm:text-lg">
+              You sat this one out, {me.name} — here&apos;s how the club did.
+            </p>
+          </>
+        )}
       </section>
 
-      {/* ---- Personal stat grid ---- */}
+      {/* ---- Personal stat grid (participants only) ---- */}
+      {mine ? (
+      <>
       <section className="fade-up-2 mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
         <StatCard
           icon={<Clock3 className="h-4 w-4" />}
@@ -105,10 +120,10 @@ export default async function RecapPage() {
           accent="clay"
         >
           <div className="font-display text-3xl font-medium tabular-nums text-ink">
-            <CountUp value={mine?.minutes ?? 0} suffix=" min" />
+            <CountUp value={mine.minutes} suffix=" min" />
           </div>
           <p className="mt-1 text-sm text-muted">
-            ≈ <CountUp value={mine?.hours ?? 0} decimals={1} /> hours of yoga
+            ≈ <CountUp value={mine.hours} decimals={1} /> hours of yoga
           </p>
         </StatCard>
 
@@ -138,17 +153,17 @@ export default async function RecapPage() {
           accent="coral"
         >
           <div className="font-display text-3xl font-medium tabular-nums text-ink">
-            {mine?.completed ?? 0}
-            <span className="text-faint">/{mine?.eligible ?? 0}</span>
+            {mine.completed}
+            <span className="text-faint">/{mine.eligible}</span>
           </div>
           <p className="mt-1 text-sm text-muted">
-            {mine?.completionPct ?? 0}% of required days
-            {mine && mine.bestStreak > 1 ? ` · ${mine.bestStreak} in a row` : ""}
+            {mine.completionPct}% of required days
+            {mine.bestStreak > 1 ? ` · ${mine.bestStreak} in a row` : ""}
           </p>
         </StatCard>
 
         <StatCard icon={<Star className="h-4 w-4" />} label="How it felt" accent="clay">
-          {mine && mine.ratedCount > 0 ? (
+          {mine.ratedCount > 0 ? (
             <>
               <div className="flex items-center gap-0.5">
                 {[1, 2, 3, 4, 5].map((n) => (
@@ -173,12 +188,14 @@ export default async function RecapPage() {
         </div>
         <p className="mt-1 text-sm text-faint">
           Sessions by time of day{" "}
-          {mine && mine.timedSessions < mine.sessions
+          {mine.timedSessions < mine.sessions
             ? `(${mine.timedSessions} of ${mine.sessions} sessions had a logged time)`
             : ""}
         </p>
-        <BarChart buckets={mine?.buckets ?? []} highlight={mine?.favorite ?? null} />
+        <BarChart buckets={mine.buckets} highlight={mine.favorite} />
       </section>
+      </>
+      ) : null}
 
       {/* ---- Your moments ---- */}
       {mine && mine.photos.length > 0 ? (

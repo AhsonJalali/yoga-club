@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { X, Calendar, Heart, DollarSign, Users, Info } from "lucide-react";
 
@@ -32,7 +32,6 @@ export function RulesButton({ autoOpen = false }: Props) {
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   function handleClose() {
@@ -60,8 +59,8 @@ export function RulesButton({ autoOpen = false }: Props) {
 }
 
 function RulesModal({ onClose }: { onClose: () => void }) {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  // true only after hydration — portals can't render during SSR.
+  const mounted = useSyncExternalStore(() => () => {}, () => true, () => false);
   if (!mounted) return null;
 
   // Render via portal to escape any ancestor containing block (the header has
