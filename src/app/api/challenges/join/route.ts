@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "../../../../lib/supabase";
+import { verifySession } from "../../../../lib/session-token";
 import { todayEasternIso } from "../../../../lib/schedule";
 
 const COOKIE_NAME = "yc_member";
@@ -14,9 +15,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, reason: "not-configured" }, { status: 500 });
   }
 
-  const memberId =
+  const memberId = verifySession(
     req.cookies.get(COOKIE_NAME)?.value ??
-    parseCookieHeader(req.headers.get("cookie"))[COOKIE_NAME];
+      parseCookieHeader(req.headers.get("cookie"))[COOKIE_NAME]
+  );
   if (!memberId) {
     return NextResponse.json({ ok: false, reason: "unauthenticated" }, { status: 401 });
   }

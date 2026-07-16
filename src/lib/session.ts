@@ -1,16 +1,16 @@
 import { cookies } from "next/headers";
 import { supabase, isSupabaseConfigured, Member } from "./supabase";
+import { signSession, verifySession, SESSION_TTL_S } from "./session-token";
 
 const COOKIE_NAME = "yc_member";
-const MAX_AGE_DAYS = 365;
 
 export async function setMemberCookie(memberId: string) {
   const jar = await cookies();
-  jar.set(COOKIE_NAME, memberId, {
+  jar.set(COOKIE_NAME, signSession(memberId), {
     httpOnly: true,
     sameSite: "lax",
     path: "/",
-    maxAge: MAX_AGE_DAYS * 24 * 60 * 60,
+    maxAge: SESSION_TTL_S,
     secure: process.env.NODE_ENV === "production",
   });
 }
@@ -26,7 +26,7 @@ export async function currentMember(): Promise<Member | null> {
     return DEMO_ME;
   }
   const jar = await cookies();
-  const id = jar.get(COOKIE_NAME)?.value;
+  const id = verifySession(jar.get(COOKIE_NAME)?.value);
   if (!id) return null;
   const { data, error } = await supabase().from("members").select("*").eq("id", id).maybeSingle();
   if (error || !data) return null;

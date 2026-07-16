@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { randomBytes, createHash } from "node:crypto";
 import { supabase, isSupabaseConfigured } from "../../../../lib/supabase";
+import { escapeLike } from "../../../../lib/auth";
+import { isRateLimited, recordFailure } from "../../../../lib/rate-limit";
 import { sendEmail, appBaseUrl } from "../../../../lib/email";
 
 export const runtime = "nodejs";
@@ -56,6 +58,10 @@ export async function POST(req: NextRequest) {
 
   // Invalid input still returns 200 — we don't want to confirm or deny.
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return ok();
+  // Every request costs an email send, so throttle per address (still a 200,
+  // so probing reveals nothing).
+  if (isRateLimited(`forgot:${email}`)) return ok();
+  recordFailure(`forgot:${email}`);
   if (!isSupabaseConfigured()) {
     console.error("[forgot] supabase not configured");
     return ok();
@@ -65,7 +71,7 @@ export async function POST(req: NextRequest) {
   const { data: member, error: lookupErr } = await sb
     .from("members")
     .select("id, email, name")
-    .ilike("email", email)
+    .ilike("email", escapeLike(email))
     .maybeSingle();
   if (lookupErr) {
     console.error("[forgot] lookup failed:", lookupErr);

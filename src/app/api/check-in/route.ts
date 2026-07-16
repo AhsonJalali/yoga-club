@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "../../../lib/supabase";
+import { verifySession } from "../../../lib/session-token";
 
 const COOKIE_NAME = "yc_member";
 
@@ -13,9 +14,10 @@ export async function POST(req: NextRequest) {
 
   // Read the cookie straight off NextRequest (see fix history — cookies() can
   // return an empty jar in Route Handlers on Next 16).
-  const memberId =
+  const memberId = verifySession(
     req.cookies.get(COOKIE_NAME)?.value ??
-    parseCookieHeader(req.headers.get("cookie"))[COOKIE_NAME];
+      parseCookieHeader(req.headers.get("cookie"))[COOKIE_NAME]
+  );
   if (!memberId) {
     return NextResponse.json({ ok: false, reason: "unauthenticated" }, { status: 401 });
   }

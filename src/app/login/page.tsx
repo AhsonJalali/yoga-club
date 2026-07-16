@@ -29,6 +29,10 @@ export default async function LoginPage({
       ? "An account with that email already exists. Sign in instead."
       : error === "short"
       ? "Password must be at least 6 characters."
+      : error === "invite"
+      ? "That invite code isn't right. Ask whoever runs the club for the current one."
+      : error === "slow-down"
+      ? "Too many attempts. Wait a few minutes and try again."
       : error === "server"
       ? "Server hiccup. Try again."
       : null;

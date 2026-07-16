@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "../../../../lib/supabase";
-import { verifyPassword } from "../../../../lib/auth";
+import { verifyPassword, escapeLike } from "../../../../lib/auth";
+import { signSession, isSessionSecretConfigured, SESSION_TTL_S } from "../../../../lib/session-token";
+import { isRateLimited, recordFailure, clearFailures } from "../../../../lib/rate-limit";
 
 const COOKIE_NAME = "yc_member";
-const MAX_AGE = 365 * 24 * 60 * 60;
 
 function back(req: NextRequest, error?: string): NextResponse {
   const url = new URL("/login", req.url);
@@ -18,28 +19,40 @@ export async function POST(req: NextRequest) {
 
   if (!email || !password) return back(req, "invalid");
   if (!isSupabaseConfigured()) return back(req, "server");
+  if (!isSessionSecretConfigured()) {
+    console.error("[signin] SESSION_SECRET not set");
+    return back(req, "server");
+  }
+  if (isRateLimited(`signin:${email}`)) return back(req, "slow-down");
 
   const sb = supabase();
   const { data: member, error: lookupErr } = await sb
     .from("members")
     .select("id, password_hash")
-    .ilike("email", email)
+    .ilike("email", escapeLike(email))
     .maybeSingle();
   if (lookupErr) {
     console.error("[signin] lookup failed:", lookupErr);
     return back(req, "server");
   }
-  if (!member?.password_hash) return back(req, "credentials");
+  if (!member?.password_hash) {
+    recordFailure(`signin:${email}`);
+    return back(req, "credentials");
+  }
 
   const ok = await verifyPassword(password, member.password_hash);
-  if (!ok) return back(req, "credentials");
+  if (!ok) {
+    recordFailure(`signin:${email}`);
+    return back(req, "credentials");
+  }
+  clearFailures(`signin:${email}`);
 
   const response = NextResponse.redirect(new URL("/", req.url), 303);
-  response.cookies.set(COOKIE_NAME, member.id, {
+  response.cookies.set(COOKIE_NAME, signSession(member.id), {
     httpOnly: true,
     sameSite: "lax",
     path: "/",
-    maxAge: MAX_AGE,
+    maxAge: SESSION_TTL_S,
     secure: process.env.NODE_ENV === "production",
   });
   return response;
