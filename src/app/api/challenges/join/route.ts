@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "../../../../lib/supabase";
 import { verifySession } from "../../../../lib/session-token";
 import { todayEasternIso } from "../../../../lib/schedule";
-
-const COOKIE_NAME = "yc_member";
+import { COOKIE_NAME, parseCookieHeader } from "../../../../lib/cookies";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -56,17 +55,4 @@ export async function POST(req: NextRequest) {
   }
 
   return NextResponse.json({ ok: true });
-}
-
-function parseCookieHeader(header: string | null): Record<string, string> {
-  if (!header) return {};
-  const out: Record<string, string> = {};
-  for (const part of header.split(";")) {
-    const eq = part.indexOf("=");
-    if (eq < 0) continue;
-    const k = part.slice(0, eq).trim();
-    const v = part.slice(eq + 1).trim();
-    if (k) out[k] = decodeURIComponent(v);
-  }
-  return out;
 }
