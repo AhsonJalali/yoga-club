@@ -1,8 +1,7 @@
 import { cookies } from "next/headers";
 import { supabase, isSupabaseConfigured, Member } from "./supabase";
 import { signSession, verifySession, SESSION_TTL_S } from "./session-token";
-
-const COOKIE_NAME = "yc_member";
+import { COOKIE_NAME } from "./cookies";
 
 export async function setMemberCookie(memberId: string) {
   const jar = await cookies();
