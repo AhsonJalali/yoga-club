@@ -44,3 +44,45 @@ create table if not exists check_ins (
 
 create index if not exists check_ins_session_date_idx on check_ins (session_date);
 create index if not exists check_ins_member_id_idx on check_ins (member_id);
+
+create table if not exists challenges (
+  id uuid primary key default gen_random_uuid(),
+  slug text not null unique,
+  name text not null,
+  start_date date not null,
+  end_date date not null,
+  join_closes_at date,
+  required_dows int[] not null default '{}',
+  penalty_usd numeric not null default 0,
+  reveal_at timestamptz not null,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists challenge_participants (
+  id uuid primary key default gen_random_uuid(),
+  challenge_id uuid not null references challenges(id) on delete cascade,
+  member_id uuid not null references members(id) on delete cascade,
+  joined_at timestamptz not null default now(),
+  unique (challenge_id, member_id)
+);
+create index if not exists challenge_participants_challenge_id_idx on challenge_participants (challenge_id);
+create index if not exists challenge_participants_member_id_idx on challenge_participants (member_id);
+
+create table if not exists password_reset_tokens (
+  id uuid primary key default gen_random_uuid(),
+  member_id uuid not null references members(id) on delete cascade,
+  token_hash text not null,
+  expires_at timestamptz not null,
+  used_at timestamptz,
+  created_at timestamptz not null default now()
+);
+create index if not exists password_reset_tokens_token_hash_idx on password_reset_tokens (token_hash);
+
+-- Profile photos + per-challenge ratings/photos were added after the
+-- original MVP schema above; these are idempotent for both a fresh install
+-- and an existing table.
+alter table members add column if not exists avatar_url text;
+alter table check_ins add column if not exists challenge_id uuid references challenges(id) on delete set null;
+alter table check_ins add column if not exists rating int check (rating between 1 and 5);
+alter table check_ins add column if not exists photo_url text;
+create index if not exists check_ins_challenge_id_idx on check_ins (challenge_id);
