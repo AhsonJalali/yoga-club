@@ -1,8 +1,11 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
 import {
   todayEasternIso,
+  todayEastern,
   dayKind,
   isRequiredDay,
+  dayLabel,
+  dayTheme,
   isoDate,
   startOfWeek,
   weekDays,
@@ -70,6 +73,58 @@ describe("nextRequiredDay", () => {
     expect(isoDate(nextRequiredDay(new Date(2026, 6, 3)))).toBe("2026-07-06");
     // From Saturday → Monday
     expect(isoDate(nextRequiredDay(sat))).toBe("2026-07-06");
+  });
+});
+
+describe("dayLabel", () => {
+  it("names each required day with its focus", () => {
+    expect(dayLabel(mon)).toMatch(/^Monday/);
+    expect(dayLabel(wed)).toMatch(/^Wednesday/);
+    expect(dayLabel(new Date(2026, 6, 3))).toMatch(/^Friday/); // Friday
+  });
+
+  it("falls back to the recovery-day label on rest days", () => {
+    expect(dayLabel(thu)).toMatch(/^Recovery day/);
+    expect(dayLabel(sat)).toMatch(/^Recovery day/);
+  });
+});
+
+describe("dayTheme", () => {
+  it("themes each required day distinctly", () => {
+    expect(dayTheme(mon)).toEqual({ label: "Foundation Day", sub: "set the tone for the week", emoji: "sunrise" });
+    expect(dayTheme(wed)).toEqual({ label: "Mobility Day", sub: "loosen up the middle", emoji: "wave" });
+    expect(dayTheme(new Date(2026, 6, 3))).toEqual({ label: "Stretch Day", sub: "ease into the weekend", emoji: "leaf" });
+  });
+
+  it("themes rest days as recovery", () => {
+    expect(dayTheme(thu)).toEqual({ label: "Recovery Day", sub: "rest is part of the work", emoji: "moon" });
+    expect(dayTheme(sat)).toEqual({ label: "Recovery Day", sub: "rest is part of the work", emoji: "moon" });
+  });
+});
+
+describe("todayEastern", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("stays on the Eastern calendar day even when UTC has already rolled over", () => {
+    // 2026-07-02T02:30:00Z is 2026-07-01 22:30 ET (EDT, UTC-4) — past midnight
+    // UTC but still Wednesday night in Eastern time.
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-07-02T02:30:00Z"));
+
+    const d = todayEastern();
+    expect(d.getFullYear()).toBe(2026);
+    expect(d.getMonth()).toBe(6); // July
+    expect(d.getDate()).toBe(1);
+    expect(d.getDay()).toBe(3); // Wednesday
+  });
+
+  it("matches todayEasternIso for the same instant", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-11-09T15:00:00Z"));
+
+    expect(isoDate(todayEastern())).toBe(todayEasternIso());
   });
 });
 
